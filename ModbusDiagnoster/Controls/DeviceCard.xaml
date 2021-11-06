@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="ModbusDiagnoster.Controls.DeviceCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ModbusDiagnoster.Controls"
+             xmlns:materialDesign="https://materialdesigninxaml.net/winfx/xaml/themes" xmlns:materialDesign1="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:viewmodels="clr-namespace:ModbusDiagnoster.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:DeviceCardViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="200" MinHeight="100" MinWidth="200"
+             Margin="10"
+             >
+
+    <Grid>
+        <materialDesign1:Card >
+            <Grid>
+                <Grid.ColumnDefinitions></Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+            <TextBox x:Name="deviceName" Text="{Binding DeviceName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" FontSize="20" 
+                     FontWeight="Bold" HorizontalAlignment="Center" 
+                     VerticalAlignment="Center"
+                     Grid.Row="0"
+                     Margin="5"
+                     ></TextBox>
+
+                <Button
+                    x:Name="openDeviceWindowBtn"
+                    Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
+                    ToolTip="Otwórz okno urządzenia"
+                    Grid.Row="1"
+                    Command="{Binding OpenDeviceWindowCommand}"
+                    Margin="5"
+                    Height="40"
+                    Width="40"
+                    HorizontalAlignment="Right"
+                    >
+                    <materialDesign1:PackIcon
+                            Kind="OpenInNew"
+                            Height="30"
+                            Width="30" 
+                            />
+                </Button>
+                <Button
+                    x:Name="deleteDevice"
+                    Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                    ToolTip="Usuń urządzenie"
+                    Grid.Row="1"
+                    Command="{Binding Path=DeleteThisDevice}"
+                    Margin="5"
+                    Height="40"
+                    Width="40"
+                    HorizontalAlignment="Left"
+                    >
+                    <materialDesign1:PackIcon
+                            Kind="Close"
+                            Height="30"
+                            Width="30" 
+                            />
+                </Button>
+                <Label x:Name="idLbl" Content="{Binding Path=ID}" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="5"></Label>
+            </Grid>
+        </materialDesign1:Card>
+    </Grid>
+
+    <!-- <materialDesign:PackIcon Kind="OpenInNew" /> -->
+</UserControl>

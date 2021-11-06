@@ -1,0 +1,130 @@
+﻿<Window x:Class="ModbusDiagnoster.DeviceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ModbusDiagnoster" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:viewmodels="clr-namespace:ModbusDiagnoster.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:DeviceViewModel}"
+        mc:Ignorable="d"
+        Title="Urządzenie" Height="450" Width="800"
+        x:Name="deviceWindow" WindowStartupLocation="CenterScreen"
+        >
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition 
+                x:Name="grdCol1"
+                Width="Auto" ScrollViewer.CanContentScroll="True" ></ColumnDefinition>
+            <ColumnDefinition
+                x:Name="grdCol2"
+                ></ColumnDefinition>
+
+        </Grid.ColumnDefinitions>
+
+        <GridSplitter Grid.Column="1" Grid.Row="1"
+                      x:Name="grdSplitter"
+                      HorizontalAlignment="Left"
+              VerticalAlignment="Stretch"
+              Background="Black" 
+              ShowsPreview="True"
+              Width="5"
+              
+              />
+
+        <Grid MinWidth="200" Visibility="Visible" x:Name="propertiesGrid"
+              MaxWidth="600" ScrollViewer.CanContentScroll="True"
+              Grid.Column="0"
+              >
+            <TabControl>
+                <TabItem
+                    Header="Modbus TCP"
+                    >
+                    <StackPanel>
+                        <RadioButton x:Name="tcpRadBtn" Content="Modbus TCP"
+                                     IsChecked="{Binding ModbusTCPSelected}"
+                                     ></RadioButton>
+                    <GroupBox 
+                        Margin="5"
+                        >
+                            <StackPanel>
+                                <Label Content="IPv4:"></Label>
+                            <TextBox x:Name="ipTxtBox" Margin="2"
+                                     Text="{Binding DeviceTCP.IPAddr}"></TextBox>
+                                <Label Content="Port:" ></Label>
+                                <TextBox x:Name="portTxtBox"
+                                         Text="{Binding DeviceTCP.Port}" Margin="2"></TextBox>
+                            </StackPanel>
+                    </GroupBox>
+                        <RadioButton x:Name="rtuRadBtn" Content="Modbus RTU"
+                                     IsChecked="{Binding ModbusRTUSelected}"></RadioButton>
+                    <GroupBox
+                        Margin="5">
+                        
+                    </GroupBox>
+                    </StackPanel>
+                </TabItem>
+                <TabItem
+                    Header="Modbus RTU"
+                    >
+                    
+                </TabItem>
+            </TabControl>
+        </Grid>
+
+        <Grid Grid.Column="1" Margin="6,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Button
+            x:Name="propertiesBtn"
+            Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+            Width="30"
+            Height="30"
+            Grid.Row="0"            
+            Click="propertiesBtn_Click"
+            HorizontalAlignment="Left" VerticalAlignment="Bottom"
+            Margin="5"
+            >
+                <materialDesign:PackIcon
+                            Kind="CogOutline"
+                            Height="20"
+                            Width="20" 
+                            />
+            </Button>
+            <TabControl Grid.Row="1" >
+            <TabItem Name="variableCard" Header="Zmienne" 
+                     Background="{DynamicResource MaterialDesignPaper}"
+                     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+                     >
+                <DataGrid x:Name="variablesDataGrid" 
+                          Margin="5"
+                          ></DataGrid>
+                
+                
+            </TabItem>
+
+            <TabItem Name="propertiesCard" Header="Ustawienia"
+                     Background="{DynamicResource MaterialDesignPaper}"
+                     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+                     >
+                
+            </TabItem>
+            
+            
+        </TabControl>
+
+
+        
+        </Grid>
+    </Grid>
+
+</Window>
