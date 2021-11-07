@@ -84,6 +84,8 @@
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
 
+            <!--MENU-->
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button
             x:Name="propertiesBtn"
             Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
@@ -100,27 +102,135 @@
                             Width="20" 
                             />
             </Button>
+            <Button
+            x:Name="startBtn"
+            Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
+            Width="30"
+            Height="30"
+            Grid.Row="0"            
+            Command="{Binding StartPooling}"
+            HorizontalAlignment="Left" VerticalAlignment="Bottom"
+            Margin="5"
+            >
+                <materialDesign:PackIcon
+                            Kind="Play"
+                            Height="20"
+                            Width="20" 
+                            />
+            </Button>
+            </StackPanel>
+            
+            <!-- COILS-->
             <TabControl Grid.Row="1" >
-            <TabItem Name="variableCard" Header="Zmienne" 
+                <TabItem Name="CoilsCard" Header="Coils" 
                      Background="{DynamicResource MaterialDesignPaper}"
                      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
                      >
-                <DataGrid x:Name="variablesDataGrid" 
-                          Margin="5"
-                          ></DataGrid>
+                    <DataGrid x:Name="CoilsDataGrd" ItemsSource="{Binding Coils}"></DataGrid>
                 
-                
-            </TabItem>
+                </TabItem>
 
-            <TabItem Name="propertiesCard" Header="Ustawienia"
+                <!-- DISCRETE INPUTS-->
+            <TabItem Name="DiscreteInputsCard" Header="Discrete Inputs"
                      Background="{DynamicResource MaterialDesignPaper}"
                      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
                      >
+                    <DataGrid x:Name="InputsDataGrd" ItemsSource="{Binding Inputs}"></DataGrid>
+                </TabItem>
+
+                <!-- HOLDING REGISTERS-->
+                <TabItem Name="HoldingRegistersCard" Header="Holding Registers"
+                     Background="{DynamicResource MaterialDesignPaper}"
+                     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+                     >
+                    <DataGrid x:Name="HRdataGrd" ItemsSource="{Binding HoldingRegisters}" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridCheckBoxColumn Header="Wyłączona" 
+                                                Binding="{Binding Disabled}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
+                                                ></DataGridCheckBoxColumn>
+                            <DataGridTextColumn Header="Nazwa" 
+                                                Binding="{Binding Name}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                            <DataGridTextColumn Header="Adres" 
+                                                Binding="{Binding StartAddress}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                            <DataGridTextColumn Header="Wartość" 
+                                                Binding="{Binding Value}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                            <DataGridTextColumn Header="Funkcja przeliczająca" 
+                                                Binding="{Binding ConversionFunction}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                            <DataGridTextColumn Header="Wartość formatowana" 
+                                                Binding="{Binding ConvertedValue}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                            <DataGridTextColumn Header="Format wyświetlania" 
+                                                Binding="{Binding Format}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+
+                            <DataGridTextColumn Header="Jednostka" 
+                                                Binding="{Binding Unit}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                            <DataGridTextColumn Header="Opis" 
+                                                Binding="{Binding Description}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                            <DataGridTextColumn Header="Okres próbkowania [ms]" 
+                                                Binding="{Binding SamplePeriod}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                            <DataGridTextColumn Header="Zakres od" 
+                                                Binding="{Binding LowRange}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                            <DataGridTextColumn Header="Zakres do" 
+                                                Binding="{Binding HighRange}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                            <DataGridTextColumn Header="Zakres wyświetlania od" 
+                                                Binding="{Binding LowDisplayRange}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                            <DataGridTextColumn Header="Zakres wyświetlania do" 
+                                                Binding="{Binding HighDisplayRange}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                        </DataGrid.Columns>
+                        
+                        
+                    </DataGrid>
+                </TabItem>
                 
-            </TabItem>
-            
-            
-        </TabControl>
+                <!-- INPUT REGISTERS -->
+                <TabItem Name="InputRegistersCard" Header="Input Registers"
+                     Background="{DynamicResource MaterialDesignPaper}"
+                     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+                     >
+                    <DataGrid x:Name="IRdataGrd" ItemsSource="{Binding InputRegisters}"></DataGrid>
+                </TabItem>
+
+            </TabControl>
 
 
         

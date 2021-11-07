@@ -22,10 +22,7 @@ namespace ModbusDiagnoster.Model.Communication
         public string Name { get; set; }
         public int Id { get; set; }
         public ModbusType Type { get; set; }
-        public ObservableCollection<CoilsVariable> Coils { get; set; }
-        public ObservableCollection<DiscreteInputsVariable> Inputs { get; set; }
-        public ObservableCollection<HoldingRegistersVariable> HoldingRegisters { get; set; }
-        public ObservableCollection<InputRegistersVariable> InputRegisters { get; set; }
+       
 
        
     }

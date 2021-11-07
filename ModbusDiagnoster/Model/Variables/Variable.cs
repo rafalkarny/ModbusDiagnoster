@@ -36,11 +36,12 @@ namespace ModbusDiagnoster.Model.Variables
     }
     public class Variable
     {
-        public bool Enabled { get; set; }
+        public bool Disabled { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public ModbusFuncType Type {get;set;}
         public ushort StartAddress { get; set; }
+        public string Format { get; set; }
         public int SamplePeriod { get; set; }
         
 

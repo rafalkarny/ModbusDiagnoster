@@ -9,11 +9,10 @@ namespace ModbusDiagnoster.Commands
 {
     public class RelayCommand : ICommand
     {
-        readonly Action<object> _execute;
-        readonly Predicate<object> _canExecute;
+        private Action<object> _execute;
+        private Predicate<object> _canExecute;
 
-        public RelayCommand(Action<object> execute)
-            : this(execute, null)
+        public RelayCommand(Action<object> execute): this(execute, null)
         {
         }
 

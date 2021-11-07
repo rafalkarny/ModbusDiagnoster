@@ -8,16 +8,21 @@ namespace ModbusDiagnoster.Model.Variables
 {
     public class HoldingRegistersVariable:Variable
     {
+
+
         public float Value { get; set; }
+        public float ConvertedValue { get; set; }
         public float LowRange { get; set; }
         public float HighRange { get; set; }
         public string Unit { get; set; }
         public float LowDisplayRange { get; set; }
         public float HighDisplayRange { get; set; }
+        public string ConversionFunction { get; set; }
+        
 
         public HoldingRegistersVariable()
         {
-            Enabled = true;
+            Disabled = false;
             Name = "Nazwa zmiennej";
             Type = ModbusFuncType.HoldingRegisters;
             StartAddress = 0;
@@ -29,6 +34,9 @@ namespace ModbusDiagnoster.Model.Variables
             HighRange = 0;
             HighDisplayRange = 0;
             Value = -1;
+            ConvertedValue = -1;
+            Format = "%8.8f";
+            ConversionFunction = "Var";
 
             
 
