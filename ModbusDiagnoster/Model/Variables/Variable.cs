@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,7 +35,7 @@ namespace ModbusDiagnoster.Model.Variables
         HRIM*/
 
     }
-    public class Variable
+    public class Variable:INotifyPropertyChanged
     {
         public bool Disabled { get; set; }
         public string Name { get; set; }
@@ -43,7 +44,8 @@ namespace ModbusDiagnoster.Model.Variables
         public ushort StartAddress { get; set; }
         public string Format { get; set; }
         public int SamplePeriod { get; set; }
-        
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
 
     }

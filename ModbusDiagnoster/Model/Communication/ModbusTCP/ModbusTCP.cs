@@ -22,6 +22,7 @@ namespace ModbusDiagnoster.Model.Communication.ModbusTCP
             IPAddr = "127.0.0.1";
             Port = 502;
             Type = ModbusType.TCP;
+            SlaveId = 1;
            /* Coils = new ObservableCollection<CoilsVariable>();
             Inputs = new ObservableCollection<DiscreteInputsVariable>();
             HoldingRegisters = new ObservableCollection<HoldingRegistersVariable>();
@@ -36,10 +37,11 @@ namespace ModbusDiagnoster.Model.Communication.ModbusTCP
             IPAddr = ipaddr;
             Port = port;
             Type = type;
-           /* Coils = new ObservableCollection<CoilsVariable>();
-            Inputs = new ObservableCollection<DiscreteInputsVariable>();
-            HoldingRegisters = new ObservableCollection<HoldingRegistersVariable>();
-            InputRegisters = new ObservableCollection<InputRegistersVariable>();*/
+            SlaveId = 1;
+            /* Coils = new ObservableCollection<CoilsVariable>();
+             Inputs = new ObservableCollection<DiscreteInputsVariable>();
+             HoldingRegisters = new ObservableCollection<HoldingRegistersVariable>();
+             InputRegisters = new ObservableCollection<InputRegistersVariable>();*/
 
         }
 

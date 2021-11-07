@@ -29,7 +29,7 @@ namespace ModbusDiagnoster.ViewModels
             get { return this._DevicesList; }
             set
             {
-                MessageBox.Show("Wywołano zmianę");
+                
                 _DevicesList = value;
                 OnPropertyChanged();
                 

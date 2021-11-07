@@ -6,6 +6,7 @@ using ModbusDiagnoster.Model.Variables;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Sockets;
@@ -49,6 +50,7 @@ namespace ModbusDiagnoster.ViewModels
             {
                 _HoldingRegisters = value;
                 OnPropertyChanged();
+                
             }
         }
         private ObservableCollection<InputRegistersVariable> _InputRegisters { get; set; }
@@ -81,6 +83,24 @@ namespace ModbusDiagnoster.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        private string _statusMessage;
+        public string StatusMessage
+        {
+            get
+            {
+                return _statusMessage;
+            }
+            set
+            {
+                _statusMessage = value;
+                OnPropertyChanged(nameof(StatusMessage));
+                OnPropertyChanged(nameof(HasStatusMessage));
+                MessageBox.Show(_statusMessage);
+            }
+        }
+
+        public bool HasStatusMessage => !string.IsNullOrEmpty(StatusMessage);
 
         private bool _ModbusTCPSelected { get; set; }
         public bool ModbusTCPSelected
@@ -116,12 +136,13 @@ namespace ModbusDiagnoster.ViewModels
             _HoldingRegisters = new ObservableCollection<HoldingRegistersVariable>();
             _InputRegisters = new ObservableCollection<InputRegistersVariable>();
 
-            StartPooling = new RelayAsyncCommand(StartModbusPooling);
+            StartPooling = new AsyncRelayCommand(StartModbusPooling, (ex) => StatusMessage = ex.Message);
 
+           // _HoldingRegisters.CollectionChanged += ContentCollectionChanged;
         }
 
 
-        public async Task StartModbusPooling(object obj)
+        public async Task StartModbusPooling()
         {
             try
             {
@@ -129,18 +150,19 @@ namespace ModbusDiagnoster.ViewModels
                 {
                     ModbusIpMaster master = ModbusIpMaster.CreateIp(client);
 
+                    //MessageBox.Show("Próba odczytu: "+ HoldingRegisters[0].StartAddress +" " +master.Transport.Retries );
                     // read five input values
                     ushort startAddress = HoldingRegisters[0].StartAddress;
                     ushort numInputs = 1;
-                    var result =await  Task.Run( ()=> master.ReadHoldingRegisters(startAddress, numInputs));
+                    var result =await  master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId,startAddress, numInputs);
 
-                    MessageBox.Show(result.ToString());
+                    //MessageBox.Show(result.ToString());
 
-                    /*for (int i = 0; i < numInputs; i++)
+                    for (int i = 0; i < numInputs; i++)
                     {
-                        Console.WriteLine(inputs[i]);
-                        HoldingRegisters[0].Value = (float)inputs[i];
-                    }*/
+                        Console.WriteLine(result[i]);
+                        HoldingRegisters[0].Value = (float)result[i];
+                    }
                 }
             }
             catch(Exception exc)
@@ -154,5 +176,55 @@ namespace ModbusDiagnoster.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             //MessageBox.Show("Wywołano zmianę" + propertyName);
         }
+
+  /*      public void ContentCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (INotifyPropertyChanged item in e.OldItems)
+                {
+                    item.PropertyChanged -= EntityViewModelPropertyChanged;
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (INotifyPropertyChanged item in e.NewItems)
+                {
+                  item.PropertyChanged += EntityViewModelPropertyChanged;
+                }
+            }
+        }
+
+        public void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            
+            OnPropertyChanged();
+            //This will get called when the property of an object inside the collection changes
+        }*/
+
+        /* private void _innerStuff_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+         {
+             if (e.NewItems != null)
+             {
+                 foreach (Object item in e.NewItems)
+                 {
+                     ((INotifyPropertyChanged)item).PropertyChanged += ItemPropertyChanged;
+                 }
+             }
+             if (e.OldItems != null)
+             {
+                 foreach (Object item in e.OldItems)
+                 {
+                     ((INotifyPropertyChanged)item).PropertyChanged -= ItemPropertyChanged;
+                 }
+             }
+         }
+
+         private void ItemPropertyChanged(object sender, PropertyChangedEventArgs e)
+         {
+             OnPropertyChanged();
+             //This will get called when the property of an object inside the collection changes
+         }*/
+
     }
 }

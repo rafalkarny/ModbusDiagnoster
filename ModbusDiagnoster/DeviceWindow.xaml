@@ -60,6 +60,10 @@
                                 <Label Content="Port:" ></Label>
                                 <TextBox x:Name="portTxtBox"
                                          Text="{Binding DeviceTCP.Port}" Margin="2"></TextBox>
+                                <Label Content="Slave ID:"></Label>
+                                <TextBox x:Name="slaveIdTxtBox" Text="{Binding DeviceTCP.SlaveId}"
+                                         
+                                         ></TextBox>
                             </StackPanel>
                     </GroupBox>
                         <RadioButton x:Name="rtuRadBtn" Content="Modbus RTU"
@@ -143,7 +147,7 @@
                      Background="{DynamicResource MaterialDesignPaper}"
                      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
                      >
-                    <DataGrid x:Name="HRdataGrd" ItemsSource="{Binding HoldingRegisters}" AutoGenerateColumns="False">
+                    <DataGrid x:Name="HRdataGrd" ItemsSource="{Binding HoldingRegisters,Mode=TwoWay}" AutoGenerateColumns="False">
                         <DataGrid.Columns>
                             <DataGridCheckBoxColumn Header="Wyłączona" 
                                                 Binding="{Binding Disabled}" 
@@ -161,7 +165,7 @@
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
                             <DataGridTextColumn Header="Wartość" 
-                                                Binding="{Binding Value}" 
+                                                Binding="{Binding Value,Mode=TwoWay}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>

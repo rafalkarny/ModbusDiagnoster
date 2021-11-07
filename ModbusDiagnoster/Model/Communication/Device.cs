@@ -22,7 +22,7 @@ namespace ModbusDiagnoster.Model.Communication
         public string Name { get; set; }
         public int Id { get; set; }
         public ModbusType Type { get; set; }
-       
+       public byte SlaveId { get; set; }
 
        
     }
