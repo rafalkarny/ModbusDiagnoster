@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ModbusDiagnoster.Model.Converters;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -12,14 +13,110 @@ namespace ModbusDiagnoster.Model.Variables
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public bool Disabled { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public ModbusFuncType Type { get; set; }
-        public ushort StartAddress { get; set; }
-        public string Format { get; set; }
-        public int SamplePeriod { get; set; }
-
+        private bool _Disabled { get; set; }
+        public bool Disabled
+        {
+            get
+            {
+                return _Disabled;
+            }
+            set
+            {
+                _Disabled = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _Name { get; set; }
+        public string Name
+        {
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                _Name = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _Description { get; set; }
+        public string Description
+        {
+            get
+            {
+                return _Description;
+            }
+            set
+            {
+                _Description = value;
+                OnPropertyChanged();
+            }
+        }
+        private ModbusFuncType _Type { get; set; }
+        public ModbusFuncType Type
+        {
+            get
+            {
+                return _Type;
+            }
+            set
+            {
+                _Type = value;
+                OnPropertyChanged();
+            }
+        }
+        private ushort _StartAddress { get; set; }
+        public ushort StartAddress
+        {
+            get
+            {
+                return _StartAddress;
+            }
+            set
+            {
+                _StartAddress = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _VariableTypeFormat { get; set; }
+        public string VariableTypeFormat
+        {
+            get
+            {
+                return _VariableTypeFormat;
+            }
+            set
+            {
+                _VariableTypeFormat = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _Format { get; set; }
+        public string Format
+        {
+            get
+            {
+                return _Format;
+            }
+            set
+            {
+                _Format = value;
+                OnPropertyChanged();
+            }
+        }
+        private int _SamplePeriod { get; set; }
+        public int SamplePeriod
+        {
+            get
+            {
+                return _SamplePeriod;
+            }
+            set
+            {
+                _SamplePeriod = value;
+                OnPropertyChanged();
+            }
+        }
         private float _Value { get; set;}
         public float Value 
         { 
@@ -32,14 +129,97 @@ namespace ModbusDiagnoster.Model.Variables
             }
         }
 
-        public float ConvertedValue { get; set; }
-        public float LowRange { get; set; }
-        public float HighRange { get; set; }
-        public string Unit { get; set; }
-        public float LowDisplayRange { get; set; }
-        public float HighDisplayRange { get; set; }
-        public string ConversionFunction { get; set; }
-       
+        private float _ConvertedValue { get; set; }
+        public float ConvertedValue
+        {
+            get
+            {
+                return _ConvertedValue;
+            }
+            set
+            {
+                _ConvertedValue = value;
+                OnPropertyChanged();
+            }
+        }
+        private float _LowRange { get; set; }
+        public float LowRange
+        {
+            get
+            {
+                return _LowRange;
+            }
+            set
+            {
+                _LowRange = value;
+                OnPropertyChanged();
+            }
+        }
+        private float _HighRange { get; set; }
+        public float HighRange
+        {
+            get
+            {
+                return _HighRange;
+            }
+            set
+            {
+                _HighRange = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _Unit { get; set; }
+        public string Unit
+        {
+            get
+            {
+                return _Unit;
+            }
+            set
+            {
+                _Unit = value;
+                OnPropertyChanged();
+            }
+        }
+        private float _LowDisplayRange { get; set; }
+        public float LowDisplayRange
+        {
+            get
+            {
+                return _LowDisplayRange;
+            }
+            set
+            {
+                _LowDisplayRange = value;
+                OnPropertyChanged();
+            }
+        }
+        private float _HighDisplayRange { get; set; }
+        public float HighDisplayRange
+        {
+            get
+            {
+                return _HighDisplayRange;
+            }
+            set
+            {
+                _HighDisplayRange = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _ConversionFunction { get; set; }
+        public string ConversionFunction
+        {
+            get
+            {
+                return _ConversionFunction;
+            }
+            set
+            {
+                _ConversionFunction = value;
+                OnPropertyChanged();
+            }
+        }
 
         public HoldingRegistersVariable()
         {
@@ -47,6 +227,7 @@ namespace ModbusDiagnoster.Model.Variables
             Name = "Nazwa zmiennej";
             Type = ModbusFuncType.HoldingRegisters;
             StartAddress = 0;
+            VariableTypeFormat = "Decimal";
             Description = "Opis zmiennej";
             Unit = "Jednostka";
             SamplePeriod = 1;

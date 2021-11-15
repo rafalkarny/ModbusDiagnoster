@@ -164,6 +164,12 @@
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
+                            <materialDesign:DataGridComboBoxColumn Header="Typ wartości" 
+                                                SelectedValueBinding="{Binding VariableTypeFormat}" 
+                                              IsEditable="False"
+                                            ItemsSourceBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.VarTypes}"
+                                             >
+                            </materialDesign:DataGridComboBoxColumn>
                             <DataGridTextColumn Header="Wartość" 
                                                 Binding="{Binding Value,Mode=TwoWay}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"

@@ -124,7 +124,12 @@ namespace ModbusDiagnoster.ViewModels
                 //MessageBox.Show("Wybrano modbusa RTU");
             }
         }
-
+        public IEnumerable<string> VarTypes => new[] { "Decimal",
+        "Integer",
+        "Hexadecimal",
+        "Binary",
+        "BigEndianFloat",
+        "LittleEndianFloat" };
 
 
         public DeviceViewModel(string name="Nazwa urządzenia", int id=0)
@@ -144,6 +149,9 @@ namespace ModbusDiagnoster.ViewModels
 
         public async Task StartModbusPooling()
         {
+
+            MessageBox.Show(HoldingRegisters[0].VariableTypeFormat.ToString());
+
             try
             {
                 using (TcpClient client = new TcpClient(DeviceTCP.IPAddr, DeviceTCP.Port))

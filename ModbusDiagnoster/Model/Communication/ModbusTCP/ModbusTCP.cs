@@ -15,11 +15,11 @@ namespace ModbusDiagnoster.Model.Communication.ModbusTCP
         public string IPAddr { get; set; }
         public int Port { get; set; }
 
-        public ModbusTCP()
+        public ModbusTCP() ////
         {
             Id = 1;
             Name = "Nazwa urządzenia";
-            IPAddr = "127.0.0.1";
+            IPAddr = "10.1.1.197";
             Port = 502;
             Type = ModbusType.TCP;
             SlaveId = 1;
@@ -30,7 +30,7 @@ namespace ModbusDiagnoster.Model.Communication.ModbusTCP
 
         }
 
-        public ModbusTCP(int id=1,string name= "Nazwa urządzenia",string ipaddr= "127.0.0.1",int port=502,ModbusType type=ModbusType.TCP)
+        public ModbusTCP(int id=1,string name= "Nazwa urządzenia",string ipaddr= "10.1.1.197",int port=502,ModbusType type=ModbusType.TCP)
         {
             Id = id;
             Name = name;
