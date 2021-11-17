@@ -86,6 +86,8 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"></RowDefinition>
                 <RowDefinition></RowDefinition>
+                <RowDefinition Height="5"></RowDefinition>
+                <RowDefinition Height="140"></RowDefinition>
             </Grid.RowDefinitions>
 
             <!--MENU-->
@@ -122,6 +124,25 @@
                             Width="20" 
                             />
             </Button>
+                <Button
+            x:Name="stopBtn"
+            Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
+            Width="30"
+            Height="30"
+            Grid.Row="0"            
+            Command="{Binding StopPooling}"
+            HorizontalAlignment="Left" VerticalAlignment="Bottom"
+            Margin="5"
+            >
+                    <materialDesign:PackIcon
+                            Kind="Stop"
+                            Height="20"
+                            Width="20" 
+                            />
+                </Button>
+                <TextBox x:Name="timestampTxtBox" 
+                         Margin="10,10,10,5"
+                         Text="{Binding timer.Interval}"></TextBox>
             </StackPanel>
             
             <!-- COILS-->
@@ -185,12 +206,12 @@
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                            <DataGridTextColumn Header="Format wyświetlania" 
+            <!--                <DataGridTextColumn Header="Format wyświetlania" 
                                                 Binding="{Binding Format}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-
+-->
                             <DataGridTextColumn Header="Jednostka" 
                                                 Binding="{Binding Unit}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
@@ -201,11 +222,11 @@
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                            <DataGridTextColumn Header="Okres próbkowania [ms]" 
+                        <!--    <DataGridTextColumn Header="Okres próbkowania [ms]" 
                                                 Binding="{Binding SamplePeriod}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                                ></DataGridTextColumn>
+                                                ></DataGridTextColumn> -->
                             <DataGridTextColumn Header="Zakres od" 
                                                 Binding="{Binding LowRange}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
@@ -242,8 +263,50 @@
 
             </TabControl>
 
+          
+            
+            <Grid Grid.Row="3">
+                <TabControl>
+                    <TabItem Header="Log">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <Button
+                            x:Name="clearBtn"
+                                Content="Wyczyść"
+                                FontSize="10"
+                                Margin="1"
+                                Command="{Binding ClearLogs}"
+                                >
+                            </Button>
+                            </StackPanel>
+                            <ListBox x:Name="logLstBox" 
+                                    Grid.Row="1"
+                                     ItemsSource="{Binding ExceptionMessages}"></ListBox>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Sniffer">
+                        <Grid>
+                            
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </Grid>
 
-        
+            <GridSplitter  Grid.Row="2"
+                      x:Name="grdSplitter2"
+                           Margin="0"
+                      HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              Background="Black" 
+              ShowsPreview="True"
+              Width="10"
+              
+              />
+
         </Grid>
     </Grid>
 

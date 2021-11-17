@@ -91,7 +91,7 @@ namespace ModbusDiagnoster.Model.Variables
                 OnPropertyChanged();
             }
         }
-        private string _Format { get; set; }
+/*        private string _Format { get; set; }
         public string Format
         {
             get
@@ -103,9 +103,11 @@ namespace ModbusDiagnoster.Model.Variables
                 _Format = value;
                 OnPropertyChanged();
             }
-        }
-        private int _SamplePeriod { get; set; }
-        public int SamplePeriod
+        }*/
+  
+        
+        //   private int _SamplePeriod { get; set; }
+    /*    public int SamplePeriod
         {
             get
             {
@@ -116,9 +118,9 @@ namespace ModbusDiagnoster.Model.Variables
                 _SamplePeriod = value;
                 OnPropertyChanged();
             }
-        }
-        private float _Value { get; set;}
-        public float Value 
+        }*/
+        private string _Value { get; set;}
+        public string Value 
         { 
             get { 
                 return _Value; 
@@ -129,8 +131,8 @@ namespace ModbusDiagnoster.Model.Variables
             }
         }
 
-        private float _ConvertedValue { get; set; }
-        public float ConvertedValue
+        private string _ConvertedValue { get; set; }
+        public string ConvertedValue
         {
             get
             {
@@ -230,14 +232,14 @@ namespace ModbusDiagnoster.Model.Variables
             VariableTypeFormat = "Decimal";
             Description = "Opis zmiennej";
             Unit = "Jednostka";
-            SamplePeriod = 1;
+           // SamplePeriod = 1;
             LowRange = 0;
             LowDisplayRange = 0;
             HighRange = 0;
             HighDisplayRange = 0;
-            Value = -1;
-            ConvertedValue = -1;
-            Format = "%8.8f";
+            Value = "-";
+            ConvertedValue = "-";
+            //Format = "%8.8f";
             ConversionFunction = "Var";
 
 
