@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ModbusDiagnoster" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:viewmodels="clr-namespace:ModbusDiagnoster.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:DeviceViewModel}"
         mc:Ignorable="d"
-        Title="Urządzenie" Height="450" Width="800"
+        Title="Urządzenie" Height="600" Width="800"
         x:Name="deviceWindow" WindowStartupLocation="CenterScreen"
         >
     <Window.Resources>
@@ -87,7 +87,7 @@
                 <RowDefinition Height="40"></RowDefinition>
                 <RowDefinition></RowDefinition>
                 <RowDefinition Height="5"></RowDefinition>
-                <RowDefinition Height="140"></RowDefinition>
+                <RowDefinition Height="200"></RowDefinition>
             </Grid.RowDefinitions>
 
             <!--MENU-->
@@ -185,6 +185,7 @@
                                                 Binding="{Binding StartAddress}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                FontWeight="Bold"
                                                 ></DataGridTextColumn>
                             <materialDesign:DataGridComboBoxColumn Header="Typ wartości" 
                                                 SelectedValueBinding="{Binding VariableTypeFormat}" 
@@ -196,16 +197,18 @@
                                                 Binding="{Binding Value,Mode=TwoWay}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                FontWeight="Bold"
                                                 ></DataGridTextColumn>
                             <DataGridTextColumn Header="Funkcja przeliczająca" 
                                                 Binding="{Binding ConversionFunction}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                            <DataGridTextColumn Header="Wartość formatowana" 
+                            <DataGridTextColumn Header="Wartość wyliczona" 
                                                 Binding="{Binding ConvertedValue}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                FontWeight="Bold"
                                                 ></DataGridTextColumn>
             <!--                <DataGridTextColumn Header="Format wyświetlania" 
                                                 Binding="{Binding Format}" 
@@ -291,8 +294,74 @@
                     </TabItem>
                     <TabItem Header="Sniffer">
                         <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50"></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
                             
-                        </Grid>
+                            <StackPanel Height="50" Orientation="Horizontal" Grid.Row="0">
+                                <Button x:Name="startCapBtn" Content="Start" Margin="5" Command="{Binding StartNetCap}"></Button>
+                                <Button x:Name="stopCapBtn" Content="Stop" Margin="5" Command="{Binding StopNetCap}"></Button>
+                                <ComboBox x:Name="interfacesCmbBox" IsEditable="False" 
+                                          ItemsSource="{Binding Interfaces}" 
+                                          SelectedItem="{Binding SelectedInterface}"
+                                          
+                                          > </ComboBox>
+                                <Button x:Name="clearCapBtn" Content="Clear" Margin="5" Command="{Binding ClearPackets}"></Button>
+                            </StackPanel>
+                            
+                         <!--       <ListBox x:Name="packetsLstBox" 
+                                         ItemsSource="{Binding Packets}"
+                                         ></ListBox>
+                            -->
+                                <Grid Grid.Row="1">
+                                <DataGrid ItemsSource="{Binding Packets}" AutoGenerateColumns="False">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Timestamp" 
+                                                Binding="{Binding Time}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                            <DataGridTextColumn Header="Source IP" 
+                                                Binding="{Binding SourceIP}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                            <DataGridTextColumn Header="Destination IP" 
+                                                Binding="{Binding DestinationIP}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                            <DataGridTextColumn Header="TCP Destination Port" 
+                                                Binding="{Binding TCPpacket.DestinationPort}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                            <DataGridTextColumn Header="TCP Source Port" 
+                                                Binding="{Binding TCPpacket.SourcePort}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Data Text" 
+                                                Binding="{Binding Payload}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Data" 
+                                                Binding="{Binding TCPpacket.PayloadData}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Data" 
+                                                Binding="{Binding TCPpacket.Bytes}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                                </Grid>
+                        
                     </TabItem>
                 </TabControl>
             </Grid>

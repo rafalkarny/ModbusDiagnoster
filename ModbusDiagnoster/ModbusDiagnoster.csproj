@@ -99,6 +99,7 @@
       <DependentUpon>DeviceWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Converters\VariableType.cs" />
+    <Compile Include="Model\Sniffers\MyPacket.cs" />
     <Compile Include="Model\Variables\CalcFunctions.cs" />
     <Compile Include="Model\Communication\Device.cs" />
     <Compile Include="Model\Communication\ModbusRTU\ModbusRTU.cs" />

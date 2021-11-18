@@ -3,7 +3,10 @@ using ModbusDiagnoster.Commands;
 using ModbusDiagnoster.Model.Communication.ModbusRTU;
 using ModbusDiagnoster.Model.Communication.ModbusTCP;
 using ModbusDiagnoster.Model.Converters;
+using ModbusDiagnoster.Model.Sniffers;
 using ModbusDiagnoster.Model.Variables;
+using PacketDotNet;
+using SharpPcap;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,6 +31,10 @@ namespace ModbusDiagnoster.ViewModels
         public ICommand StartPooling { get; set; }
         public ICommand StopPooling { get; set; }
         public ICommand ClearLogs { get; set; }
+        public ICommand StartNetCap { get; set; }
+        public ICommand StopNetCap { get; set; }
+        public ICommand ClearPackets { get; set; }
+
         private ObservableCollection<CoilsVariable> _Coils { get; set; }
         public ObservableCollection<CoilsVariable> Coils
         {
@@ -76,6 +83,26 @@ namespace ModbusDiagnoster.ViewModels
             set
             {
                 _ExceptionMessages = value;
+                OnPropertyChanged();
+            }
+        }
+        private ObservableCollection<ICaptureDevice> _Interfaces { get; set; }
+        public ObservableCollection<ICaptureDevice> Interfaces
+        {
+            get { return this._Interfaces; }
+            set
+            {
+                _Interfaces = value;
+                OnPropertyChanged();
+            }
+        }
+        private ObservableCollection<MyPacket> _Packets { get; set; }
+        public ObservableCollection<MyPacket> Packets
+        {
+            get { return this._Packets; }
+            set
+            {
+                _Packets = value;
                 OnPropertyChanged();
             }
         }
@@ -151,6 +178,17 @@ namespace ModbusDiagnoster.ViewModels
                 //MessageBox.Show("Wybrano modbusa RTU");
             }
         }
+        private ICaptureDevice _SelectedInterface { get; set; }
+        public ICaptureDevice SelectedInterface
+        {
+            get { return this._SelectedInterface; }
+            set
+            {
+                _SelectedInterface = value;
+                OnPropertyChanged();
+                //MessageBox.Show("Wybrano modbusa RTU");
+            }
+        }
         public IEnumerable<string> VarTypes => new[] { 
         "Decimal",
         "Integer",
@@ -162,6 +200,8 @@ namespace ModbusDiagnoster.ViewModels
 
         public Timer timer { get; set; }
 
+
+
         public DeviceViewModel(string name="Nazwa urządzenia", int id=0)
         {
             DeviceRTU = new ModbusRTU();
@@ -171,12 +211,18 @@ namespace ModbusDiagnoster.ViewModels
             _HoldingRegisters = new ObservableCollection<HoldingRegistersVariable>();
             _InputRegisters = new ObservableCollection<InputRegistersVariable>();
             _ExceptionMessages = new ObservableCollection<string>();
+            _Interfaces = new ObservableCollection<ICaptureDevice>();
+            _Packets = new ObservableCollection<MyPacket>();
 
             ModbusTCPSelected = true;
+            LoadDevices();
 
             StartPooling = new AsyncRelayCommand(StartModbusPooling, (ex) => StatusMessage = ex.Message);
             StopPooling = new RelayCommand(StopPoolingMethod);
             ClearLogs = new RelayCommand(ClearLogsMethod);
+            StartNetCap = new RelayCommand(OnStartNetCapture);
+            StopNetCap = new RelayCommand(OnStopNetCapture);
+            ClearPackets = new RelayCommand(OnClearPackets);
 
             timer = new Timer();
             timer.Elapsed += new ElapsedEventHandler(GetVariableValues);
@@ -380,7 +426,7 @@ namespace ModbusDiagnoster.ViewModels
                 //MessageBox.Show(exc.Message);
                 DispatchService.Invoke(() =>
                 {
-                    ExceptionMessages.Add(DateTime.Now.ToString()+": " + exc.Message);
+                    ExceptionMessages.Insert(0,DateTime.Now.ToString()+": " + exc.Message);
                 });
                 
 
@@ -408,11 +454,112 @@ namespace ModbusDiagnoster.ViewModels
             return v.ToString();
         }
 
+        private void LoadDevices()
+        {
+            CaptureDeviceList devices = CaptureDeviceList.Instance;
+
+            foreach (ICaptureDevice dev in devices)
+            {
+                Interfaces.Add(dev);
+            }
+
+        }
+
+        private void Device_OnPacketArrival(object s, PacketCapture e)
+        {
+            var time = e.Header.Timeval.Date;
+            var len = e.Data.Length;
+
+            RawCapture rawPacket = e.GetPacket();
+            
+            var packet = PacketDotNet.Packet.ParsePacket(rawPacket.LinkLayerType, rawPacket.Data);
+
+            //var arpPacket=packet.Extract<PacketDotNet.ArpPacket>();
+
+            var tcpPacket = packet.Extract<PacketDotNet.TcpPacket>();
+
+            if(tcpPacket!=null)
+            {
+                var ipPacket = (PacketDotNet.IPPacket)tcpPacket.ParentPacket;
+                System.Net.IPAddress srcIp = ipPacket.SourceAddress;
+                System.Net.IPAddress dstIp = ipPacket.DestinationAddress;
+                // int srcPort = tcpPacket.SourcePort;
+                // int dstPort = tcpPacket.DestinationPort;
+
+                MyPacket newPacket = new MyPacket(time, srcIp, dstIp, tcpPacket);
+
+                DispatchService.Invoke(() =>
+                {
+                    Packets.Insert(0, newPacket);
+                });
+            }
+           
+        }
+
+        private void OnStartNetCapture(object obj)
+        {
+            try
+            {
+                if (SelectedInterface != null)
+                {
+                    SelectedInterface.Open();
+                    SelectedInterface.OnPacketArrival += Device_OnPacketArrival;
+                    SelectedInterface.StartCapture();
+                }
+                else
+                {
+                    DispatchService.Invoke(() =>
+                    {
+                        ExceptionMessages.Add(DateTime.Now.ToString() + ": " + "First, select any capture interface");
+                    });
+                }
+
+            }
+            catch(Exception exc)
+            {
+                DispatchService.Invoke(() =>
+                {
+                    ExceptionMessages.Add(DateTime.Now.ToString() + ": " + exc.Message);
+                });
+            }
+        }
+        private void OnStopNetCapture(object obj)
+        {
+            try
+            {
+                if (SelectedInterface != null)
+                {
+                    if (SelectedInterface.Started)
+                    {
+                        SelectedInterface.StopCapture();
+                        SelectedInterface.Close();
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                DispatchService.Invoke(() =>
+                {
+                    ExceptionMessages.Add(DateTime.Now.ToString() + ": " + exc.Message);
+                });
+            }
+        }
+
+        private void OnClearPackets(object obj)
+        {
+            if (_Packets != null)
+            {
+                Packets.Clear();
+            }
+        }
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             //MessageBox.Show("Wywołano zmianę" + propertyName);
         }
+
+
+
 
   /*      public void ContentCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
