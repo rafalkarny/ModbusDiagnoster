@@ -140,6 +140,7 @@
                             Width="20" 
                             />
                 </Button>
+                <Label Margin="10,10,10,5" Content="Okres próbkowania:"></Label>
                 <TextBox x:Name="timestampTxtBox" 
                          Margin="10,10,10,5"
                          Text="{Binding timer.Interval}"></TextBox>

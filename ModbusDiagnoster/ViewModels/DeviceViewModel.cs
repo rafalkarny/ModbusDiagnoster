@@ -182,6 +182,7 @@ namespace ModbusDiagnoster.ViewModels
             timer.Elapsed += new ElapsedEventHandler(GetVariableValues);
             timer.Interval = 1000;
             timer.Enabled = true;
+            timer.Stop();
 
            // _HoldingRegisters.CollectionChanged += ContentCollectionChanged;
         }
