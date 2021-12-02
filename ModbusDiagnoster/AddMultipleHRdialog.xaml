@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="ModbusDiagnoster.AddMultipleHRdialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ModbusDiagnoster" xmlns:viewmodels="clr-namespace:ModbusDiagnoster.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="500" d:DesignWidth="400"
+             d:DataContext="{d:DesignInstance Type=viewmodels:AddMultipleHRDialogViewModel}"
+             >
+ 
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+            <Label Content="Number of new Variables:" Grid.Row="1" Grid.Column="0"></Label>
+            <TextBox x:Name="nameTxt" Grid.Row="1" Grid.Column="1" Text="{Binding Count}"></TextBox>
+            <Label Content="Prefix:" Grid.Row="2" Grid.Column="0"></Label>
+            <TextBox x:Name="prefixTxt" Grid.Row="2" Grid.Column="1" Text="{Binding Prefix}"></TextBox>
+            <Label Content="Suffix:" Grid.Row="3" Grid.Column="0"></Label>
+            <TextBox x:Name="suffixTxt" Grid.Row="3" Grid.Column="1" Text="{Binding Suffix}"></TextBox>
+            <Label Content="Start Number:" Grid.Row="4" Grid.Column="0"></Label>
+            <TextBox x:Name="startNumTxt" Grid.Row="4" Grid.Column="1" Text="{Binding StartNumber}"></TextBox>
+            <Label Content="Step:" Grid.Row="5" Grid.Column="0"></Label>
+            <TextBox x:Name="stepTxt" Grid.Row="5" Grid.Column="1" Text="{Binding Step}"></TextBox>
+
+        <Label Content="Variable Type:" 
+                   Margin="10"
+                   Grid.Row="6" Grid.Column="0" HorizontalAlignment="Center"></Label>
+        <ComboBox Name="regTypeCmbx" Grid.Row="6" Grid.Column="1"
+                      ItemsSource="{Binding VarTypes}" 
+                      Margin="10"
+                      SelectedItem="{Binding VarType}"></ComboBox>
+        <Label Content="Start Register Address:" Grid.Row="7" Grid.Column="0"></Label>
+        <TextBox x:Name="startRegAddrTxt" Grid.Row="7" Grid.Column="1" Text="{Binding StartRegNumber}"></TextBox>
+
+    </Grid>
+
+  
+</UserControl>

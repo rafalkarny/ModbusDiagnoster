@@ -3,7 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ModbusDiagnoster" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:viewmodels="clr-namespace:ModbusDiagnoster.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:DeviceViewModel}"
+        xmlns:local="clr-namespace:ModbusDiagnoster" 
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
+        xmlns:viewmodels="clr-namespace:ModbusDiagnoster.ViewModels" 
+        d:DataContext="{d:DesignInstance Type=viewmodels:DeviceViewModel}"
         mc:Ignorable="d"
         Title="Urządzenie" Height="600" Width="800"
         x:Name="deviceWindow" WindowStartupLocation="CenterScreen"
@@ -169,7 +172,24 @@
                      Background="{DynamicResource MaterialDesignPaper}"
                      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
                      >
-                    <DataGrid x:Name="HRdataGrd" ItemsSource="{Binding HoldingRegisters,Mode=TwoWay}" AutoGenerateColumns="False">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <Button x:Name="addReg" Content="Add Variable" Margin="5" Command="{Binding AddHoldingVar}"></Button>
+                            <Button x:Name="addMultipleReg" Content="Add Multiple Variables" Margin="5" Command="{Binding AddMultipleHoldingVar}"></Button>
+                            <Button Visibility="Hidden" x:Name="deleteMultipleReg" Content="Remove selected" Margin="5" Command="{Binding DeleteMultipleHoldingVar}"></Button>
+                        </StackPanel>
+                    <DataGrid x:Name="HRdataGrd"
+                              Grid.Row="1"
+                              ItemsSource="{Binding HoldingRegisters,Mode=TwoWay}"
+                              
+                               SelectionMode="Extended"
+                              CanUserAddRows="False" 
+                              CanUserReorderColumns="True" 
+                              AutoGenerateColumns="False">
                         <DataGrid.Columns>
                             <DataGridCheckBoxColumn Header="Wyłączona" 
                                                 Binding="{Binding Disabled}" 
@@ -255,6 +275,7 @@
                         
                         
                     </DataGrid>
+                    </Grid>
                 </TabItem>
                 
                 <!-- INPUT REGISTERS -->

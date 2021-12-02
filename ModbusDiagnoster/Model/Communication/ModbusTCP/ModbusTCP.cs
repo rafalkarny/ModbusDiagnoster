@@ -3,8 +3,11 @@ using ModbusDiagnoster.Model.Variables;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,8 +15,46 @@ namespace ModbusDiagnoster.Model.Communication.ModbusTCP
 {
     public class ModbusTCP:Device
     {
-        public string IPAddr { get; set; }
-        public int Port { get; set; }
+        
+        private string _IPAddr { get; set; }
+        public string IPAddr
+        {
+            get
+            {
+                return _IPAddr;
+            }
+            set
+            {
+                _IPAddr = value;
+                OnPropertyChanged();
+            }
+        }
+        private int _Port { get; set; }
+        public int Port
+        {
+            get
+            {
+                return _Port;
+            }
+            set
+            {
+                _Port = value;
+                OnPropertyChanged();
+            }
+        }
+        private TcpClient _TCPclient { get; set; }
+        public TcpClient TCPclient
+        {
+            get
+            {
+                return _TCPclient;
+            }
+            set
+            {
+                _TCPclient = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ModbusTCP() ////
         {
@@ -23,6 +64,7 @@ namespace ModbusDiagnoster.Model.Communication.ModbusTCP
             Port = 502;
             Type = ModbusType.TCP;
             SlaveId = 1;
+            TCPclient = new TcpClient(IPAddr, Port);
            /* Coils = new ObservableCollection<CoilsVariable>();
             Inputs = new ObservableCollection<DiscreteInputsVariable>();
             HoldingRegisters = new ObservableCollection<HoldingRegistersVariable>();
@@ -38,6 +80,7 @@ namespace ModbusDiagnoster.Model.Communication.ModbusTCP
             Port = port;
             Type = type;
             SlaveId = 1;
+            TCPclient = new TcpClient(IPAddr, Port);
             /* Coils = new ObservableCollection<CoilsVariable>();
              Inputs = new ObservableCollection<DiscreteInputsVariable>();
              HoldingRegisters = new ObservableCollection<HoldingRegistersVariable>();
@@ -45,20 +88,21 @@ namespace ModbusDiagnoster.Model.Communication.ModbusTCP
 
         }
 
-       /* public ModbusTCP(int id, string name, string ipaddr, int port, ModbusType type
-            , ObservableCollection<CoilsVariable> coils, ObservableCollection<DiscreteInputsVariable> inputs, ObservableCollection<HoldingRegistersVariable> holdingRegisters,
-            ObservableCollection<InputRegistersVariable> inputRegisters)
-        {
-            Id = id;
-            Name = name;
-            IPAddr = ipaddr;
-            Port = port;
-            Type = type;
-            Coils = coils;
-            Inputs = inputs;
-            HoldingRegisters = holdingRegisters;
-            InputRegisters = inputRegisters;
+   
+        /* public ModbusTCP(int id, string name, string ipaddr, int port, ModbusType type
+             , ObservableCollection<CoilsVariable> coils, ObservableCollection<DiscreteInputsVariable> inputs, ObservableCollection<HoldingRegistersVariable> holdingRegisters,
+             ObservableCollection<InputRegistersVariable> inputRegisters)
+         {
+             Id = id;
+             Name = name;
+             IPAddr = ipaddr;
+             Port = port;
+             Type = type;
+             Coils = coils;
+             Inputs = inputs;
+             HoldingRegisters = holdingRegisters;
+             InputRegisters = inputRegisters;
 
-        }*/
+         }*/
     }
 }

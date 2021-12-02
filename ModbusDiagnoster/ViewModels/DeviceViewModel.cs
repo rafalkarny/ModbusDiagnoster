@@ -14,6 +14,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -22,6 +23,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using MaterialDesignThemes.Wpf;
 
 namespace ModbusDiagnoster.ViewModels
 {
@@ -31,9 +33,19 @@ namespace ModbusDiagnoster.ViewModels
         public ICommand StartPooling { get; set; }
         public ICommand StopPooling { get; set; }
         public ICommand ClearLogs { get; set; }
+        public ICommand AddCoilVar { get; set; }
+        public ICommand AddDiscreteVar { get; set; }
+        public ICommand AddHoldingVar { get; set; }
+        public ICommand AddInputVar { get; set; }
+        public ICommand AddMultipleCoilVar { get; set; }
+        public ICommand AddMultipleDiscreteVar { get; set; }
+        public ICommand AddMultipleHoldingVar { get; set; }
+        public ICommand AddMultipleInputVar { get; set; }
+        public ICommand DeleteMultipleHoldingVar { get; set; }
         public ICommand StartNetCap { get; set; }
         public ICommand StopNetCap { get; set; }
         public ICommand ClearPackets { get; set; }
+        
 
         private ObservableCollection<CoilsVariable> _Coils { get; set; }
         public ObservableCollection<CoilsVariable> Coils
@@ -63,7 +75,7 @@ namespace ModbusDiagnoster.ViewModels
             {
                 _HoldingRegisters = value;
                 OnPropertyChanged();
-                
+
             }
         }
         private ObservableCollection<InputRegistersVariable> _InputRegisters { get; set; }
@@ -112,7 +124,38 @@ namespace ModbusDiagnoster.ViewModels
             get { return this._DeviceTCP; }
             set
             {
-                _DeviceTCP = value;
+                // _DeviceTCP = value;
+                try
+                {
+                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Wrong data in TCP Client parameters " +
+                                value.IPAddr + " " + value.Port.ToString() + " " + value.SlaveId.ToString());
+
+                    if (_DeviceTCP.TCPclient != null)
+                    {
+                        byte[] sampleaddr = { 127, 0, 0, 1 };
+                        IPAddress addr = new IPAddress(sampleaddr);
+                        if (IPAddress.TryParse(value.IPAddr, out addr) && value.Port > 0 && value.Port < 65535 && value.SlaveId > 0 && value.SlaveId < 65535)
+                        {
+                            _DeviceTCP = value;
+                           
+                                _DeviceTCP.TCPclient.Close();
+                                _DeviceTCP.TCPclient.Dispose();
+                                _DeviceTCP.TCPclient = new TcpClient(_DeviceTCP.IPAddr, _DeviceTCP.Port);
+
+                            ExceptionMessages.Insert(0, DateTime.Now.ToString()+" Changed TCP Client parameters ");
+                        }
+                        else
+                        {
+                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Wrong data in TCP Client parameters " + 
+                                value.IPAddr+" " + value.Port.ToString() + " "+value.SlaveId.ToString());
+
+                        }
+                    }
+                }
+                catch(Exception exc)
+                {
+                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + exc.Message);
+                }
                 OnPropertyChanged();
             }
         }
@@ -126,6 +169,48 @@ namespace ModbusDiagnoster.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        private ObservableCollection<CoilsVariable> _SelectedCoils { get; set; }
+        public ObservableCollection<CoilsVariable> SelectedCoils
+        {
+            get { return this._SelectedCoils; }
+            set
+            {
+                _SelectedCoils = value;
+                OnPropertyChanged();
+            }
+        }
+        private ObservableCollection<DiscreteInputsVariable> _SelectedDiscrets { get; set; }
+        public ObservableCollection<DiscreteInputsVariable> SelectedDiscrets
+        {
+            get { return this._SelectedDiscrets; }
+            set
+            {
+                _SelectedDiscrets = value;
+                OnPropertyChanged();
+            }
+        }
+        private ObservableCollection<HoldingRegistersVariable> _SelectedHR { get; set; }
+        public ObservableCollection<HoldingRegistersVariable> SelectedHR
+        {
+            get { return this._SelectedHR; }
+            set
+            {
+                _SelectedHR = value;
+                OnPropertyChanged();
+            }
+        }
+        private ObservableCollection<InputRegistersVariable> _SelectedIR { get; set; }
+        public ObservableCollection<InputRegistersVariable> SelectedIR
+        {
+            get { return this._SelectedIR; }
+            set
+            {
+                _SelectedIR = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private string _statusMessage;
         public string StatusMessage
@@ -150,7 +235,7 @@ namespace ModbusDiagnoster.ViewModels
             {
                 _SamplePeriod = value;
                 OnPropertyChanged();
-                
+
             }
         }
 
@@ -189,7 +274,7 @@ namespace ModbusDiagnoster.ViewModels
                 //MessageBox.Show("Wybrano modbusa RTU");
             }
         }
-        public IEnumerable<string> VarTypes => new[] { 
+        public IEnumerable<string> VarTypes => new[] {
         "Decimal",
         "Integer",
         "Hexadecimal",
@@ -202,10 +287,10 @@ namespace ModbusDiagnoster.ViewModels
 
 
 
-        public DeviceViewModel(string name="Nazwa urządzenia", int id=0)
+        public DeviceViewModel(string name = "Nazwa urządzenia", int id = 0)
         {
-            DeviceRTU = new ModbusRTU();
-            DeviceTCP = new ModbusTCP();
+            _DeviceRTU = new ModbusRTU();
+            _DeviceTCP = new ModbusTCP();
             _Coils = new ObservableCollection<CoilsVariable>();
             _Inputs = new ObservableCollection<DiscreteInputsVariable>();
             _HoldingRegisters = new ObservableCollection<HoldingRegistersVariable>();
@@ -223,6 +308,9 @@ namespace ModbusDiagnoster.ViewModels
             StartNetCap = new RelayCommand(OnStartNetCapture);
             StopNetCap = new RelayCommand(OnStopNetCapture);
             ClearPackets = new RelayCommand(OnClearPackets);
+            AddHoldingVar = new RelayCommand(OnAddHoldingVar);
+            AddMultipleHoldingVar = new RelayCommand(OnAddMultipleHoldingVars);
+            DeleteMultipleHoldingVar = new RelayCommand(OnDeleteMultipleHoldingVar);
 
             timer = new Timer();
             timer.Elapsed += new ElapsedEventHandler(GetVariableValues);
@@ -230,100 +318,101 @@ namespace ModbusDiagnoster.ViewModels
             timer.Enabled = true;
             timer.Stop();
 
-           // _HoldingRegisters.CollectionChanged += ContentCollectionChanged;
+            // _HoldingRegisters.CollectionChanged += ContentCollectionChanged;
         }
+
 
 
         public async Task StartModbusPooling()
         {
             timer.Start();
-      /*      //MessageBox.Show(HoldingRegisters[0].VariableTypeFormat.ToString());
+            /*      //MessageBox.Show(HoldingRegisters[0].VariableTypeFormat.ToString());
 
-            try
-            {
-                *//* using (TcpClient client = new TcpClient(DeviceTCP.IPAddr, DeviceTCP.Port))
-                 {
-                     ModbusIpMaster master = ModbusIpMaster.CreateIp(client);
+                  try
+                  {
+                      *//* using (TcpClient client = new TcpClient(DeviceTCP.IPAddr, DeviceTCP.Port))
+                       {
+                           ModbusIpMaster master = ModbusIpMaster.CreateIp(client);
 
-                     //MessageBox.Show("Próba odczytu: "+ HoldingRegisters[0].StartAddress +" " +master.Transport.Retries );
-                     // read five input values
-                     ushort startAddress = HoldingRegisters[0].StartAddress;
-                     ushort numInputs = 2;
-                     var result =await  master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId,startAddress, numInputs);
+                           //MessageBox.Show("Próba odczytu: "+ HoldingRegisters[0].StartAddress +" " +master.Transport.Retries );
+                           // read five input values
+                           ushort startAddress = HoldingRegisters[0].StartAddress;
+                           ushort numInputs = 2;
+                           var result =await  master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId,startAddress, numInputs);
 
-                     //MessageBox.Show(result.ToString());
+                           //MessageBox.Show(result.ToString());
 
-                     for (int i = 0; i < numInputs; i+=2)
-                     {
-                         Console.WriteLine(result[i]);
-                         //HoldingRegisters[0].Value = (float)result[i];
-                         Console.WriteLine(result[i + 1]);
-                         string tmp = VariableType.convertToFloatLE(result[i], result[i + 1]);
-                         Console.WriteLine(tmp);
-                         HoldingRegisters[0].Value = tmp;
-                     }
-                 }*//*
-                using (TcpClient client = new TcpClient(DeviceTCP.IPAddr, DeviceTCP.Port))
-                {
-                    ModbusIpMaster master = ModbusIpMaster.CreateIp(client);
+                           for (int i = 0; i < numInputs; i+=2)
+                           {
+                               Console.WriteLine(result[i]);
+                               //HoldingRegisters[0].Value = (float)result[i];
+                               Console.WriteLine(result[i + 1]);
+                               string tmp = VariableType.convertToFloatLE(result[i], result[i + 1]);
+                               Console.WriteLine(tmp);
+                               HoldingRegisters[0].Value = tmp;
+                           }
+                       }*//*
+                      using (TcpClient client = new TcpClient(DeviceTCP.IPAddr, DeviceTCP.Port))
+                      {
+                          ModbusIpMaster master = ModbusIpMaster.CreateIp(client);
 
-                    
 
-                    foreach(HoldingRegistersVariable variable in HoldingRegisters)
-                    {
-                        if(variable.VariableTypeFormat== "BigEndianFloat" || variable.VariableTypeFormat== "LittleEndianFloat")
-                        {
-                            var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, variable.StartAddress, 2);
-                            if (result.Length > 0)
-                            {
-                                if(variable.VariableTypeFormat == "BigEndianFloat")
-                                {
-                                    variable.Value = VariableType.convertToFloatBE(result[0], result[1]);
-                                    variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
-                                }
-                                else
-                                {
-                                    variable.Value = VariableType.convertToFloatLE(result[0], result[1]);
-                                    variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, variable.StartAddress, 1);
-                            if(result.Length>0)
-                            {
-                                switch (variable.VariableTypeFormat)
-                                {
-                                    case "Decimal":
-                                        variable.Value = VariableType.convertToDec(result[0]);
-                                        variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
-                                        break;
-                                    case "Integer":
-                                        variable.Value = VariableType.convertToInt16(result[0]);
-                                        variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
-                                        break;
-                                    case "Hexadecimal":
-                                        variable.Value = VariableType.convertToHex(result[0]);
-                                        break;
-                                    case "Binary":
-                                        variable.Value = VariableType.convertToBin(result[0]);
-                                        break;
-                                    default:
-                                        variable.Value = result[0].ToString();
-                                        break;
-                                }
-                            }
-                        }
-                        
-                    }
-                  
-                }
-            }
-            catch(Exception exc)
-            {
-                MessageBox.Show(exc.Message);
-            }*/
+
+                          foreach(HoldingRegistersVariable variable in HoldingRegisters)
+                          {
+                              if(variable.VariableTypeFormat== "BigEndianFloat" || variable.VariableTypeFormat== "LittleEndianFloat")
+                              {
+                                  var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, variable.StartAddress, 2);
+                                  if (result.Length > 0)
+                                  {
+                                      if(variable.VariableTypeFormat == "BigEndianFloat")
+                                      {
+                                          variable.Value = VariableType.convertToFloatBE(result[0], result[1]);
+                                          variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
+                                      }
+                                      else
+                                      {
+                                          variable.Value = VariableType.convertToFloatLE(result[0], result[1]);
+                                          variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
+                                      }
+                                  }
+                              }
+                              else
+                              {
+                                  var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, variable.StartAddress, 1);
+                                  if(result.Length>0)
+                                  {
+                                      switch (variable.VariableTypeFormat)
+                                      {
+                                          case "Decimal":
+                                              variable.Value = VariableType.convertToDec(result[0]);
+                                              variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
+                                              break;
+                                          case "Integer":
+                                              variable.Value = VariableType.convertToInt16(result[0]);
+                                              variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
+                                              break;
+                                          case "Hexadecimal":
+                                              variable.Value = VariableType.convertToHex(result[0]);
+                                              break;
+                                          case "Binary":
+                                              variable.Value = VariableType.convertToBin(result[0]);
+                                              break;
+                                          default:
+                                              variable.Value = result[0].ToString();
+                                              break;
+                                      }
+                                  }
+                              }
+
+                          }
+
+                      }
+                  }
+                  catch(Exception exc)
+                  {
+                      MessageBox.Show(exc.Message);
+                  }*/
         }
 
 
@@ -332,103 +421,103 @@ namespace ModbusDiagnoster.ViewModels
             try
             {
 
-                using (TcpClient client = new TcpClient(DeviceTCP.IPAddr, DeviceTCP.Port))
+                /* using (TcpClient client = DeviceTCP.TCPclient)
+                 {*/
+                ModbusIpMaster master = ModbusIpMaster.CreateIp(DeviceTCP.TCPclient);
+
+
+
+                foreach (HoldingRegistersVariable variable in HoldingRegisters)
                 {
-                    ModbusIpMaster master = ModbusIpMaster.CreateIp(client);
-
-
-
-                    foreach (HoldingRegistersVariable variable in HoldingRegisters)
+                    if (variable.VariableTypeFormat == "BigEndianFloat" || variable.VariableTypeFormat == "LittleEndianFloat")
                     {
-                        if (variable.VariableTypeFormat == "BigEndianFloat" || variable.VariableTypeFormat == "LittleEndianFloat")
+                        var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, variable.StartAddress, 2);
+                        if (result.Length > 0)
                         {
-                            var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, variable.StartAddress, 2);
-                            if (result.Length > 0)
-                            {
 
-                                DispatchService.Invoke(() =>
-                                {
+                            DispatchService.Invoke(() =>
+                            {
                                     //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
                                     ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
-                                });
+                            });
 
-                                if (variable.VariableTypeFormat == "BigEndianFloat")
-                                {
-                                    variable.Value = VariableType.convertToFloatBE(result[0], result[1]);
-                                    variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
-                                }
-                                else
-                                {
-                                    variable.Value = VariableType.convertToFloatLE(result[0], result[1]);
-                                    variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
-                                }
+                            if (variable.VariableTypeFormat == "BigEndianFloat")
+                            {
+                                variable.Value = VariableType.convertToFloatBE(result[0], result[1]);
+                                variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
                             }
                             else
                             {
-                                DispatchService.Invoke(() =>
-                                {
-                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
-                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Result was null ");
-                                });
+                                variable.Value = VariableType.convertToFloatLE(result[0], result[1]);
+                                variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
                             }
                         }
                         else
                         {
-                            var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, variable.StartAddress, 1);
-                            
-                            if (result.Length > 0)
+                            DispatchService.Invoke(() =>
                             {
-                                DispatchService.Invoke(() =>
-                                {
-                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
-                                });
-                                
-
-                                switch (variable.VariableTypeFormat)
-                                {
-                                    case "Decimal":
-                                        variable.Value = VariableType.convertToDec(result[0]);
-                                        variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
-                                        break;
-                                    case "Integer":
-                                        variable.Value = VariableType.convertToInt16(result[0]);
-                                        variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
-                                        break;
-                                    case "Hexadecimal":
-                                        variable.Value = VariableType.convertToHex(result[0]);
-                                        break;
-                                    case "Binary":
-                                        variable.Value = VariableType.convertToBin(result[0]);
-                                        break;
-                                    default:
-                                        variable.Value = result[0].ToString();
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                DispatchService.Invoke(() =>
-                                {
                                     //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
                                     ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Result was null ");
-                                });
-                                
+                            });
+                        }
+                    }
+                    else
+                    {
+                        var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, variable.StartAddress, 1);
+
+                        if (result.Length > 0)
+                        {
+                            DispatchService.Invoke(() =>
+                            {
+                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
+                            });
+
+
+                            switch (variable.VariableTypeFormat)
+                            {
+                                case "Decimal":
+                                    variable.Value = VariableType.convertToDec(result[0]);
+                                    variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
+                                    break;
+                                case "Integer":
+                                    variable.Value = VariableType.convertToInt16(result[0]);
+                                    variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
+                                    break;
+                                case "Hexadecimal":
+                                    variable.Value = VariableType.convertToHex(result[0]);
+                                    break;
+                                case "Binary":
+                                    variable.Value = VariableType.convertToBin(result[0]);
+                                    break;
+                                default:
+                                    variable.Value = result[0].ToString();
+                                    break;
                             }
                         }
+                        else
+                        {
+                            DispatchService.Invoke(() =>
+                            {
+                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
+                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Result was null ");
+                            });
 
+                        }
                     }
 
                 }
+
+                // }
             }
             catch (Exception exc)
             {
                 //MessageBox.Show(exc.Message);
                 DispatchService.Invoke(() =>
                 {
-                    ExceptionMessages.Insert(0,DateTime.Now.ToString()+": " + exc.Message);
+                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + ": " + exc.Message);
                 });
-                
+
 
             }
         }
@@ -437,13 +526,13 @@ namespace ModbusDiagnoster.ViewModels
         {
             timer.Stop();
         }
-       
+
         private void ClearLogsMethod(object obj)
         {
             ExceptionMessages.Clear();
         }
 
-        public string getCalculatedValue(string expression,string variableValue)
+        public string getCalculatedValue(string expression, string variableValue)
         {
             StringBuilder builder = new StringBuilder(expression);
             builder.Replace("Var", variableValue);
@@ -465,20 +554,21 @@ namespace ModbusDiagnoster.ViewModels
 
         }
 
+
         private void Device_OnPacketArrival(object s, PacketCapture e)
         {
             var time = e.Header.Timeval.Date;
             var len = e.Data.Length;
 
             RawCapture rawPacket = e.GetPacket();
-            
+
             var packet = PacketDotNet.Packet.ParsePacket(rawPacket.LinkLayerType, rawPacket.Data);
 
             //var arpPacket=packet.Extract<PacketDotNet.ArpPacket>();
 
             var tcpPacket = packet.Extract<PacketDotNet.TcpPacket>();
 
-            if(tcpPacket!=null)
+            if (tcpPacket != null)
             {
                 var ipPacket = (PacketDotNet.IPPacket)tcpPacket.ParentPacket;
                 System.Net.IPAddress srcIp = ipPacket.SourceAddress;
@@ -493,7 +583,7 @@ namespace ModbusDiagnoster.ViewModels
                     Packets.Insert(0, newPacket);
                 });
             }
-           
+
         }
 
         private void OnStartNetCapture(object obj)
@@ -515,7 +605,7 @@ namespace ModbusDiagnoster.ViewModels
                 }
 
             }
-            catch(Exception exc)
+            catch (Exception exc)
             {
                 DispatchService.Invoke(() =>
                 {
@@ -552,6 +642,60 @@ namespace ModbusDiagnoster.ViewModels
                 Packets.Clear();
             }
         }
+
+        private void OnAddHoldingVar(object obj)
+        {
+            HoldingRegisters.Add(new HoldingRegistersVariable());
+        }
+
+        private void OnAddMultipleHoldingVars(object obj)
+        {
+            AddMultipleHRDialogViewModel viewModel = new AddMultipleHRDialogViewModel();
+            var dialog = new AddMultipleHRwindow(viewModel);
+            
+
+            if( dialog.ShowDialog()==true)
+            {
+
+                ushort regStep = 0;
+                if(viewModel.VarType== "LittleEndianFloat" || viewModel.VarType== "BigEndianFloat")
+                {
+                    regStep = 2;
+                }
+                else
+                {
+                    regStep = 1;
+                }
+
+                int currentStep = viewModel.StartNumber;
+                ushort currentReg = viewModel.StartRegNumber;
+                
+
+                for(int i=0;i<viewModel.Count;i++)
+                {
+                    string name = viewModel.Prefix + currentStep.ToString() + viewModel.Suffix;
+                    currentStep += viewModel.Step;
+                    HoldingRegisters.Add(new HoldingRegistersVariable(name,currentReg,viewModel.VarType));
+                    currentReg += regStep;
+                }
+
+            }
+            else
+            {
+                
+            }
+        }
+        private void OnDeleteMultipleHoldingVar(object obj)
+        {
+   
+        }
+
+
+        private void ClosingDialogHrEventHandler(object sender, DialogClosingEventArgs eventArgs)
+        {
+            MessageBox.Show(eventArgs.ToString());
+        }
+
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -561,30 +705,31 @@ namespace ModbusDiagnoster.ViewModels
 
 
 
-  /*      public void ContentCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (INotifyPropertyChanged item in e.OldItems)
-                {
-                    item.PropertyChanged -= EntityViewModelPropertyChanged;
-                }
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (INotifyPropertyChanged item in e.NewItems)
-                {
-                  item.PropertyChanged += EntityViewModelPropertyChanged;
-                }
-            }
-        }
 
-        public void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            
-            OnPropertyChanged();
-            //This will get called when the property of an object inside the collection changes
-        }*/
+        /*      public void ContentCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+              {
+                  if (e.Action == NotifyCollectionChangedAction.Remove)
+                  {
+                      foreach (INotifyPropertyChanged item in e.OldItems)
+                      {
+                          item.PropertyChanged -= EntityViewModelPropertyChanged;
+                      }
+                  }
+                  else if (e.Action == NotifyCollectionChangedAction.Add)
+                  {
+                      foreach (INotifyPropertyChanged item in e.NewItems)
+                      {
+                        item.PropertyChanged += EntityViewModelPropertyChanged;
+                      }
+                  }
+              }
+
+              public void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+              {
+
+                  OnPropertyChanged();
+                  //This will get called when the property of an object inside the collection changes
+              }*/
 
         /* private void _innerStuff_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
          {

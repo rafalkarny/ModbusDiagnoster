@@ -242,9 +242,26 @@ namespace ModbusDiagnoster.Model.Variables
             //Format = "%8.8f";
             ConversionFunction = "Var";
 
+        }
 
-            
-
+        public HoldingRegistersVariable(string name = "Name", ushort startAddr = 0,string variableTypeFormat="Decimal")
+        {
+            Disabled = false;
+            Name = name;
+            Type = ModbusFuncType.HoldingRegisters;
+            StartAddress = startAddr;
+            VariableTypeFormat = variableTypeFormat;
+            Description = "Opis zmiennej";
+            Unit = "Jednostka";
+            // SamplePeriod = 1;
+            LowRange = 0;
+            LowDisplayRange = 0;
+            HighRange = 0;
+            HighDisplayRange = 0;
+            Value = "-";
+            ConvertedValue = "-";
+            //Format = "%8.8f";
+            ConversionFunction = "Var";
 
         }
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
