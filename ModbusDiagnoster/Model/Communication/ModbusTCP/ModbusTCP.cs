@@ -58,13 +58,22 @@ namespace ModbusDiagnoster.Model.Communication.ModbusTCP
 
         public ModbusTCP() ////
         {
+           
             Id = 1;
             Name = "Nazwa urządzenia";
             IPAddr = "127.0.0.1";
             Port = 502;
             Type = ModbusType.TCP;
             SlaveId = 1;
-            TCPclient = new TcpClient(IPAddr, Port);
+            try
+            {
+
+             //   TCPclient = new TcpClient(IPAddr, Port);
+            }
+            catch(Exception exc)
+            {
+
+            }
            /* Coils = new ObservableCollection<CoilsVariable>();
             Inputs = new ObservableCollection<DiscreteInputsVariable>();
             HoldingRegisters = new ObservableCollection<HoldingRegistersVariable>();

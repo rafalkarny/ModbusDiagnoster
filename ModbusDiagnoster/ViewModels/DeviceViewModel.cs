@@ -300,7 +300,17 @@ namespace ModbusDiagnoster.ViewModels
             _Packets = new ObservableCollection<MyPacket>();
 
             ModbusTCPSelected = true;
-            LoadDevices();
+            LoadDevices();  //Sniffer interfaces
+
+            /// TODO when saving and loading will be avaible!!!
+            try
+            {
+                _DeviceTCP.TCPclient = new TcpClient("127.0.0.1",502);
+            }
+            catch (Exception exc)
+            {
+
+            }
 
             StartPooling = new AsyncRelayCommand(StartModbusPooling, (ex) => StatusMessage = ex.Message);
             StopPooling = new RelayCommand(StopPoolingMethod);
@@ -420,7 +430,7 @@ namespace ModbusDiagnoster.ViewModels
         {
             try
             {
-
+                timer.Stop();
                 /* using (TcpClient client = DeviceTCP.TCPclient)
                  {*/
                 ModbusIpMaster master = ModbusIpMaster.CreateIp(DeviceTCP.TCPclient);
@@ -508,6 +518,7 @@ namespace ModbusDiagnoster.ViewModels
 
                 }
 
+                timer.Start();
                 // }
             }
             catch (Exception exc)
@@ -515,7 +526,7 @@ namespace ModbusDiagnoster.ViewModels
                 //MessageBox.Show(exc.Message);
                 DispatchService.Invoke(() =>
                 {
-                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + ": " + exc.Message);
+                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + ": Requesting stopped : " + exc.Message);
                 });
 
 
