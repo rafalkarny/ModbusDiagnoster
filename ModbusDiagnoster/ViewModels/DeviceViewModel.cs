@@ -24,6 +24,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using MaterialDesignThemes.Wpf;
+using ModbusDiagnoster.Model.Communication;
 
 namespace ModbusDiagnoster.ViewModels
 {
@@ -45,7 +46,7 @@ namespace ModbusDiagnoster.ViewModels
         public ICommand StartNetCap { get; set; }
         public ICommand StopNetCap { get; set; }
         public ICommand ClearPackets { get; set; }
-        
+
 
         private ObservableCollection<CoilsVariable> _Coils { get; set; }
         public ObservableCollection<CoilsVariable> Coils
@@ -137,22 +138,22 @@ namespace ModbusDiagnoster.ViewModels
                         if (IPAddress.TryParse(value.IPAddr, out addr) && value.Port > 0 && value.Port < 65535 && value.SlaveId > 0 && value.SlaveId < 65535)
                         {
                             _DeviceTCP = value;
-                           
-                                _DeviceTCP.TCPclient.Close();
-                                _DeviceTCP.TCPclient.Dispose();
-                                _DeviceTCP.TCPclient = new TcpClient(_DeviceTCP.IPAddr, _DeviceTCP.Port);
 
-                            ExceptionMessages.Insert(0, DateTime.Now.ToString()+" Changed TCP Client parameters ");
+                            _DeviceTCP.TCPclient.Close();
+                            _DeviceTCP.TCPclient.Dispose();
+                            _DeviceTCP.TCPclient = new TcpClient(_DeviceTCP.IPAddr, _DeviceTCP.Port);
+
+                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Changed TCP Client parameters ");
                         }
                         else
                         {
-                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Wrong data in TCP Client parameters " + 
-                                value.IPAddr+" " + value.Port.ToString() + " "+value.SlaveId.ToString());
+                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Wrong data in TCP Client parameters " +
+                                value.IPAddr + " " + value.Port.ToString() + " " + value.SlaveId.ToString());
 
                         }
                     }
                 }
-                catch(Exception exc)
+                catch (Exception exc)
                 {
                     ExceptionMessages.Insert(0, DateTime.Now.ToString() + exc.Message);
                 }
@@ -211,6 +212,7 @@ namespace ModbusDiagnoster.ViewModels
             }
         }
 
+        // private ModbusIpMaster master;
 
         private string _statusMessage;
         public string StatusMessage
@@ -284,7 +286,7 @@ namespace ModbusDiagnoster.ViewModels
 
 
         public Timer timer { get; set; }
-
+        public bool timerStop { get; set; }
 
 
         public DeviceViewModel(string name = "Nazwa urządzenia", int id = 0)
@@ -305,11 +307,11 @@ namespace ModbusDiagnoster.ViewModels
             /// TODO when saving and loading will be avaible!!!
             try
             {
-                _DeviceTCP.TCPclient = new TcpClient("127.0.0.1",502);
+                _DeviceTCP.TCPclient = new TcpClient("127.0.0.1", 502);
             }
             catch (Exception exc)
             {
-
+                ExceptionMessages.Insert(0, DateTime.Now.ToString() + exc.Message);
             }
 
             StartPooling = new AsyncRelayCommand(StartModbusPooling, (ex) => StatusMessage = ex.Message);
@@ -323,11 +325,12 @@ namespace ModbusDiagnoster.ViewModels
             DeleteMultipleHoldingVar = new RelayCommand(OnDeleteMultipleHoldingVar);
 
             timer = new Timer();
-            timer.Elapsed += new ElapsedEventHandler(GetVariableValues);
+            // timer.Elapsed += new ElapsedEventHandler(GetVariableValues);
+            timer.Elapsed += new ElapsedEventHandler(GetGroupedVariableValues);
             timer.Interval = 1000;
             timer.Enabled = true;
             timer.Stop();
-
+            timerStop = false;
             // _HoldingRegisters.CollectionChanged += ContentCollectionChanged;
         }
 
@@ -335,94 +338,26 @@ namespace ModbusDiagnoster.ViewModels
 
         public async Task StartModbusPooling()
         {
-            timer.Start();
-            /*      //MessageBox.Show(HoldingRegisters[0].VariableTypeFormat.ToString());
-
-                  try
-                  {
-                      *//* using (TcpClient client = new TcpClient(DeviceTCP.IPAddr, DeviceTCP.Port))
-                       {
-                           ModbusIpMaster master = ModbusIpMaster.CreateIp(client);
-
-                           //MessageBox.Show("Próba odczytu: "+ HoldingRegisters[0].StartAddress +" " +master.Transport.Retries );
-                           // read five input values
-                           ushort startAddress = HoldingRegisters[0].StartAddress;
-                           ushort numInputs = 2;
-                           var result =await  master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId,startAddress, numInputs);
-
-                           //MessageBox.Show(result.ToString());
-
-                           for (int i = 0; i < numInputs; i+=2)
-                           {
-                               Console.WriteLine(result[i]);
-                               //HoldingRegisters[0].Value = (float)result[i];
-                               Console.WriteLine(result[i + 1]);
-                               string tmp = VariableType.convertToFloatLE(result[i], result[i + 1]);
-                               Console.WriteLine(tmp);
-                               HoldingRegisters[0].Value = tmp;
-                           }
-                       }*//*
-                      using (TcpClient client = new TcpClient(DeviceTCP.IPAddr, DeviceTCP.Port))
-                      {
-                          ModbusIpMaster master = ModbusIpMaster.CreateIp(client);
+            try
+            {
+                // ModbusIpMaster master = ModbusIpMaster.CreateIp(DeviceTCP.TCPclient);
+                timer.Start();
+                DispatchService.Invoke(() =>
+                {
+                    //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
+                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Starting pooling");
+                });
+            }
+            catch (Exception exc)
+            {
+                DispatchService.Invoke(() =>
+                {
+                    //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
+                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + exc.Message);
+                });
+            }
 
 
-
-                          foreach(HoldingRegistersVariable variable in HoldingRegisters)
-                          {
-                              if(variable.VariableTypeFormat== "BigEndianFloat" || variable.VariableTypeFormat== "LittleEndianFloat")
-                              {
-                                  var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, variable.StartAddress, 2);
-                                  if (result.Length > 0)
-                                  {
-                                      if(variable.VariableTypeFormat == "BigEndianFloat")
-                                      {
-                                          variable.Value = VariableType.convertToFloatBE(result[0], result[1]);
-                                          variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
-                                      }
-                                      else
-                                      {
-                                          variable.Value = VariableType.convertToFloatLE(result[0], result[1]);
-                                          variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
-                                      }
-                                  }
-                              }
-                              else
-                              {
-                                  var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, variable.StartAddress, 1);
-                                  if(result.Length>0)
-                                  {
-                                      switch (variable.VariableTypeFormat)
-                                      {
-                                          case "Decimal":
-                                              variable.Value = VariableType.convertToDec(result[0]);
-                                              variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
-                                              break;
-                                          case "Integer":
-                                              variable.Value = VariableType.convertToInt16(result[0]);
-                                              variable.ConvertedValue = getCalculatedValue(variable.ConversionFunction, variable.Value);
-                                              break;
-                                          case "Hexadecimal":
-                                              variable.Value = VariableType.convertToHex(result[0]);
-                                              break;
-                                          case "Binary":
-                                              variable.Value = VariableType.convertToBin(result[0]);
-                                              break;
-                                          default:
-                                              variable.Value = result[0].ToString();
-                                              break;
-                                      }
-                                  }
-                              }
-
-                          }
-
-                      }
-                  }
-                  catch(Exception exc)
-                  {
-                      MessageBox.Show(exc.Message);
-                  }*/
         }
 
 
@@ -447,8 +382,8 @@ namespace ModbusDiagnoster.ViewModels
 
                             DispatchService.Invoke(() =>
                             {
-                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
+                                //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
                             });
 
                             if (variable.VariableTypeFormat == "BigEndianFloat")
@@ -466,8 +401,8 @@ namespace ModbusDiagnoster.ViewModels
                         {
                             DispatchService.Invoke(() =>
                             {
-                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
-                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Result was null ");
+                                //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
+                                ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Result was null ");
                             });
                         }
                     }
@@ -479,8 +414,10 @@ namespace ModbusDiagnoster.ViewModels
                         {
                             DispatchService.Invoke(() =>
                             {
-                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
+                                //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+
+                                //Result printing in logs
+                                // ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
                             });
 
 
@@ -509,8 +446,8 @@ namespace ModbusDiagnoster.ViewModels
                         {
                             DispatchService.Invoke(() =>
                             {
-                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
-                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Result was null ");
+                                //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
+                                ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Result was null ");
                             });
 
                         }
@@ -533,9 +470,187 @@ namespace ModbusDiagnoster.ViewModels
             }
         }
 
+        public async void GetGroupedVariableValues(object source, ElapsedEventArgs e)
+        {
+            try
+            {
+                timer.Stop();
+                /* using (TcpClient client = DeviceTCP.TCPclient)
+                 {*/
+
+                await GetHoldingRegisters();
+
+                if(!timerStop)
+                {
+                    timer.Start();
+                    
+                }
+                else
+                {
+                    timerStop = false;
+                }
+               
+                // }
+            }
+            catch (Exception exc)
+            {
+                //MessageBox.Show(exc.Message);
+                DispatchService.Invoke(() =>
+                {
+                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + ": Requesting stopped : " + exc.Message);
+                });
+
+
+            }
+        }
+
+        private async Task GetHoldingRegisters()
+        {
+
+            try
+            {
+                ModbusIpMaster master = ModbusIpMaster.CreateIp(DeviceTCP.TCPclient);
+
+                List<List<HoldingRegistersVariable>> groupedHR = GroupVariables.GroupHoldingRegisters(HoldingRegisters);
+
+                foreach (List<HoldingRegistersVariable> group in groupedHR)
+                {
+                    if (group.Count > 0)
+                    {
+                        //For 2 words variables
+                        if (group[0].VariableTypeFormat == "BigEndianFloat" || group[0].VariableTypeFormat == "LittleEndianFloat")
+                        {
+
+                            ushort numOfRegs = (UInt16)(group.Count * 2);
+
+                            var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                            if (result.Length > 0)
+                            {
+                                int currResultIndex = 0;
+                                foreach (HoldingRegistersVariable hr in group)
+                                {
+                                    int hrIndex = HoldingRegisters.IndexOf(hr);
+                                    if (result.Length > currResultIndex)   //checking if result is long enough
+                                    {
+                                        if (hr.VariableTypeFormat == "BigEndianFloat")
+                                        {
+                                            HoldingRegisters[hrIndex].Value = VariableType.convertToFloatBE(result[currResultIndex], result[currResultIndex + 1]);
+                                            HoldingRegisters[hrIndex].ConvertedValue = getCalculatedValue(HoldingRegisters[hrIndex].ConversionFunction, HoldingRegisters[hrIndex].Value);
+                                        }
+                                        else
+                                        {
+                                            HoldingRegisters[hrIndex].Value = VariableType.convertToFloatLE(result[currResultIndex], result[currResultIndex + 1]);
+                                            HoldingRegisters[hrIndex].ConvertedValue = getCalculatedValue(HoldingRegisters[hrIndex].ConversionFunction, HoldingRegisters[hrIndex].Value);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        DispatchService.Invoke(() =>
+                                        {
+                                            //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
+                                        });
+                                    }
+                                    currResultIndex += 2;
+                                }
+
+                                /*DispatchService.Invoke(() =>
+                                {
+                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
+                                });*/
+
+                            }
+                            else
+                            {
+                                DispatchService.Invoke(() =>
+                                {
+                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
+                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Result was null ");
+                                });
+                            }
+                        }
+                        /// FOR 1 word variables
+                        else
+                        {
+                            ushort numOfRegs = (UInt16)(group.Count);
+
+                            var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                            if (result.Length > 0)
+                            {
+                                int currResultIndex = 0;
+                                foreach (HoldingRegistersVariable hr in group)
+                                {
+                                    int hrIndex = HoldingRegisters.IndexOf(hr);
+                                    if (result.Length > currResultIndex)   //checking if result is long enough
+                                    {
+                                        switch (HoldingRegisters[hrIndex].VariableTypeFormat)
+                                        {
+                                            case "Decimal":
+                                                HoldingRegisters[hrIndex].Value = VariableType.convertToDec(result[currResultIndex]);
+                                                HoldingRegisters[hrIndex].ConvertedValue = getCalculatedValue(HoldingRegisters[hrIndex].ConversionFunction, HoldingRegisters[hrIndex].Value);
+                                                break;
+                                            case "Integer":
+                                                HoldingRegisters[hrIndex].Value = VariableType.convertToInt16(result[currResultIndex]);
+                                                HoldingRegisters[hrIndex].ConvertedValue = getCalculatedValue(HoldingRegisters[hrIndex].ConversionFunction, HoldingRegisters[hrIndex].Value);
+                                                break;
+                                            case "Hexadecimal":
+                                                HoldingRegisters[hrIndex].Value = VariableType.convertToHex(result[currResultIndex]);
+                                                break;
+                                            case "Binary":
+                                                HoldingRegisters[hrIndex].Value = VariableType.convertToBin(result[currResultIndex]);
+                                                break;
+                                            default:
+                                                HoldingRegisters[hrIndex].Value = result[0].ToString();
+                                                break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        DispatchService.Invoke(() =>
+                                        {
+                                            //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
+                                        });
+                                    }
+                                    currResultIndex += 1;
+                                }
+
+                                DispatchService.Invoke(() =>
+                                {
+                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                //MessageBox.Show(exc.Message);
+                DispatchService.Invoke(() =>
+                {
+                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + ": Holding registers error : " + exc.Message);
+                });
+
+
+            }
+
+        }
+
+
         private void StopPoolingMethod(object obj)
         {
+            timerStop = true;
             timer.Stop();
+
+            DispatchService.Invoke(() =>
+            {
+                //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
+                ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Stopping pooling");
+            });
+            //master.Dispose();
         }
 
         private void ClearLogsMethod(object obj)
@@ -545,13 +660,28 @@ namespace ModbusDiagnoster.ViewModels
 
         public string getCalculatedValue(string expression, string variableValue)
         {
-            StringBuilder builder = new StringBuilder(expression);
-            builder.Replace("Var", variableValue);
-            builder.Replace(",", ".");
+            try
+            {
+                StringBuilder builder = new StringBuilder(expression);
+                builder.Replace("Var", variableValue);
+                builder.Replace(",", ".");
 
-            DataTable dt = new DataTable();
-            var v = dt.Compute(builder.ToString(), "");
-            return v.ToString();
+                DataTable dt = new DataTable();
+                var v = dt.Compute(builder.ToString(), "");
+                return v.ToString();
+            }
+            catch (Exception exc)
+            {
+                DispatchService.Invoke(() =>
+                {
+                //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Variable Conversion Error " + exc.Message);
+                });
+
+                return "!!" + variableValue;
+
+            }
+
         }
 
         private void LoadDevices()
@@ -663,13 +793,13 @@ namespace ModbusDiagnoster.ViewModels
         {
             AddMultipleHRDialogViewModel viewModel = new AddMultipleHRDialogViewModel();
             var dialog = new AddMultipleHRwindow(viewModel);
-            
 
-            if( dialog.ShowDialog()==true)
+
+            if (dialog.ShowDialog() == true)
             {
 
                 ushort regStep = 0;
-                if(viewModel.VarType== "LittleEndianFloat" || viewModel.VarType== "BigEndianFloat")
+                if (viewModel.VarType == "LittleEndianFloat" || viewModel.VarType == "BigEndianFloat")
                 {
                     regStep = 2;
                 }
@@ -680,25 +810,25 @@ namespace ModbusDiagnoster.ViewModels
 
                 int currentStep = viewModel.StartNumber;
                 ushort currentReg = viewModel.StartRegNumber;
-                
 
-                for(int i=0;i<viewModel.Count;i++)
+
+                for (int i = 0; i < viewModel.Count; i++)
                 {
                     string name = viewModel.Prefix + currentStep.ToString() + viewModel.Suffix;
                     currentStep += viewModel.Step;
-                    HoldingRegisters.Add(new HoldingRegistersVariable(name,currentReg,viewModel.VarType));
+                    HoldingRegisters.Add(new HoldingRegistersVariable(name, currentReg, viewModel.VarType));
                     currentReg += regStep;
                 }
 
             }
             else
             {
-                
+
             }
         }
         private void OnDeleteMultipleHoldingVar(object obj)
         {
-   
+
         }
 
 

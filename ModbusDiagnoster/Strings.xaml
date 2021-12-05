@@ -1,0 +1,35 @@
+﻿<ResourceDictionary 
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Device window elements  -->
+    
+    <system:String x:Key="AddVarBtn">Add new variable</system:String>
+    <system:String x:Key="AddMultipleVarBtn">Add multiple variables</system:String>
+    <system:String x:Key="TimestampLbl">Timestamp value [ms]:</system:String>
+    <system:String x:Key="CleanBtn">Clear</system:String>
+
+    <!-- Main window elements  -->
+    
+    <!-- Windows  -->
+    
+    <system:String x:Key="DeviceWindowName">Modbus Device</system:String>
+
+    <!-- Table headers  -->
+    <system:String x:Key="DisabledHeader">Disabled</system:String>
+    <system:String x:Key="NameHeader">Name</system:String>
+    <system:String x:Key="AddressHeader">Register address</system:String>
+    <system:String x:Key="VarTypeHeader">Type</system:String>
+    <system:String x:Key="ValueHeader">Raw Value</system:String>
+    <system:String x:Key="ConvFuncHeader">Convertion Function</system:String>
+    <system:String x:Key="ConvertedValueHeader">Converted Value</system:String>
+    <system:String x:Key="UnitHeader">Unit</system:String>
+    <system:String x:Key="DescHeader">Description</system:String>
+    <system:String x:Key="RangeFromHeader">Low Range</system:String>
+    <system:String x:Key="RangeToHeader">High Range</system:String>
+    <system:String x:Key="DisplayRangeFromHeader">Low Display Range</system:String>
+    <system:String x:Key="DisplayRangeToHeader">High Display Range</system:String>
+    
+    
+</ResourceDictionary>

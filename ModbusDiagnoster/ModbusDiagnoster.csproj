@@ -107,6 +107,7 @@
     <Compile Include="DeviceWindow.xaml.cs">
       <DependentUpon>DeviceWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\Communication\GroupVariables.cs" />
     <Compile Include="Model\Converters\VariableType.cs" />
     <Compile Include="Model\Sniffers\MyPacket.cs" />
     <Compile Include="Model\Variables\CalcFunctions.cs" />
@@ -159,6 +160,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MsgBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Strings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

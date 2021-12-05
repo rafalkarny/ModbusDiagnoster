@@ -81,7 +81,7 @@ namespace ModbusDiagnoster.Model.Communication.ModbusTCP
 
         }
 
-        public ModbusTCP(int id=1,string name= "Nazwa urządzenia",string ipaddr= "127.0.0.1",int port=502,ModbusType type=ModbusType.TCP)
+        public ModbusTCP(int id=1,string name= "Device Name",string ipaddr= "127.0.0.1",int port=502,ModbusType type=ModbusType.TCP)
         {
             Id = id;
             Name = name;
@@ -89,7 +89,8 @@ namespace ModbusDiagnoster.Model.Communication.ModbusTCP
             Port = port;
             Type = type;
             SlaveId = 1;
-            TCPclient = new TcpClient(IPAddr, Port);
+            //TCPclient = new TcpClient(IPAddr, Port);
+
             /* Coils = new ObservableCollection<CoilsVariable>();
              Inputs = new ObservableCollection<DiscreteInputsVariable>();
              HoldingRegisters = new ObservableCollection<HoldingRegistersVariable>();

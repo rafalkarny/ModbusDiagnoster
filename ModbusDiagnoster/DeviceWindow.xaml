@@ -8,7 +8,7 @@
         xmlns:viewmodels="clr-namespace:ModbusDiagnoster.ViewModels" 
         d:DataContext="{d:DesignInstance Type=viewmodels:DeviceViewModel}"
         mc:Ignorable="d"
-        Title="Urządzenie" Height="600" Width="800"
+        Title="{StaticResource DeviceWindowName}" Height="600" Width="800"
         x:Name="deviceWindow" WindowStartupLocation="CenterScreen"
         >
     <Window.Resources>
@@ -143,7 +143,7 @@
                             Width="20" 
                             />
                 </Button>
-                <Label Margin="10,10,10,5" Content="Okres próbkowania:"></Label>
+                <Label Margin="10,10,10,5" Content="{StaticResource TimestampLbl}"></Label>
                 <TextBox x:Name="timestampTxtBox" 
                          Margin="10,10,10,5"
                          Text="{Binding timer.Interval}"></TextBox>
@@ -178,8 +178,8 @@
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
-                            <Button x:Name="addReg" Content="Add Variable" Margin="5" Command="{Binding AddHoldingVar}"></Button>
-                            <Button x:Name="addMultipleReg" Content="Add Multiple Variables" Margin="5" Command="{Binding AddMultipleHoldingVar}"></Button>
+                            <Button x:Name="addReg" Content="{StaticResource AddVarBtn}" Margin="5" Command="{Binding AddHoldingVar}"></Button>
+                            <Button x:Name="addMultipleReg" Content="{StaticResource AddMultipleVarBtn}" Margin="5" Command="{Binding AddMultipleHoldingVar}"></Button>
                             <Button Visibility="Hidden" x:Name="deleteMultipleReg" Content="Remove selected" Margin="5" Command="{Binding DeleteMultipleHoldingVar}"></Button>
                         </StackPanel>
                     <DataGrid x:Name="HRdataGrd"
@@ -191,40 +191,40 @@
                               CanUserReorderColumns="True" 
                               AutoGenerateColumns="False">
                         <DataGrid.Columns>
-                            <DataGridCheckBoxColumn Header="Wyłączona" 
+                            <DataGridCheckBoxColumn Header="{StaticResource DisabledHeader}" 
                                                 Binding="{Binding Disabled}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
                                                 ></DataGridCheckBoxColumn>
-                            <DataGridTextColumn Header="Nazwa" 
+                            <DataGridTextColumn Header="{StaticResource NameHeader}" 
                                                 Binding="{Binding Name}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                            <DataGridTextColumn Header="Adres" 
+                            <DataGridTextColumn Header="{StaticResource AddressHeader}" 
                                                 Binding="{Binding StartAddress}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 FontWeight="Bold"
                                                 ></DataGridTextColumn>
-                            <materialDesign:DataGridComboBoxColumn Header="Typ wartości" 
+                            <materialDesign:DataGridComboBoxColumn Header="{StaticResource VarTypeHeader}" 
                                                 SelectedValueBinding="{Binding VariableTypeFormat}" 
                                               IsEditable="False"
                                             ItemsSourceBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.VarTypes}"
                                              >
                             </materialDesign:DataGridComboBoxColumn>
-                            <DataGridTextColumn Header="Wartość" 
+                            <DataGridTextColumn Header="{StaticResource ValueHeader}" 
                                                 Binding="{Binding Value,Mode=TwoWay}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 FontWeight="Bold"
                                                 ></DataGridTextColumn>
-                            <DataGridTextColumn Header="Funkcja przeliczająca" 
+                            <DataGridTextColumn Header="{StaticResource ConvFuncHeader}" 
                                                 Binding="{Binding ConversionFunction}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                            <DataGridTextColumn Header="Wartość wyliczona" 
+                            <DataGridTextColumn Header="{StaticResource ConvertedValueHeader}" 
                                                 Binding="{Binding ConvertedValue}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
@@ -236,12 +236,12 @@
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
 -->
-                            <DataGridTextColumn Header="Jednostka" 
+                            <DataGridTextColumn Header="{StaticResource UnitHeader}" 
                                                 Binding="{Binding Unit}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                            <DataGridTextColumn Header="Opis" 
+                            <DataGridTextColumn Header="{StaticResource DescHeader}" 
                                                 Binding="{Binding Description}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
@@ -251,22 +251,22 @@
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn> -->
-                            <DataGridTextColumn Header="Zakres od" 
+                            <DataGridTextColumn Header="{StaticResource RangeFromHeader}" 
                                                 Binding="{Binding LowRange}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                            <DataGridTextColumn Header="Zakres do" 
+                            <DataGridTextColumn Header="{StaticResource RangeToHeader}" 
                                                 Binding="{Binding HighRange}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                            <DataGridTextColumn Header="Zakres wyświetlania od" 
+                            <DataGridTextColumn Header="{StaticResource DisplayRangeFromHeader}" 
                                                 Binding="{Binding LowDisplayRange}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                            <DataGridTextColumn Header="Zakres wyświetlania do" 
+                            <DataGridTextColumn Header="{StaticResource DisplayRangeToHeader}" 
                                                 Binding="{Binding HighDisplayRange}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
@@ -301,7 +301,7 @@
                             <StackPanel Grid.Row="0" Orientation="Horizontal">
                             <Button
                             x:Name="clearBtn"
-                                Content="Wyczyść"
+                                Content="{StaticResource CleanBtn}"
                                 FontSize="10"
                                 Margin="1"
                                 Command="{Binding ClearLogs}"
@@ -313,7 +313,7 @@
                                      ItemsSource="{Binding ExceptionMessages}"></ListBox>
                         </Grid>
                     </TabItem>
-                    <TabItem Header="Sniffer">
+                    <TabItem Header="Sniffer" Visibility="Hidden">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="50"></RowDefinition>

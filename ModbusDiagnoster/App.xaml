@@ -2,11 +2,16 @@
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml">
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml">
+                </ResourceDictionary>
+                <ResourceDictionary Source="Strings.xaml" />
+
+                <materialDesign1:BundledTheme BaseTheme="Light" PrimaryColor="DeepPurple" SecondaryColor="Lime" />
           
-        </ResourceDictionary>
-        <materialDesign1:BundledTheme BaseTheme="Light" PrimaryColor="DeepPurple" SecondaryColor="Lime" />
+          
       </ResourceDictionary.MergedDictionaries>
+        
+        
     </ResourceDictionary>
   </Application.Resources>
 </Application>
