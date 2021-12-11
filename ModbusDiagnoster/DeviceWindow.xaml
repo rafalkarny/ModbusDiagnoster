@@ -271,7 +271,12 @@
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                        </DataGrid.Columns>
+                            <DataGridTextColumn Header="{StaticResource TimestampHeader}" 
+                                                Binding="{Binding Timestamp}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                            </DataGrid.Columns>
                         
                         
                     </DataGrid>

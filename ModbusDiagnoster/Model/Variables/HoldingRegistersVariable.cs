@@ -222,6 +222,19 @@ namespace ModbusDiagnoster.Model.Variables
                 OnPropertyChanged();
             }
         }
+        private string _Timestamp { get; set; }
+        public string Timestamp
+        {
+            get
+            {
+                return _Timestamp;
+            }
+            set
+            {
+                _Timestamp = value;
+                OnPropertyChanged();
+            }
+        }
 
         public HoldingRegistersVariable()
         {
@@ -241,6 +254,7 @@ namespace ModbusDiagnoster.Model.Variables
             ConvertedValue = "-";
             //Format = "%8.8f";
             ConversionFunction = "Var";
+            Timestamp = "0:00";
 
         }
 
@@ -262,6 +276,7 @@ namespace ModbusDiagnoster.Model.Variables
             ConvertedValue = "-";
             //Format = "%8.8f";
             ConversionFunction = "Var";
+            Timestamp = "0:00";
 
         }
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)

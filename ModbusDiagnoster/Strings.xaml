@@ -30,6 +30,6 @@
     <system:String x:Key="RangeToHeader">High Range</system:String>
     <system:String x:Key="DisplayRangeFromHeader">Low Display Range</system:String>
     <system:String x:Key="DisplayRangeToHeader">High Display Range</system:String>
-    
-    
+    <system:String x:Key="TimestampHeader">Last update timestamp</system:String>
+
 </ResourceDictionary>

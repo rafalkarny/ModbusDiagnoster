@@ -551,6 +551,9 @@ namespace ModbusDiagnoster.ViewModels
                                             ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
                                         });
                                     }
+
+                                    HoldingRegisters[hrIndex].Timestamp = DateTime.Now.ToString();
+
                                     currResultIndex += 2;
                                 }
 
@@ -613,6 +616,8 @@ namespace ModbusDiagnoster.ViewModels
                                             ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
                                         });
                                     }
+
+                                    HoldingRegisters[hrIndex].Timestamp = DateTime.Now.ToString();
                                     currResultIndex += 1;
                                 }
 
@@ -686,13 +691,13 @@ namespace ModbusDiagnoster.ViewModels
 
         private void LoadDevices()
         {
-            CaptureDeviceList devices = CaptureDeviceList.Instance;
+          /*  CaptureDeviceList devices = CaptureDeviceList.Instance;
 
             foreach (ICaptureDevice dev in devices)
             {
                 Interfaces.Add(dev);
             }
-
+*/
         }
 
 
