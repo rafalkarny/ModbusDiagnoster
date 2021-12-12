@@ -125,38 +125,8 @@ namespace ModbusDiagnoster.ViewModels
             get { return this._DeviceTCP; }
             set
             {
-                // _DeviceTCP = value;
-                try
-                {
-                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Wrong data in TCP Client parameters " +
-                                value.IPAddr + " " + value.Port.ToString() + " " + value.SlaveId.ToString());
-
-                    if (_DeviceTCP.TCPclient != null)
-                    {
-                        byte[] sampleaddr = { 127, 0, 0, 1 };
-                        IPAddress addr = new IPAddress(sampleaddr);
-                        if (IPAddress.TryParse(value.IPAddr, out addr) && value.Port > 0 && value.Port < 65535 && value.SlaveId > 0 && value.SlaveId < 65535)
-                        {
-                            _DeviceTCP = value;
-
-                            _DeviceTCP.TCPclient.Close();
-                            _DeviceTCP.TCPclient.Dispose();
-                            _DeviceTCP.TCPclient = new TcpClient(_DeviceTCP.IPAddr, _DeviceTCP.Port);
-
-                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Changed TCP Client parameters ");
-                        }
-                        else
-                        {
-                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Wrong data in TCP Client parameters " +
-                                value.IPAddr + " " + value.Port.ToString() + " " + value.SlaveId.ToString());
-
-                        }
-                    }
-                }
-                catch (Exception exc)
-                {
-                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + exc.Message);
-                }
+                _DeviceTCP = value;
+                ConnectTCP();
                 OnPropertyChanged();
             }
         }
@@ -211,6 +181,7 @@ namespace ModbusDiagnoster.ViewModels
                 OnPropertyChanged();
             }
         }
+        private TcpClient tcpClient { get; set; }
 
         // private ModbusIpMaster master;
 
@@ -305,14 +276,18 @@ namespace ModbusDiagnoster.ViewModels
             LoadDevices();  //Sniffer interfaces
 
             /// TODO when saving and loading will be avaible!!!
-            try
+            /*try
             {
-                _DeviceTCP.TCPclient = new TcpClient("127.0.0.1", 502);
+                 //_DeviceTCP.TCPclient = new TcpClient("127.0.0.1", 502);
+                 //tcpClient= new TcpClient(_DeviceTCP.IPAddr,_DeviceTCP.Port);
+
             }
             catch (Exception exc)
             {
                 ExceptionMessages.Insert(0, DateTime.Now.ToString() + exc.Message);
-            }
+            }*/
+
+            ConnectTCP();
 
             StartPooling = new AsyncRelayCommand(StartModbusPooling, (ex) => StatusMessage = ex.Message);
             StopPooling = new RelayCommand(StopPoolingMethod);
@@ -334,19 +309,53 @@ namespace ModbusDiagnoster.ViewModels
             // _HoldingRegisters.CollectionChanged += ContentCollectionChanged;
         }
 
+        private bool ConnectTCP()
+        {
+            try
+            {
+                //_DeviceTCP.TCPclient = new TcpClient("127.0.0.1", 502);
+                if (tcpClient != null)
+                {
+                    tcpClient.Close();
+                    tcpClient.Dispose();
+                }
+
+                tcpClient = new TcpClient(_DeviceTCP.IPAddr, _DeviceTCP.Port);
+
+            }
+            catch (Exception exc)
+            {
+                ExceptionMessages.Insert(0, DateTime.Now.ToString() +"Can't connect to Server or Slave, \n Destination port is closed or wrong," +
+                    " \n check if device is working and check firewall rules\n"+ exc.Message);
+            }
+
+            return false;
+        }
 
 
         public async Task StartModbusPooling()
         {
             try
             {
-                // ModbusIpMaster master = ModbusIpMaster.CreateIp(DeviceTCP.TCPclient);
-                timer.Start();
-                DispatchService.Invoke(() =>
+                if (tcpClient != null)
                 {
+                    //ModbusIpMaster master = ModbusIpMaster.CreateIp(DeviceTCP.TCPclient);
+                    timer.Start();
+                    DispatchService.Invoke(() =>
+                    {
                     //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
                     ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Starting pooling");
-                });
+                    });
+                }
+                else
+                {
+                    DispatchService.Invoke(() =>
+                    {
+                        //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
+                        ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Communication problem, tcp session is not enstablished, trying to connect...");
+                        tcpClient = new TcpClient(_DeviceTCP.IPAddr, _DeviceTCP.Port);
+                    });
+                }
             }
             catch (Exception exc)
             {
@@ -509,7 +518,7 @@ namespace ModbusDiagnoster.ViewModels
 
             try
             {
-                ModbusIpMaster master = ModbusIpMaster.CreateIp(DeviceTCP.TCPclient);
+                ModbusIpMaster master = ModbusIpMaster.CreateIp(tcpClient);
 
                 List<List<HoldingRegistersVariable>> groupedHR = GroupVariables.GroupHoldingRegisters(HoldingRegisters);
 

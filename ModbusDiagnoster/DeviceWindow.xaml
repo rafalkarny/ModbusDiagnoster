@@ -59,10 +59,10 @@
                             <StackPanel>
                                 <Label Content="IPv4:"></Label>
                             <TextBox x:Name="ipTxtBox" Margin="2"
-                                     Text="{Binding DeviceTCP.IPAddr}"></TextBox>
+                                     Text="{Binding DeviceTCP.IPAddr,Mode=TwoWay}"></TextBox>
                                 <Label Content="Port:" ></Label>
                                 <TextBox x:Name="portTxtBox"
-                                         Text="{Binding DeviceTCP.Port}" Margin="2"></TextBox>
+                                         Text="{Binding DeviceTCP.Port,Mode=TwoWay}" Margin="2"></TextBox>
                                 <Label Content="Slave ID:"></Label>
                                 <TextBox x:Name="slaveIdTxtBox" Text="{Binding DeviceTCP.SlaveId}"
                                          

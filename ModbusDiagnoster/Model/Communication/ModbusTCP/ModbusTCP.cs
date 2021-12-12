@@ -42,7 +42,7 @@ namespace ModbusDiagnoster.Model.Communication.ModbusTCP
                 OnPropertyChanged();
             }
         }
-        private TcpClient _TCPclient { get; set; }
+        private TcpClient _TCPclient { get; set; }  //To REMOVE
         public TcpClient TCPclient
         {
             get
@@ -54,7 +54,7 @@ namespace ModbusDiagnoster.Model.Communication.ModbusTCP
                 _TCPclient = value;
                 OnPropertyChanged();
             }
-        }
+        }   //TO REMOVE
 
         public ModbusTCP() ////
         {
