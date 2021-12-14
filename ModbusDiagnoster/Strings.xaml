@@ -9,6 +9,7 @@
     <system:String x:Key="AddMultipleVarBtn">Add multiple variables</system:String>
     <system:String x:Key="TimestampLbl">Timestamp value [ms]:</system:String>
     <system:String x:Key="CleanBtn">Clear</system:String>
+    <system:String x:Key="ChangeConTCPproperties">Apply changes</system:String>
 
     <!-- Main window elements  -->
     
@@ -31,5 +32,14 @@
     <system:String x:Key="DisplayRangeFromHeader">Low Display Range</system:String>
     <system:String x:Key="DisplayRangeToHeader">High Display Range</system:String>
     <system:String x:Key="TimestampHeader">Last update timestamp</system:String>
+    
+    <!-- ToolTips -->
+    <system:String x:Key="PropertiesToolTip">Communication properties</system:String>
+    <system:String x:Key="StartPoolingToolTip">Start requesting modbus</system:String>
+    <system:String x:Key="StopPoolingToolTip">Stop requesting modbus</system:String>
+    <system:String x:Key="ConnectToolTip">Connect/Disconnect TCP Session</system:String>
+    <system:String x:Key="ChangeConTCPpropertiesToolTip">Apply changes (reconnect device)</system:String>
+    
+    
 
 </ResourceDictionary>
