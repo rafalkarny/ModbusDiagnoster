@@ -25,6 +25,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using MaterialDesignThemes.Wpf;
 using ModbusDiagnoster.Model.Communication;
+using System.Windows.Media;
 
 namespace ModbusDiagnoster.ViewModels
 {
@@ -185,6 +186,20 @@ namespace ModbusDiagnoster.ViewModels
             }
         }
         private TcpClient tcpClient { get; set; }
+        private Brush _TimerStatus;
+        public Brush TimerStatus
+        {
+            get
+            {
+                return _TimerStatus;
+            }
+
+            set
+            {
+                _TimerStatus = value;
+                OnPropertyChanged();
+            }
+        }
 
         // private ModbusIpMaster master;
 
@@ -274,7 +289,7 @@ namespace ModbusDiagnoster.ViewModels
             _ExceptionMessages = new ObservableCollection<string>();
             _Interfaces = new ObservableCollection<ICaptureDevice>();
             _Packets = new ObservableCollection<MyPacket>();
-
+            _TimerStatus = new SolidColorBrush(Color.FromArgb(255, (byte)52, (byte)73, (byte)94)); //rgba(52, 73, 94,1.0)
             ModbusTCPSelected = true;
             //LoadDevices();  //Sniffer interfaces
 
@@ -300,17 +315,22 @@ namespace ModbusDiagnoster.ViewModels
             StopNetCap = new RelayCommand(OnStopNetCapture);
             ClearPackets = new RelayCommand(OnClearPackets);
             AddHoldingVar = new RelayCommand(OnAddHoldingVar);
+            AddInputVar = new RelayCommand(OnAddInputVar);
             AddMultipleHoldingVar = new RelayCommand(OnAddMultipleHoldingVars);
+            AddMultipleInputVar = new RelayCommand(OnAddMultipleInputRegVars);
             DeleteMultipleHoldingVar = new RelayCommand(OnDeleteMultipleHoldingVar);
 
 
             timer = new Timer();
             // timer.Elapsed += new ElapsedEventHandler(GetVariableValues);
-            timer.Elapsed += new ElapsedEventHandler(GetGroupedVariableValues);
+            timer.Elapsed += new ElapsedEventHandler(GetGroupedVariableValues); 
             timer.Interval = 1000;
             timer.Enabled = true;
             timer.Stop();
             timerStop = false;
+
+
+
             // _HoldingRegisters.CollectionChanged += ContentCollectionChanged;
         }
 
@@ -325,6 +345,7 @@ namespace ModbusDiagnoster.ViewModels
                     {
                         tcpClient.Close();
                         tcpClient.Dispose();
+                        tcpClient = null;
                         ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Disconnected device");
                     }
                     else
@@ -380,6 +401,14 @@ namespace ModbusDiagnoster.ViewModels
             return false;
         }
 
+        private void OnTimerStart()
+        {
+            TimerStatus = new SolidColorBrush(Color.FromArgb(255, (byte)39, (byte)174, (byte)96)); //rgba(39, 174, 96,1.0)
+        }
+        private void OnTimerStop()
+        {
+            TimerStatus = new SolidColorBrush(Color.FromArgb(255, (byte)192, (byte)57, (byte)43)); //rgba(192, 57, 43,1.0)
+        }
 
         public async Task StartModbusPooling()  //This method only runs timer start
         {
@@ -388,11 +417,14 @@ namespace ModbusDiagnoster.ViewModels
                 if (tcpClient != null)
                 {
                     //ModbusIpMaster master = ModbusIpMaster.CreateIp(DeviceTCP.TCPclient);
-                    timer.Start();
+                    
+                    
                     DispatchService.Invoke(() =>
                     {
+                        timer.Start();
                         //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
                         ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Starting pooling");
+                        OnTimerStart();
                     });
                 }
                 else
@@ -417,7 +449,7 @@ namespace ModbusDiagnoster.ViewModels
 
         }
 
-
+        //  Method which makes DDoS on Device,
         public async void GetVariableValues(object source, ElapsedEventArgs e)
         {
             try
@@ -531,7 +563,13 @@ namespace ModbusDiagnoster.ViewModels
         {
             try
             {
-                timer.Stop();
+                
+                DispatchService.Invoke(() =>
+                {
+                    timer.Stop();
+                    OnTimerStop();
+                });
+
                 /* using (TcpClient client = DeviceTCP.TCPclient)
                  {*/
                 if (tcpClient != null)
@@ -539,6 +577,7 @@ namespace ModbusDiagnoster.ViewModels
                     if (tcpClient.Connected)
                     {
                         await GetHoldingRegisters();
+                        await GetInputRegisters();
                     }
                     else
                     {
@@ -560,7 +599,12 @@ namespace ModbusDiagnoster.ViewModels
 
                 if (!timerStop)
                 {
-                    timer.Start();
+                    
+                    DispatchService.Invoke(() =>
+                    {
+                        timer.Start();
+                        OnTimerStart();
+                    });
 
                 }
                 else
@@ -780,16 +824,216 @@ namespace ModbusDiagnoster.ViewModels
 
         }
 
+        private async Task GetInputRegisters()
+        {
+
+            try
+            {
+
+                ModbusIpMaster master = ModbusIpMaster.CreateIp(tcpClient);
+
+                List<List<InputRegistersVariable>> groupedHR = GroupVariables.GroupInputRegisters(InputRegisters);
+
+                foreach (List<InputRegistersVariable> group in groupedHR)
+                {
+                    if (group.Count > 0)
+                    {
+                        //For 2 words variables
+                        if (group[0].VariableTypeFormat == "BigEndianFloat" || group[0].VariableTypeFormat == "LittleEndianFloat")
+                        {
+
+                            ushort numOfRegs = (UInt16)(group.Count * 2);
+                            if (tcpClient != null)
+                            {
+
+
+                                if (tcpClient.Connected)
+                                {
+                                    var result = await master.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+
+
+                                    if (result.Length > 0)
+                                    {
+                                        int currResultIndex = 0;
+                                        foreach (InputRegistersVariable ir in group)
+                                        {
+                                            int irIndex = InputRegisters.IndexOf(ir);
+                                            if (result.Length > currResultIndex)   //checking if result is long enough
+                                            {
+                                                if (ir.VariableTypeFormat == "BigEndianFloat")
+                                                {
+                                                    InputRegisters[irIndex].Value = VariableType.convertToFloatBE(result[currResultIndex], result[currResultIndex + 1]);
+                                                    InputRegisters[irIndex].ConvertedValue = getCalculatedValue(InputRegisters[irIndex].ConversionFunction, InputRegisters[irIndex].Value);
+                                                }
+                                                else
+                                                {
+                                                    InputRegisters[irIndex].Value = VariableType.convertToFloatLE(result[currResultIndex], result[currResultIndex + 1]);
+                                                    InputRegisters[irIndex].ConvertedValue = getCalculatedValue(InputRegisters[irIndex].ConversionFunction, InputRegisters[irIndex].Value);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                DispatchService.Invoke(() =>
+                                                {
+                                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
+                                                });
+                                            }
+
+                                            InputRegisters[irIndex].Timestamp = DateTime.Now.ToString();
+
+                                            currResultIndex += 2;
+                                        }
+
+                                        /*DispatchService.Invoke(() =>
+                                        {
+                                            //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
+                                        });*/
+
+                                    }
+                                    else
+                                    {
+                                        DispatchService.Invoke(() =>
+                                        {
+                                            //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
+                                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + "IR Result was null ");
+                                        });
+                                    }
+                                }
+                                else
+                                {
+                                    DispatchService.Invoke(() =>
+                                    {
+                                        //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                        ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Client is disconnected");
+                                    });
+                                }
+
+                            }
+                            else
+                            {
+                                DispatchService.Invoke(() =>
+                                {
+                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Client is disconnected");
+                                });
+                            }
+                        }
+                        /// FOR 1 word variables
+                        else
+                        {
+                            ushort numOfRegs = (UInt16)(group.Count);
+
+                            if (tcpClient != null)
+                            {
+                                if (tcpClient.Connected)
+                                {
+
+                                    var result = await master.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+
+
+                                    if (result.Length > 0)
+                                    {
+                                        int currResultIndex = 0;
+                                        foreach (InputRegistersVariable ir in group)
+                                        {
+                                            int irIndex = InputRegisters.IndexOf(ir);
+                                            if (result.Length > currResultIndex)   //checking if result is long enough
+                                            {
+                                                switch (InputRegisters[irIndex].VariableTypeFormat)
+                                                {
+                                                    case "Decimal":
+                                                        InputRegisters[irIndex].Value = VariableType.convertToDec(result[currResultIndex]);
+                                                        InputRegisters[irIndex].ConvertedValue = getCalculatedValue(InputRegisters[irIndex].ConversionFunction, InputRegisters[irIndex].Value);
+                                                        break;
+                                                    case "Integer":
+                                                        InputRegisters[irIndex].Value = VariableType.convertToInt16(result[currResultIndex]);
+                                                        InputRegisters[irIndex].ConvertedValue = getCalculatedValue(InputRegisters[irIndex].ConversionFunction, InputRegisters[irIndex].Value);
+                                                        break;
+                                                    case "Hexadecimal":
+                                                        InputRegisters[irIndex].Value = VariableType.convertToHex(result[currResultIndex]);
+                                                        break;
+                                                    case "Binary":
+                                                        InputRegisters[irIndex].Value = VariableType.convertToBin(result[currResultIndex]);
+                                                        break;
+                                                    default:
+                                                        InputRegisters[irIndex].Value = result[0].ToString();
+                                                        break;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                DispatchService.Invoke(() =>
+                                                {
+                                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
+                                                });
+                                            }
+
+                                            InputRegisters[irIndex].Timestamp = DateTime.Now.ToString();
+                                            currResultIndex += 1;
+                                        }
+
+                                        DispatchService.Invoke(() =>
+                                        {
+                                            //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+
+                                            //TODO:: Add feature to user can enable advanced diagnostics
+                                            //ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
+                                        });
+                                    }
+                                }
+                                else
+                                {
+                                    DispatchService.Invoke(() =>
+                                    {
+                                        //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                        ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Client is disconnected");
+                                    });
+                                }
+
+                            }
+                            else
+                            {
+                                DispatchService.Invoke(() =>
+                                {
+                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Client is disconnected");
+                                });
+                            }
+
+                        }
+                    }
+                }
+
+
+            }
+            catch (Exception exc)
+            {
+                //MessageBox.Show(exc.Message);
+                DispatchService.Invoke(() =>
+                {
+                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + ": Input registers error : " + exc.Message);
+                });
+
+
+            }
+
+        }
+
 
         private void StopPoolingMethod(object obj)
         {
             timerStop = true;
-            timer.Stop();
-
+            
+            
             DispatchService.Invoke(() =>
             {
+                timer.Stop();
                 //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
                 ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Stopping pooling");
+                OnTimerStop();
             });
             //master.Dispose();
         }
@@ -967,6 +1211,49 @@ namespace ModbusDiagnoster.ViewModels
 
             }
         }
+
+        private void OnAddInputVar(object obj)
+        {
+            InputRegisters.Add(new InputRegistersVariable());
+        }
+        private void OnAddMultipleInputRegVars(object obj)
+        {
+            AddMultipleHRDialogViewModel viewModel = new AddMultipleHRDialogViewModel();
+            var dialog = new AddMultipleHRwindow(viewModel);
+
+
+            if (dialog.ShowDialog() == true)
+            {
+
+                ushort regStep = 0;
+                if (viewModel.VarType == "LittleEndianFloat" || viewModel.VarType == "BigEndianFloat")
+                {
+                    regStep = 2;
+                }
+                else
+                {
+                    regStep = 1;
+                }
+
+                int currentStep = viewModel.StartNumber;
+                ushort currentReg = viewModel.StartRegNumber;
+
+
+                for (int i = 0; i < viewModel.Count; i++)
+                {
+                    string name = viewModel.Prefix + currentStep.ToString() + viewModel.Suffix;
+                    currentStep += viewModel.Step;
+                    InputRegisters.Add(new InputRegistersVariable(name, currentReg, viewModel.VarType));
+                    currentReg += regStep;
+                }
+
+            }
+            else
+            {
+
+            }
+        }
+
         private void OnDeleteMultipleHoldingVar(object obj)
         {
 

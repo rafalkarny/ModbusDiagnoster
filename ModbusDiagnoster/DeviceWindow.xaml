@@ -178,6 +178,12 @@
                 <TextBox x:Name="timestampTxtBox" 
                          Margin="10,10,10,5"
                          Text="{Binding timer.Interval}"></TextBox>
+                <Button
+                    x:Name="TimerStatus"
+                    Width="15"
+                    Height="15"
+                    Background="{Binding TimerStatus}"
+                    ></Button>
             </StackPanel>
 
             <!-- COILS-->
@@ -198,6 +204,129 @@
                     <DataGrid x:Name="InputsDataGrd" ItemsSource="{Binding Inputs}"></DataGrid>
                 </TabItem>
 
+
+
+                <!-- INPUT REGISTERS -->
+                <TabItem Name="InputRegistersCard" Header="Input Registers"
+                     Background="{DynamicResource MaterialDesignPaper}"
+                     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+                     >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <Button x:Name="addIrReg" Content="{StaticResource AddVarBtn}" Margin="5" Command="{Binding AddInputVar}"></Button>
+                            <Button x:Name="addMultipleIrReg" Content="{StaticResource AddMultipleVarBtn}" Margin="5" Command="{Binding AddMultipleInputVar}"></Button>
+                            <Button Visibility="Hidden" x:Name="deleteMultipleIrReg" Content="Remove selected" Margin="5" Command="{Binding DeleteMultipleHoldingVar}"></Button>
+                        </StackPanel>
+                        <DataGrid x:Name="IRdataGrd"
+                              Grid.Row="1"
+                              ItemsSource="{Binding InputRegisters,Mode=TwoWay}"
+                              
+                               SelectionMode="Extended"
+                              CanUserAddRows="False" 
+                              CanUserReorderColumns="True" 
+                              AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridCheckBoxColumn Header="{StaticResource DisabledHeader}" 
+                                                Binding="{Binding Disabled}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
+                                                ></DataGridCheckBoxColumn>
+                                <DataGridTextColumn Header="{StaticResource NameHeader}" 
+                                                Binding="{Binding Name}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                <DataGridTextColumn Header="{StaticResource AddressHeader}" 
+                                                Binding="{Binding StartAddress}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                FontWeight="Bold"
+                                                ></DataGridTextColumn>
+                                <materialDesign:DataGridComboBoxColumn Header="{StaticResource VarTypeHeader}" 
+                                                SelectedValueBinding="{Binding VariableTypeFormat}" 
+                                              IsEditable="False"
+                                            ItemsSourceBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.VarTypes}"
+                                             >
+                                </materialDesign:DataGridComboBoxColumn>
+                                <DataGridTextColumn Header="{StaticResource ValueHeader}" 
+                                                Binding="{Binding Value,Mode=TwoWay}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                FontWeight="Bold"
+                                                ></DataGridTextColumn>
+                                <DataGridTextColumn Header="{StaticResource ConvFuncHeader}" 
+                                                Binding="{Binding ConversionFunction}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                <DataGridTextColumn Header="{StaticResource ConvertedValueHeader}" 
+                                                Binding="{Binding ConvertedValue}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                FontWeight="Bold"
+                                                ></DataGridTextColumn>
+                                <!--                <DataGridTextColumn Header="Format wyświetlania" 
+                                                Binding="{Binding Format}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+-->
+                                <DataGridTextColumn Header="{StaticResource UnitHeader}" 
+                                                Binding="{Binding Unit}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                <DataGridTextColumn Header="{StaticResource DescHeader}" 
+                                                Binding="{Binding Description}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                <!--    <DataGridTextColumn Header="Okres próbkowania [ms]" 
+                                                Binding="{Binding SamplePeriod}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn> -->
+                                <DataGridTextColumn Header="{StaticResource RangeFromHeader}" 
+                                                Binding="{Binding LowRange}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                <DataGridTextColumn Header="{StaticResource RangeToHeader}" 
+                                                Binding="{Binding HighRange}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                <DataGridTextColumn Header="{StaticResource DisplayRangeFromHeader}" 
+                                                Binding="{Binding LowDisplayRange}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                <DataGridTextColumn Header="{StaticResource DisplayRangeToHeader}" 
+                                                Binding="{Binding HighDisplayRange}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                <DataGridTextColumn Header="{StaticResource TimestampHeader}" 
+                                                Binding="{Binding Timestamp}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                <DataGridTextColumn Header="{StaticResource NoteHeader}" 
+                                                Binding="{Binding Note}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                            </DataGrid.Columns>
+
+
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+                
                 <!-- HOLDING REGISTERS-->
                 <TabItem Name="HoldingRegistersCard" Header="Holding Registers"
                      Background="{DynamicResource MaterialDesignPaper}"
@@ -307,21 +436,19 @@
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
+                                <DataGridTextColumn Header="{StaticResource NoteHeader}" 
+                                                Binding="{Binding Note}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
                             </DataGrid.Columns>
 
 
                         </DataGrid>
                     </Grid>
                 </TabItem>
-
-                <!-- INPUT REGISTERS -->
-                <TabItem Name="InputRegistersCard" Header="Input Registers"
-                     Background="{DynamicResource MaterialDesignPaper}"
-                     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-                     >
-                    <DataGrid x:Name="IRdataGrd" ItemsSource="{Binding InputRegisters}"></DataGrid>
-                </TabItem>
-
+                
+                
             </TabControl>
 
 

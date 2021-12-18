@@ -239,12 +239,12 @@ namespace ModbusDiagnoster.Model.Variables
         public HoldingRegistersVariable()
         {
             Disabled = false;
-            Name = "Nazwa zmiennej";
+            Name = "Variable name";
             Type = ModbusFuncType.HoldingRegisters;
             StartAddress = 0;
             VariableTypeFormat = "Decimal";
-            Description = "Opis zmiennej";
-            Unit = "Jednostka";
+            Description = "Description";
+            Unit = "Unit";
            // SamplePeriod = 1;
             LowRange = 0;
             LowDisplayRange = 0;
@@ -265,8 +265,8 @@ namespace ModbusDiagnoster.Model.Variables
             Type = ModbusFuncType.HoldingRegisters;
             StartAddress = startAddr;
             VariableTypeFormat = variableTypeFormat;
-            Description = "Opis zmiennej";
-            Unit = "Jednostka";
+            Description = "Description";
+            Unit = "Unit";
             // SamplePeriod = 1;
             LowRange = 0;
             LowDisplayRange = 0;

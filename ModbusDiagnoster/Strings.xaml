@@ -32,7 +32,8 @@
     <system:String x:Key="DisplayRangeFromHeader">Low Display Range</system:String>
     <system:String x:Key="DisplayRangeToHeader">High Display Range</system:String>
     <system:String x:Key="TimestampHeader">Last update timestamp</system:String>
-    
+    <system:String x:Key="NoteHeader">Note</system:String>
+
     <!-- ToolTips -->
     <system:String x:Key="PropertiesToolTip">Communication properties</system:String>
     <system:String x:Key="StartPoolingToolTip">Start requesting modbus</system:String>
