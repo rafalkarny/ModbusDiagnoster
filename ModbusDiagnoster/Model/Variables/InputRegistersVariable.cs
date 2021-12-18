@@ -12,6 +12,19 @@ namespace ModbusDiagnoster.Model.Variables
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private bool _Checked { get; set; }
+        public bool Checked
+        {
+            get
+            {
+                return _Checked;
+            }
+            set
+            {
+                _Checked = value;
+                OnPropertyChanged();
+            }
+        }
         private bool _Disabled { get; set; }
         public bool Disabled
         {
@@ -226,6 +239,7 @@ namespace ModbusDiagnoster.Model.Variables
 
         public InputRegistersVariable()
         {
+            Checked = false;
             Disabled = false;
             Name = "Variable name";
             Type = ModbusFuncType.InputRegisters;
@@ -249,6 +263,7 @@ namespace ModbusDiagnoster.Model.Variables
 
         public InputRegistersVariable(string name = "Name", ushort startAddr = 0, string variableTypeFormat = "Decimal")
         {
+            Checked = false;
             Disabled = false;
             Name = name;
             Type = ModbusFuncType.InputRegisters;

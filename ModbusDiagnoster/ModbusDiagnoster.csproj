@@ -88,8 +88,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AddMultipleHRdialog.xaml.cs">
-      <DependentUpon>AddMultipleHRdialog.xaml</DependentUpon>
+    <Compile Include="AddMultipleDiscreteCoils.xaml.cs">
+      <DependentUpon>AddMultipleDiscreteCoils.xaml</DependentUpon>
     </Compile>
     <Compile Include="AddMultipleHRwindow.xaml.cs">
       <DependentUpon>AddMultipleHRwindow.xaml</DependentUpon>
@@ -122,12 +122,13 @@
     <Compile Include="MsgBox.xaml.cs">
       <DependentUpon>MsgBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\AddMultipleDiscreteCoilsViewModel.cs" />
     <Compile Include="ViewModels\AddMultipleHRDialogViewModel.cs" />
     <Compile Include="ViewModels\AddVariableViewModel.cs" />
     <Compile Include="ViewModels\DeviceCardViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Page Include="AddMultipleHRdialog.xaml">
+    <Page Include="AddMultipleDiscreteCoils.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

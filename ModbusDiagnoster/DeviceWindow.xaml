@@ -197,11 +197,84 @@
                 </TabItem>
 
                 <!-- DISCRETE INPUTS-->
-                <TabItem Name="DiscreteInputsCard" Header="Discrete Inputs"
+                <TabItem Name="DiscreteInputs" Header="Discrete Inputs"
                      Background="{DynamicResource MaterialDesignPaper}"
                      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
                      >
-                    <DataGrid x:Name="InputsDataGrd" ItemsSource="{Binding Inputs}"></DataGrid>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <Button x:Name="addDIReg" Content="{StaticResource AddVarBtn}" Margin="5" Command="{Binding AddDiscreteVar}"></Button>
+                            <Button x:Name="addMultipleDIReg" Content="{StaticResource AddMultipleVarBtn}" Margin="5" Command="{Binding AddMultipleDiscreteVar}"></Button>
+                            
+                            <Button Visibility="Hidden" x:Name="deleteMultipleDIReg" Content="Remove selected" Margin="5" Command="{Binding DeleteMultipleHoldingVar}"></Button>
+                        </StackPanel>
+                        <DataGrid x:Name="DIdataGrd"
+                              Grid.Row="1"
+                              ItemsSource="{Binding Inputs,Mode=TwoWay}"
+                              
+                               SelectionMode="Extended"
+                              CanUserAddRows="False" 
+                              CanUserReorderColumns="True" 
+                              AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridCheckBoxColumn Header="{StaticResource CheckedHeader}" 
+                                                Binding="{Binding Checked}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
+                                                ></DataGridCheckBoxColumn>
+                                <DataGridCheckBoxColumn Header="{StaticResource DisabledHeader}" 
+                                                Binding="{Binding Disabled}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
+                                                ></DataGridCheckBoxColumn>
+                                <DataGridTextColumn Header="{StaticResource NameHeader}" 
+                                                Binding="{Binding Name}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                <DataGridTextColumn Header="{StaticResource AddressHeader}" 
+                                                Binding="{Binding StartAddress}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                FontWeight="Bold"
+                                                ></DataGridTextColumn>
+                               
+                                <DataGridTextColumn Header="{StaticResource ValueHeader}" 
+                                                Binding="{Binding Value,Mode=TwoWay}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                FontWeight="Bold"
+                                                ></DataGridTextColumn>
+                                
+                                <DataGridTextColumn Header="{StaticResource DescHeader}" 
+                                                Binding="{Binding Description}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                <!--    <DataGridTextColumn Header="Okres próbkowania [ms]" 
+                                                Binding="{Binding SamplePeriod}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn> -->
+                                <DataGridTextColumn Header="{StaticResource TimestampHeader}" 
+                                                Binding="{Binding Timestamp}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                <DataGridTextColumn Header="{StaticResource NoteHeader}" 
+                                                Binding="{Binding Note}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                            </DataGrid.Columns>
+
+
+                        </DataGrid>
+                    </Grid>
                 </TabItem>
 
 
@@ -230,6 +303,11 @@
                               CanUserReorderColumns="True" 
                               AutoGenerateColumns="False">
                             <DataGrid.Columns>
+                                <DataGridCheckBoxColumn Header="{StaticResource CheckedHeader}" 
+                                                Binding="{Binding Checked}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
+                                                ></DataGridCheckBoxColumn>
                                 <DataGridCheckBoxColumn Header="{StaticResource DisabledHeader}" 
                                                 Binding="{Binding Disabled}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
@@ -351,6 +429,11 @@
                               CanUserReorderColumns="True" 
                               AutoGenerateColumns="False">
                             <DataGrid.Columns>
+                                <DataGridCheckBoxColumn Header="{StaticResource CheckedHeader}" 
+                                                Binding="{Binding Checked}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
+                                                ></DataGridCheckBoxColumn>
                                 <DataGridCheckBoxColumn Header="{StaticResource DisabledHeader}" 
                                                 Binding="{Binding Disabled}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"

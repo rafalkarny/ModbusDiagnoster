@@ -18,6 +18,7 @@
     <system:String x:Key="DeviceWindowName">Modbus Device</system:String>
 
     <!-- Table headers  -->
+    <system:String x:Key="CheckedHeader">Select</system:String>
     <system:String x:Key="DisabledHeader">Disabled</system:String>
     <system:String x:Key="NameHeader">Name</system:String>
     <system:String x:Key="AddressHeader">Register address</system:String>

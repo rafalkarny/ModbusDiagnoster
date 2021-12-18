@@ -15,6 +15,126 @@ namespace ModbusDiagnoster.Model.Communication
         //https://docs.microsoft.com/pl-pl/dotnet/api/system.linq.enumerable.orderby?view=net-6.0#System_Linq_Enumerable_OrderBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__
 
 
+
+        //COILS
+        public static List<List<CoilsVariable>> GroupCoils(ObservableCollection<CoilsVariable> inputCollection)
+        {
+
+            List<List<CoilsVariable>> Groups = new List<List<CoilsVariable>>();
+
+            //Sorting
+            IEnumerable<CoilsVariable> sortedInput = inputCollection.OrderBy(di => di.StartAddress);  //Example from docs: IEnumerable<Pet> query = pets.OrderBy(pet => pet.Age);
+
+            CoilsVariable previousVar = new CoilsVariable("", 65535);   //6535 register propably will be never used
+            int PreviousVariableListIndex = -1;
+
+            foreach (CoilsVariable di in sortedInput)
+            {
+                if (PreviousVariableListIndex != -1)
+                {
+
+                    //For Variables Containing 1 word 
+
+                    if (previousVar.StartAddress + 1 == di.StartAddress)
+                    {
+                        if (Groups[PreviousVariableListIndex].Count() < 2000)   //because max requested registers are 251x8 is 2008
+                        {
+                            Groups[PreviousVariableListIndex].Add(di);  //Add variable to previous list 
+                        }
+                        else
+                        {
+                            List<CoilsVariable> tmp = new List<CoilsVariable>();  //Add new List (new group) and add variable
+                            tmp.Add(di);
+                            Groups.Add(tmp);
+                            PreviousVariableListIndex = Groups.IndexOf(tmp);
+                        }
+
+                    }
+                    else
+                    {
+                        List<CoilsVariable> tmp = new List<CoilsVariable>();  //Add new List (new group) and add variable
+                        tmp.Add(di);
+                        Groups.Add(tmp);
+                        PreviousVariableListIndex = Groups.IndexOf(tmp);
+                    }
+
+
+                }
+                else
+                {
+                    List<CoilsVariable> tmp = new List<CoilsVariable>();
+                    tmp.Add(di);
+                    Groups.Add(tmp);
+                    PreviousVariableListIndex = 0;
+                }
+                previousVar = di;
+
+            }
+            return Groups;
+
+
+        }
+
+        // Discrete inputs
+        public static List<List<DiscreteInputsVariable>> GroupDiscreteInputs(ObservableCollection<DiscreteInputsVariable> inputCollection)
+        {
+
+            List<List<DiscreteInputsVariable>> Groups = new List<List<DiscreteInputsVariable>>();
+
+            //Sorting
+            IEnumerable<DiscreteInputsVariable> sortedInput = inputCollection.OrderBy(di => di.StartAddress);  //Example from docs: IEnumerable<Pet> query = pets.OrderBy(pet => pet.Age);
+
+            DiscreteInputsVariable previousVar = new DiscreteInputsVariable("", 65535);   //6535 register propably will be never used
+            int PreviousVariableListIndex = -1;
+
+            foreach (DiscreteInputsVariable di in sortedInput)
+            {
+                if (PreviousVariableListIndex != -1)
+                {
+
+                    //For Variables Containing 1 word 
+
+                    if (previousVar.StartAddress + 1 == di.StartAddress)
+                    {
+                        if (Groups[PreviousVariableListIndex].Count() < 2000)   //because max requested register is 125 
+                        {
+                            Groups[PreviousVariableListIndex].Add(di);  //Add variable to previous list 
+                        }
+                        else
+                        {
+                            List<DiscreteInputsVariable> tmp = new List<DiscreteInputsVariable>();  //Add new List (new group) and add variable
+                            tmp.Add(di);
+                            Groups.Add(tmp);
+                            PreviousVariableListIndex = Groups.IndexOf(tmp);
+                        }
+
+                    }
+                    else
+                    {
+                        List<DiscreteInputsVariable> tmp = new List<DiscreteInputsVariable>();  //Add new List (new group) and add variable
+                        tmp.Add(di);
+                        Groups.Add(tmp);
+                        PreviousVariableListIndex = Groups.IndexOf(tmp);
+                    }
+
+
+                }
+                else
+                {
+                    List<DiscreteInputsVariable> tmp = new List<DiscreteInputsVariable>();
+                    tmp.Add(di);
+                    Groups.Add(tmp);
+                    PreviousVariableListIndex = 0;
+                }
+                previousVar = di;
+
+            }
+            return Groups;
+
+
+        }
+
+
         //INPUT REGISTERS
         public static List<List<InputRegistersVariable>> GroupInputRegisters(ObservableCollection<InputRegistersVariable> inputCollection)
         {
@@ -109,26 +229,26 @@ namespace ModbusDiagnoster.Model.Communication
 
         //HOLDING REGISTERS
         public static List<List<HoldingRegistersVariable>> GroupHoldingRegisters(ObservableCollection<HoldingRegistersVariable> inputCollection)
-            {
+        {
 
             List<List<HoldingRegistersVariable>> Groups = new List<List<HoldingRegistersVariable>>();
 
             //Sorting
-            IEnumerable<HoldingRegistersVariable> sortedInput =inputCollection.OrderBy(hr => hr.StartAddress);  //Example from docs: IEnumerable<Pet> query = pets.OrderBy(pet => pet.Age);
+            IEnumerable<HoldingRegistersVariable> sortedInput = inputCollection.OrderBy(hr => hr.StartAddress);  //Example from docs: IEnumerable<Pet> query = pets.OrderBy(pet => pet.Age);
 
-            HoldingRegistersVariable previousVar=new HoldingRegistersVariable("", 65535);   //6535 register propably will be never used
+            HoldingRegistersVariable previousVar = new HoldingRegistersVariable("", 65535);   //6535 register propably will be never used
             int PreviousVariableListIndex = -1;
 
-            foreach(HoldingRegistersVariable hr in sortedInput)
+            foreach (HoldingRegistersVariable hr in sortedInput)
             {
-                if(PreviousVariableListIndex!=-1)
+                if (PreviousVariableListIndex != -1)
                 {
                     //For Variables containing 2 words
                     if ((hr.VariableTypeFormat == "BigEndianFloat" || hr.VariableTypeFormat == "LittleEndianFloat") && (previousVar.VariableTypeFormat == "BigEndianFloat" || previousVar.VariableTypeFormat == "LittleEndianFloat"))
                     {
-                        if(previousVar.StartAddress+2==hr.StartAddress)
+                        if (previousVar.StartAddress + 2 == hr.StartAddress)
                         {
-                            if(Groups[PreviousVariableListIndex].Count()<62)   //because max requested register is 125 
+                            if (Groups[PreviousVariableListIndex].Count() < 62)   //because max requested register is 125 
                             {
                                 Groups[PreviousVariableListIndex].Add(hr);  //Add variable to previous list 
                             }
@@ -139,7 +259,7 @@ namespace ModbusDiagnoster.Model.Communication
                                 Groups.Add(tmp);
                                 PreviousVariableListIndex = Groups.IndexOf(tmp);
                             }
-                           
+
                         }
                         else
                         {
@@ -176,7 +296,7 @@ namespace ModbusDiagnoster.Model.Communication
                             PreviousVariableListIndex = Groups.IndexOf(tmp);
                         }
                     }
-                        
+
                 }
                 else
                 {
@@ -186,7 +306,7 @@ namespace ModbusDiagnoster.Model.Communication
                     PreviousVariableListIndex = 0;
                 }
                 previousVar = hr;
-                
+
             }
 
 
@@ -195,7 +315,7 @@ namespace ModbusDiagnoster.Model.Communication
             return Groups;
 
 
-            }
+        }
 
     }
 }
