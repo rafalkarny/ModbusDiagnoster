@@ -409,6 +409,10 @@ namespace ModbusDiagnoster.ViewModels
         {
             TimerStatus = new SolidColorBrush(Color.FromArgb(255, (byte)192, (byte)57, (byte)43)); //rgba(192, 57, 43,1.0)
         }
+        private void OnTimerWaiting()
+        {
+            TimerStatus = new SolidColorBrush(Color.FromArgb(255, (byte)241, (byte)196, (byte)15)); //rgba(241, 196, 15,1.0)
+        }
 
         public async Task StartModbusPooling()  //This method only runs timer start
         {
@@ -417,11 +421,11 @@ namespace ModbusDiagnoster.ViewModels
                 if (tcpClient != null)
                 {
                     //ModbusIpMaster master = ModbusIpMaster.CreateIp(DeviceTCP.TCPclient);
-                    
-                    
+
+                    timer.Start();
                     DispatchService.Invoke(() =>
                     {
-                        timer.Start();
+                       
                         //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
                         ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Starting pooling");
                         OnTimerStart();
@@ -563,11 +567,10 @@ namespace ModbusDiagnoster.ViewModels
         {
             try
             {
-                
+                timer.Stop();
                 DispatchService.Invoke(() =>
                 {
-                    timer.Stop();
-                    OnTimerStop();
+                    OnTimerWaiting();
                 });
 
                 /* using (TcpClient client = DeviceTCP.TCPclient)
@@ -576,8 +579,10 @@ namespace ModbusDiagnoster.ViewModels
                 {
                     if (tcpClient.Connected)
                     {
-                        await GetHoldingRegisters();
-                        await GetInputRegisters();
+                        ModbusIpMaster master = ModbusIpMaster.CreateIp(tcpClient);
+
+                        await GetHoldingRegisters(master);
+                        await GetInputRegisters(master);
                     }
                     else
                     {
@@ -599,10 +604,10 @@ namespace ModbusDiagnoster.ViewModels
 
                 if (!timerStop)
                 {
-                    
+                    timer.Start();
                     DispatchService.Invoke(() =>
                     {
-                        timer.Start();
+                        
                         OnTimerStart();
                     });
 
@@ -626,13 +631,13 @@ namespace ModbusDiagnoster.ViewModels
             }
         }
 
-        private async Task GetHoldingRegisters()
+        private async Task GetHoldingRegisters(ModbusIpMaster master)
         {
 
             try
             {
 
-                ModbusIpMaster master = ModbusIpMaster.CreateIp(tcpClient);
+                //ModbusIpMaster master = ModbusIpMaster.CreateIp(tcpClient);
 
                 List<List<HoldingRegistersVariable>> groupedHR = GroupVariables.GroupHoldingRegisters(HoldingRegisters);
 
@@ -824,17 +829,17 @@ namespace ModbusDiagnoster.ViewModels
 
         }
 
-        private async Task GetInputRegisters()
+        private async Task GetInputRegisters(ModbusIpMaster master)
         {
 
             try
             {
 
-                ModbusIpMaster master = ModbusIpMaster.CreateIp(tcpClient);
+                
 
-                List<List<InputRegistersVariable>> groupedHR = GroupVariables.GroupInputRegisters(InputRegisters);
+                List<List<InputRegistersVariable>> groupedIR = GroupVariables.GroupInputRegisters(InputRegisters);
 
-                foreach (List<InputRegistersVariable> group in groupedHR)
+                foreach (List<InputRegistersVariable> group in groupedIR)
                 {
                     if (group.Count > 0)
                     {
@@ -1026,11 +1031,11 @@ namespace ModbusDiagnoster.ViewModels
         private void StopPoolingMethod(object obj)
         {
             timerStop = true;
-            
-            
+            timer.Stop();
+
             DispatchService.Invoke(() =>
             {
-                timer.Stop();
+                
                 //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
                 ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Stopping pooling");
                 OnTimerStop();
