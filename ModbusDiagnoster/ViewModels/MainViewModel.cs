@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -36,12 +37,24 @@ namespace ModbusDiagnoster.ViewModels
             }
         }
 
+        private string MainWorkingDirectory { get; set; }
+
+
 
             public MainViewModel()
         {
-            this._DevicesList = new ObservableCollection<DeviceCardViewModel>();
-            this.AddDeviceCommand = new RelayCommand(AddDevice);
-
+            _DevicesList = new ObservableCollection<DeviceCardViewModel>();
+            AddDeviceCommand = new RelayCommand(AddDevice);
+            try
+            {
+                MainWorkingDirectory=Directory.GetCurrentDirectory();
+                LoadDevices();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
             
 
            /* for(int i=0;i<2;i++)
@@ -52,17 +65,21 @@ namespace ModbusDiagnoster.ViewModels
 
         private void AddDevice(object obj)
         {
+           
 
-            MsgBox msg = new MsgBox("Podaj nazwę nowego urządzenia", true);
+            MsgBox msg = new MsgBox("New device name: ", true);
 
             bool? result = msg.ShowDialog();
 
             if (result == true && msg.Answer!=null)
             {
-                DeviceCardViewModel newDev = new DeviceCardViewModel(msg.Answer,GetFreeId());
+                AddDeviceDirectory(msg.Answer);
+                string devicesDir = MainWorkingDirectory + @"\Devices\" + msg.Answer;
+                DeviceCardViewModel newDev = new DeviceCardViewModel(msg.Answer,devicesDir,GetFreeId());
                 newDev.Delete += DeleteDevice;
                 //newDev.DeleteButtonClick += DeleteDevice;
                 DevicesList.Add(newDev);
+               
 
             }
 
@@ -90,7 +107,10 @@ namespace ModbusDiagnoster.ViewModels
 
             if(result==true)
             {
-                DevicesList.Remove((DeviceCardViewModel)sender);
+                DeviceCardViewModel senderModel = (DeviceCardViewModel)sender;
+                DeleteDeviceDirectory(MainWorkingDirectory+@"\Devices\"+ senderModel.DeviceName);
+                DevicesList.Remove(senderModel);
+                
             }
 
             
@@ -128,6 +148,67 @@ namespace ModbusDiagnoster.ViewModels
            
 
             return freeId;
+        }
+
+        private void LoadDevices()
+        {
+
+            //string mainDirectory=Directory.GetCurrentDirectory();
+            //MessageBox.Show(mainDirectory);
+
+            string devicesDir =MainWorkingDirectory+ @"\Devices\";
+            if(Directory.Exists(devicesDir))
+            {
+                string[] dirs = Directory.GetDirectories(devicesDir);
+                foreach (string dir in dirs)
+                {
+                    string name = dir.Replace((devicesDir),"");
+                    DeviceCardViewModel newDev = new DeviceCardViewModel(name,dir, GetFreeId());
+                    newDev.Delete += DeleteDevice;
+                    DevicesList.Add(newDev);
+                }
+                
+            }
+            else
+            {
+                Directory.CreateDirectory(devicesDir);
+                
+            }
+        }
+        private void AddDeviceDirectory(string deviceName)
+        {
+            if(Directory.Exists(MainWorkingDirectory+ @"\Devices\"))
+            {
+                Directory.CreateDirectory(MainWorkingDirectory+@"\Devices\" + deviceName);
+            }
+            else
+            {
+                MessageBox.Show("Directory not exist");
+            }
+            
+        }
+        private void DeleteDeviceDirectory(string deviceDirectory)
+        {
+            if(Directory.Exists(deviceDirectory))
+            {
+                //string dirToDel = MainWorkingDirectory + @"\Devices\" + deviceName;
+                string[] files = Directory.GetFiles(deviceDirectory);
+                string[] dirs = Directory.GetDirectories(deviceDirectory);
+
+                foreach (string file in files)
+                {
+                    File.SetAttributes(file, FileAttributes.Normal);
+                    File.Delete(file);
+                }
+
+                foreach (string dir in dirs)
+                {
+                    DeleteDeviceDirectory(dir);
+                }
+
+                Directory.Delete(deviceDirectory);
+            }
+            
         }
 
     }

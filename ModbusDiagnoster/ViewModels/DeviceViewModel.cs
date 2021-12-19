@@ -26,6 +26,9 @@ using System.Windows.Threading;
 using MaterialDesignThemes.Wpf;
 using ModbusDiagnoster.Model.Communication;
 using System.Windows.Media;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.IO;
 
 namespace ModbusDiagnoster.ViewModels
 {
@@ -35,6 +38,7 @@ namespace ModbusDiagnoster.ViewModels
         public ICommand StartPooling { get; set; }
         public ICommand StopPooling { get; set; }
         public ICommand ClearLogs { get; set; }
+        public ICommand ClearMon { get; set; }
         public ICommand AddCoilVar { get; set; }
         public ICommand AddDiscreteVar { get; set; }
         public ICommand AddHoldingVar { get; set; }
@@ -48,7 +52,7 @@ namespace ModbusDiagnoster.ViewModels
         public ICommand StopNetCap { get; set; }
         public ICommand ClearPackets { get; set; }
         public ICommand ConnectToDevice { get; set; }
-
+        public ICommand SaveAll { get; set; }
 
         private ObservableCollection<CoilsVariable> _Coils { get; set; }
         public ObservableCollection<CoilsVariable> Coils
@@ -98,6 +102,16 @@ namespace ModbusDiagnoster.ViewModels
             set
             {
                 _ExceptionMessages = value;
+                OnPropertyChanged();
+            }
+        }
+        private ObservableCollection<string> _MonitorMessages { get; set; }
+        public ObservableCollection<string> MonitorMessages
+        {
+            get { return this._MonitorMessages; }
+            set
+            {
+                _MonitorMessages = value;
                 OnPropertyChanged();
             }
         }
@@ -276,9 +290,10 @@ namespace ModbusDiagnoster.ViewModels
 
         public Timer timer { get; set; }
         public bool timerStop { get; set; }
+        private string _Name { get; set; }
+        private string _DeviceDirectory { get; set; }
 
-
-        public DeviceViewModel(string name = "Nazwa urządzenia", int id = 0)
+        public DeviceViewModel(string name = "Nazwa urządzenia", string dirPath = "", int id = 0)
         {
             _DeviceRTU = new ModbusRTU();
             _DeviceTCP = new ModbusTCP();
@@ -287,10 +302,20 @@ namespace ModbusDiagnoster.ViewModels
             _HoldingRegisters = new ObservableCollection<HoldingRegistersVariable>();
             _InputRegisters = new ObservableCollection<InputRegistersVariable>();
             _ExceptionMessages = new ObservableCollection<string>();
+            _MonitorMessages = new ObservableCollection<string>();
             _Interfaces = new ObservableCollection<ICaptureDevice>();
             _Packets = new ObservableCollection<MyPacket>();
             _TimerStatus = new SolidColorBrush(Color.FromArgb(255, (byte)52, (byte)73, (byte)94)); //rgba(52, 73, 94,1.0)
             ModbusTCPSelected = true;
+            _Name = name;
+            _DeviceDirectory = dirPath;
+
+            if(Directory.Exists(dirPath))
+            {
+                LoadData();
+            }
+
+
             //LoadDevices();  //Sniffer interfaces
 
             /// TODO when saving and loading will be avaible!!!
@@ -310,18 +335,21 @@ namespace ModbusDiagnoster.ViewModels
             StartPooling = new AsyncRelayCommand(StartModbusPooling, (ex) => StatusMessage = ex.Message);
             ConnectToDevice = new RelayCommand(ConnectTCP);
             StopPooling = new RelayCommand(StopPoolingMethod);
-            ClearLogs = new RelayCommand(ClearLogsMethod);
+            ClearLogs = new RelayCommand(OnClearLogs);
+            ClearMon = new RelayCommand(OnClearMon);
             StartNetCap = new RelayCommand(OnStartNetCapture);
             StopNetCap = new RelayCommand(OnStopNetCapture);
             ClearPackets = new RelayCommand(OnClearPackets);
             AddHoldingVar = new RelayCommand(OnAddHoldingVar);
             AddInputVar = new RelayCommand(OnAddInputVar);
             AddDiscreteVar = new RelayCommand(OnAddInputDiscreteVar);
+            AddCoilVar = new RelayCommand(OnAddCoilVar);
             AddMultipleHoldingVar = new RelayCommand(OnAddMultipleHoldingVars);
             AddMultipleInputVar = new RelayCommand(OnAddMultipleInputRegVars);
             AddMultipleDiscreteVar = new RelayCommand(OnAddMultipleInputDiscreteVars);
+            AddMultipleCoilVar = new RelayCommand(OnAddMultipleCoilVars);
             DeleteMultipleHoldingVar = new RelayCommand(OnDeleteMultipleHoldingVar);
-
+            SaveAll = new RelayCommand(OnSaveData);
 
             timer = new Timer();
             // timer.Elapsed += new ElapsedEventHandler(GetVariableValues);
@@ -583,9 +611,11 @@ namespace ModbusDiagnoster.ViewModels
                     {
                         ModbusIpMaster master = ModbusIpMaster.CreateIp(tcpClient);
 
+                        //MAIN Requesting 
                         await GetHoldingRegisters(master);
                         await GetInputRegisters(master);
                         await GetDiscreteInputs(master);
+                        await GetCoils(master);
                     }
                     else
                     {
@@ -610,13 +640,16 @@ namespace ModbusDiagnoster.ViewModels
                     timer.Start();
                     DispatchService.Invoke(() =>
                     {
-
                         OnTimerStart();
                     });
 
                 }
                 else
                 {
+                    DispatchService.Invoke(() =>
+                    {
+                        OnTimerStop();
+                    });
                     timerStop = false;
                 }
 
@@ -659,11 +692,12 @@ namespace ModbusDiagnoster.ViewModels
 
                                 if (tcpClient.Connected)
                                 {
+                                    AddMonMessage("Sending request: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
                                     var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
-
 
                                     if (result.Length > 0)
                                     {
+                                        AddMonMessage("Response received: Len: " + result.Length.ToString());
                                         int currResultIndex = 0;
                                         foreach (HoldingRegistersVariable hr in group)
                                         {
@@ -686,7 +720,7 @@ namespace ModbusDiagnoster.ViewModels
                                                 DispatchService.Invoke(() =>
                                                 {
                                                     //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
+                                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + Convert.ToString(result));
                                                 });
                                             }
 
@@ -739,12 +773,13 @@ namespace ModbusDiagnoster.ViewModels
                             {
                                 if (tcpClient.Connected)
                                 {
-
+                                    AddMonMessage("Sending request: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
                                     var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
 
 
                                     if (result.Length > 0)
                                     {
+                                        AddMonMessage("Response received: Len: " + result.Length.ToString());
                                         int currResultIndex = 0;
                                         foreach (HoldingRegistersVariable hr in group)
                                         {
@@ -857,11 +892,12 @@ namespace ModbusDiagnoster.ViewModels
 
                                 if (tcpClient.Connected)
                                 {
+                                    AddMonMessage("Sending request: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
                                     var result = await master.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
-
 
                                     if (result.Length > 0)
                                     {
+                                        AddMonMessage("Response received: Len: " + result.Length.ToString());
                                         int currResultIndex = 0;
                                         foreach (InputRegistersVariable ir in group)
                                         {
@@ -937,12 +973,13 @@ namespace ModbusDiagnoster.ViewModels
                             {
                                 if (tcpClient.Connected)
                                 {
-
+                                    AddMonMessage("Sending request: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
                                     var result = await master.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
 
 
                                     if (result.Length > 0)
                                     {
+                                        AddMonMessage("Response received: Len: " + result.Length.ToString());
                                         int currResultIndex = 0;
                                         foreach (InputRegistersVariable ir in group)
                                         {
@@ -1047,12 +1084,15 @@ namespace ModbusDiagnoster.ViewModels
                         {
                             if (tcpClient.Connected)
                             {
+                                AddMonMessage("Sending request: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() +
+                                    " Number of registers: " + numOfRegs.ToString());
 
                                 var result = await master.ReadInputsAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
 
 
                                 if (result.Length > 0)
                                 {
+                                    AddMonMessage("Response received: Len: " + result.Length.ToString());
                                     int currResultIndex = 0;
                                     foreach (DiscreteInputsVariable di in group)
                                     {
@@ -1094,6 +1134,10 @@ namespace ModbusDiagnoster.ViewModels
                                         //ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
                                     });
                                 }
+                                else
+                                {
+                                    AddMonMessage("Result was to short: " + result.Length.ToString());
+                                }
                             }
                             else
                             {
@@ -1133,11 +1177,121 @@ namespace ModbusDiagnoster.ViewModels
             }
 
         }
+        private async Task GetCoils(ModbusIpMaster master)
+        {
+
+            try
+            {
+                List<List<CoilsVariable>> groupedCoils = GroupVariables.GroupCoils(Coils);
+
+                foreach (List<CoilsVariable> group in groupedCoils)
+                {
+                    if (group.Count > 0)
+                    {
+                        ushort numOfRegs = (UInt16)(group.Count);
+
+                        if (tcpClient != null)
+                        {
+                            if (tcpClient.Connected)
+                            {
+                                AddMonMessage("Coils Sending request: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() +
+                                    " Number of registers: " + numOfRegs.ToString());
+
+                                var result = await master.ReadCoilsAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+
+
+                                if (result.Length > 0)
+                                {
+                                    AddMonMessage("Coils Response received: Len: " + result.Length.ToString());
+                                    int currResultIndex = 0;
+                                    foreach (CoilsVariable coil in group)
+                                    {
+                                        int coilIndex = Coils.IndexOf(coil);
+                                        if (result.Length > currResultIndex)   //checking if result is long enough
+                                        {
+                                            switch (result[currResultIndex])
+                                            {
+                                                case true:
+                                                    Coils[coilIndex].Value = "1";
+                                                    break;
+                                                case false:
+                                                    Coils[coilIndex].Value = "0";
+                                                    break;
+                                                default:
+                                                    Coils[coilIndex].Value = "-1";
+                                                    break;
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            DispatchService.Invoke(() =>
+                                            {
+                                                //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
+                                            });
+                                        }
+
+                                        Coils[coilIndex].Timestamp = DateTime.Now.ToString();
+                                        currResultIndex += 1;
+                                    }
+
+                                    DispatchService.Invoke(() =>
+                                    {
+                                        //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+
+                                        //TODO:: Add feature to user can enable advanced diagnostics
+                                        //ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
+                                    });
+                                }
+                                else
+                                {
+                                    AddMonMessage("Result was to short: " + result.Length.ToString());
+                                }
+                            }
+                            else
+                            {
+                                DispatchService.Invoke(() =>
+                                {
+                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Client is disconnected");
+                                });
+                            }
+
+                        }
+                        else
+                        {
+                            DispatchService.Invoke(() =>
+                            {
+                                //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Client is disconnected");
+                            });
+                        }
+
+
+
+                    }
+                }
+
+
+            }
+            catch (Exception exc)
+            {
+                //MessageBox.Show(exc.Message);
+                DispatchService.Invoke(() =>
+                {
+                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + ": Coils error : " + exc.Message);
+                });
+
+
+            }
+
+        }
 
         private void StopPoolingMethod(object obj)
         {
             timerStop = true;
-            timer.Stop();
+            //timer.Stop();
 
             DispatchService.Invoke(() =>
             {
@@ -1149,9 +1303,13 @@ namespace ModbusDiagnoster.ViewModels
             //master.Dispose();
         }
 
-        private void ClearLogsMethod(object obj)
+        private void OnClearLogs(object obj)
         {
             ExceptionMessages.Clear();
+        }
+        private void OnClearMon(object obj)
+        {
+            MonitorMessages.Clear();
         }
 
         public string getCalculatedValue(string expression, string variableValue)
@@ -1369,6 +1527,7 @@ namespace ModbusDiagnoster.ViewModels
         {
             Inputs.Add(new DiscreteInputsVariable());
         }
+
         private void OnAddMultipleInputDiscreteVars(object obj)
         {
             AddMultipleDiscreteCoilsViewModel viewModel = new AddMultipleDiscreteCoilsViewModel();
@@ -1399,15 +1558,122 @@ namespace ModbusDiagnoster.ViewModels
             }
         }
 
+        private void OnAddCoilVar(object obj)
+        {
+            Coils.Add(new CoilsVariable());
+        }
+        private void OnAddMultipleCoilVars(object obj)
+        {
+            AddMultipleDiscreteCoilsViewModel viewModel = new AddMultipleDiscreteCoilsViewModel();
+            var dialog = new AddMultipleDiscreteCoils(viewModel);
+
+
+            if (dialog.ShowDialog() == true)
+            {
+
+                ushort regStep = 1;
+
+                int currentStep = viewModel.StartNumber;
+                ushort currentReg = viewModel.StartRegNumber;
+
+
+                for (int i = 0; i < viewModel.Count; i++)
+                {
+                    string name = viewModel.Prefix + currentStep.ToString() + viewModel.Suffix;
+                    currentStep += viewModel.Step;
+                    Coils.Add(new CoilsVariable(name, currentReg));
+                    currentReg += regStep;
+                }
+
+            }
+            else
+            {
+
+            }
+        }
         private void OnDeleteMultipleHoldingVar(object obj)
         {
 
         }
 
-
-        private void ClosingDialogHrEventHandler(object sender, DialogClosingEventArgs eventArgs)
+        private void AddMonMessage(string message = "")
         {
-            MessageBox.Show(eventArgs.ToString());
+            DispatchService.Invoke(() =>
+            {
+                MonitorMessages.Insert(0, DateTime.Now.ToString() + ": " + message);
+            });
+        }
+
+        private void OnSaveData(object obj)
+        {
+            if (Directory.Exists(_DeviceDirectory))
+            {
+                try
+                {
+                    string fileName = _DeviceDirectory + @"\HoldingRegisters.json";
+                    string jsonString = JsonSerializer.Serialize(HoldingRegisters);
+                    File.WriteAllText(fileName, jsonString);
+                    fileName = _DeviceDirectory + @"\InputRegisters.json";
+                    jsonString = JsonSerializer.Serialize(InputRegisters);
+                    File.WriteAllText(fileName, jsonString);
+                    fileName = _DeviceDirectory + @"\DiscreteInputs.json";
+                    jsonString = JsonSerializer.Serialize(Inputs);
+                    File.WriteAllText(fileName, jsonString);
+                    fileName = _DeviceDirectory + @"\Coils.json";
+                    jsonString = JsonSerializer.Serialize(Coils);
+                    File.WriteAllText(fileName, jsonString);
+                    fileName = _DeviceDirectory + @"\MbTCP.json";
+                    jsonString = JsonSerializer.Serialize(DeviceTCP);
+                    File.WriteAllText(fileName, jsonString);
+                    fileName = _DeviceDirectory + @"\MbRTU.json";
+                    jsonString = JsonSerializer.Serialize(DeviceRTU);
+                    File.WriteAllText(fileName, jsonString);
+                    
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                
+
+            }
+
+        }
+
+        private void LoadData()
+        {
+            try
+            {
+                string fileName = _DeviceDirectory + @"\HoldingRegisters.json";
+                string jsonString = File.ReadAllText(fileName);
+                HoldingRegisters= JsonSerializer.Deserialize<ObservableCollection<HoldingRegistersVariable>>(jsonString);
+
+
+                fileName = _DeviceDirectory + @"\InputRegisters.json";
+                jsonString = File.ReadAllText(fileName);
+                InputRegisters = JsonSerializer.Deserialize<ObservableCollection<InputRegistersVariable>>(jsonString);
+
+                fileName = _DeviceDirectory + @"\DiscreteInputs.json";
+                jsonString = File.ReadAllText(fileName);
+                Inputs = JsonSerializer.Deserialize<ObservableCollection<DiscreteInputsVariable>>(jsonString);
+
+                fileName = _DeviceDirectory + @"\Coils.json";
+                jsonString = File.ReadAllText(fileName);
+                Coils = JsonSerializer.Deserialize<ObservableCollection<CoilsVariable>>(jsonString);
+
+                fileName = _DeviceDirectory + @"\MbTCP.json";
+                jsonString = File.ReadAllText(fileName);
+                DeviceTCP= JsonSerializer.Deserialize<ModbusTCP>(jsonString);
+
+                fileName = _DeviceDirectory + @"\MbRTU.json";
+                jsonString = File.ReadAllText(fileName);
+                DeviceRTU = JsonSerializer.Deserialize<ModbusRTU>(jsonString);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)

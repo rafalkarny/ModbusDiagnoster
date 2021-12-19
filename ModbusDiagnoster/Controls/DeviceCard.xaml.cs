@@ -31,10 +31,10 @@ namespace ModbusDiagnoster.Controls
 
      
 
-        public DeviceCard(string name,int id)
+        public DeviceCard(string name,string devDir,int id)
         {
             InitializeComponent();
-            DataContext = new DeviceCardViewModel(name,id);
+            DataContext = new DeviceCardViewModel(name,devDir,id);
             
 
 

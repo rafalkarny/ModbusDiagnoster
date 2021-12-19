@@ -106,7 +106,7 @@
 
             <!--MENU-->
             <StackPanel Grid.Row="0" Orientation="Horizontal">
-                <Button
+            <Button
             x:Name="propertiesBtn"
             Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
             Width="30"
@@ -184,6 +184,23 @@
                     Height="15"
                     Background="{Binding TimerStatus}"
                     ></Button>
+                <Button
+                    x:Name="saveBtn"
+                    Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                    Width="30"
+                    Height="30"
+                    Grid.Row="0"
+                    ToolTip="{StaticResource PropertiesToolTip}"
+                    Command="{Binding SaveAll}"
+                    HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                    Margin="5"
+                    >
+                    <materialDesign:PackIcon
+                            Kind="ContentSaveAll"
+                            Height="15"
+                            Width="15" 
+                            />
+                </Button>
             </StackPanel>
 
             <!-- COILS-->
@@ -192,7 +209,80 @@
                      Background="{DynamicResource MaterialDesignPaper}"
                      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
                      >
-                    <DataGrid x:Name="CoilsDataGrd" ItemsSource="{Binding Coils}"></DataGrid>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <Button x:Name="addCoilReg" Content="{StaticResource AddVarBtn}" Margin="5" Command="{Binding AddCoilVar}"></Button>
+                            <Button x:Name="addMultipleCoilReg" Content="{StaticResource AddMultipleVarBtn}" Margin="5" Command="{Binding AddMultipleCoilVar}"></Button>
+
+                            <Button Visibility="Hidden" x:Name="deleteMultipleCoilReg" Content="Remove selected" Margin="5" Command="{Binding DeleteMultipleHoldingVar}"></Button>
+                        </StackPanel>
+                        <DataGrid x:Name="CoilsdataGrd"
+                              Grid.Row="1"
+                              ItemsSource="{Binding Coils,Mode=TwoWay}"
+                              
+                               SelectionMode="Extended"
+                              CanUserAddRows="False" 
+                              CanUserReorderColumns="True" 
+                              AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridCheckBoxColumn Header="{StaticResource CheckedHeader}" 
+                                                Binding="{Binding Checked}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
+                                                ></DataGridCheckBoxColumn>
+                                <DataGridCheckBoxColumn Header="{StaticResource DisabledHeader}" 
+                                                Binding="{Binding Disabled}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
+                                                ></DataGridCheckBoxColumn>
+                                <DataGridTextColumn Header="{StaticResource NameHeader}" 
+                                                Binding="{Binding Name}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                <DataGridTextColumn Header="{StaticResource AddressHeader}" 
+                                                Binding="{Binding StartAddress}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                FontWeight="Bold"
+                                                ></DataGridTextColumn>
+
+                                <DataGridTextColumn Header="{StaticResource ValueHeader}" 
+                                                Binding="{Binding Value,Mode=TwoWay}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                FontWeight="Bold"
+                                                ></DataGridTextColumn>
+
+                                <DataGridTextColumn Header="{StaticResource DescHeader}" 
+                                                Binding="{Binding Description}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                <!--    <DataGridTextColumn Header="Okres próbkowania [ms]" 
+                                                Binding="{Binding SamplePeriod}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn> -->
+                                <DataGridTextColumn Header="{StaticResource TimestampHeader}" 
+                                                Binding="{Binding Timestamp}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                                <DataGridTextColumn Header="{StaticResource NoteHeader}" 
+                                                Binding="{Binding Note}" 
+                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                ></DataGridTextColumn>
+                            </DataGrid.Columns>
+
+
+                        </DataGrid>
+                    </Grid>
 
                 </TabItem>
 
@@ -559,77 +649,28 @@
                                      ItemsSource="{Binding ExceptionMessages}"></ListBox>
                         </Grid>
                     </TabItem>
-                    <TabItem Header="Sniffer" Visibility="Hidden">
+                    <TabItem Header="Communication monitor">
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="50"></RowDefinition>
+                                <RowDefinition Height="30"></RowDefinition>
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
-
-                            <StackPanel Height="50" Orientation="Horizontal" Grid.Row="0">
-                                <Button x:Name="startCapBtn" Content="Start" Margin="5" Command="{Binding StartNetCap}"></Button>
-                                <Button x:Name="stopCapBtn" Content="Stop" Margin="5" Command="{Binding StopNetCap}"></Button>
-                                <ComboBox x:Name="interfacesCmbBox" IsEditable="False" 
-                                          ItemsSource="{Binding Interfaces}" 
-                                          SelectedItem="{Binding SelectedInterface}"
-                                          
-                                          ></ComboBox>
-                                <Button x:Name="clearCapBtn" Content="Clear" Margin="5" Command="{Binding ClearPackets}"></Button>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <Button
+                            x:Name="clearMonBtn"
+                                Content="{StaticResource CleanBtn}"
+                                FontSize="10"
+                                Margin="1"
+                                Command="{Binding ClearMon}"
+                                >
+                                </Button>
                             </StackPanel>
-
-                            <!--       <ListBox x:Name="packetsLstBox" 
-                                         ItemsSource="{Binding Packets}"
-                                         ></ListBox>
-                            -->
-                            <Grid Grid.Row="1">
-                                <DataGrid ItemsSource="{Binding Packets}" AutoGenerateColumns="False">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Timestamp" 
-                                                Binding="{Binding Time}" 
-                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
-                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                                ></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Source IP" 
-                                                Binding="{Binding SourceIP}" 
-                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
-                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                                ></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Destination IP" 
-                                                Binding="{Binding DestinationIP}" 
-                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
-                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                                ></DataGridTextColumn>
-                                        <DataGridTextColumn Header="TCP Destination Port" 
-                                                Binding="{Binding TCPpacket.DestinationPort}" 
-                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
-                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                                ></DataGridTextColumn>
-                                        <DataGridTextColumn Header="TCP Source Port" 
-                                                Binding="{Binding TCPpacket.SourcePort}" 
-                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
-                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                                ></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Data Text" 
-                                                Binding="{Binding Payload}" 
-                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
-                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                                ></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Data" 
-                                                Binding="{Binding TCPpacket.PayloadData}" 
-                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
-                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                                ></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Data" 
-                                                Binding="{Binding TCPpacket.Bytes}" 
-                                                      ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
-                                                      EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                                ></DataGridTextColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </Grid>
+                            <ListBox x:Name="monLstBox" 
+                                    Grid.Row="1"
+                                     ItemsSource="{Binding MonitorMessages}"></ListBox>
                         </Grid>
-
                     </TabItem>
+
                 </TabControl>
             </Grid>
 

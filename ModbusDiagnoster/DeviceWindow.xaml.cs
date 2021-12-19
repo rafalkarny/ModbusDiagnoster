@@ -25,10 +25,10 @@ namespace ModbusDiagnoster
             InitializeComponent();
             DataContext = new DeviceViewModel();
         }
-        public DeviceWindow(string name,int id)
+        public DeviceWindow(string name,string dirPath,int id)
         {
             InitializeComponent();
-            DataContext = new DeviceViewModel(name, id);
+            DataContext = new DeviceViewModel(name,dirPath, id);
         }
 
         private void propertiesBtn_Click(object sender, RoutedEventArgs e)

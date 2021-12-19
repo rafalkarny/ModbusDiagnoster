@@ -43,35 +43,36 @@ namespace ModbusDiagnoster.ViewModels
                 OnPropertyChanged();
             }
         }
+        private string _DeviceDirectory { get; set; }
 
         public DeviceCardViewModel()
         {
             this.ID = -1;
             this.DeviceName = "none";
             OpenDeviceWindowCommand=new RelayCommand(OpenDeviceWindow);
+            _DeviceDirectory = "";
         }
-        public DeviceCardViewModel(string name,int id)
+        public DeviceCardViewModel(string name,string deviceDirectory,int id)
         {
             this.ID = id;
             this.DeviceName = name;
             OpenDeviceWindowCommand = new RelayCommand(OpenDeviceWindow);
             DeleteThisDevice = new RelayCommand(DeleteThis);
+            _DeviceDirectory = deviceDirectory;
         }
 
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            //MessageBox.Show("Wywołano zmianę" + propertyName);
+            
         }
 
         private void OpenDeviceWindow(object obj)
         {
-
-            //MessageBox.Show("Klik!");
-            
-                deviceWindow = new DeviceWindow();
-                deviceWindow.Show();
+            deviceWindow = new DeviceWindow(this.DeviceName,_DeviceDirectory,this.ID);
+            //DeviceViewModel deviceWindow = new DeviceViewModel(this.DeviceName);    
+            deviceWindow.Show();
             
         }
 
