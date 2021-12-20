@@ -122,6 +122,9 @@
     <Compile Include="DeviceWindow.xaml.cs">
       <DependentUpon>DeviceWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FileOperations\ExportAs.cs" />
+    <Compile Include="FileOperations\LoadVariables.cs" />
+    <Compile Include="FileOperations\SaveVariables.cs" />
     <Compile Include="Model\Communication\GroupVariables.cs" />
     <Compile Include="Model\Converters\VariableType.cs" />
     <Compile Include="Model\Sniffers\MyPacket.cs" />

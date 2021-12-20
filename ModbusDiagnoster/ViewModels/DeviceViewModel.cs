@@ -29,6 +29,7 @@ using System.Windows.Media;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO;
+using ModbusDiagnoster.FileOperations;
 
 namespace ModbusDiagnoster.ViewModels
 {
@@ -53,6 +54,7 @@ namespace ModbusDiagnoster.ViewModels
         public ICommand ClearPackets { get; set; }
         public ICommand ConnectToDevice { get; set; }
         public ICommand SaveAll { get; set; }
+        public ICommand SaveAsCSV { get; set; }
 
         private ObservableCollection<CoilsVariable> _Coils { get; set; }
         public ObservableCollection<CoilsVariable> Coils
@@ -350,6 +352,7 @@ namespace ModbusDiagnoster.ViewModels
             AddMultipleCoilVar = new RelayCommand(OnAddMultipleCoilVars);
             DeleteMultipleHoldingVar = new RelayCommand(OnDeleteMultipleHoldingVar);
             SaveAll = new RelayCommand(OnSaveData);
+            SaveAsCSV=new RelayCommand(OnSaveAsCSV);
 
             timer = new Timer();
             // timer.Elapsed += new ElapsedEventHandler(GetVariableValues);
@@ -1610,24 +1613,12 @@ namespace ModbusDiagnoster.ViewModels
             {
                 try
                 {
-                    string fileName = _DeviceDirectory + @"\HoldingRegisters.json";
-                    string jsonString = JsonSerializer.Serialize(HoldingRegisters);
-                    File.WriteAllText(fileName, jsonString);
-                    fileName = _DeviceDirectory + @"\InputRegisters.json";
-                    jsonString = JsonSerializer.Serialize(InputRegisters);
-                    File.WriteAllText(fileName, jsonString);
-                    fileName = _DeviceDirectory + @"\DiscreteInputs.json";
-                    jsonString = JsonSerializer.Serialize(Inputs);
-                    File.WriteAllText(fileName, jsonString);
-                    fileName = _DeviceDirectory + @"\Coils.json";
-                    jsonString = JsonSerializer.Serialize(Coils);
-                    File.WriteAllText(fileName, jsonString);
-                    fileName = _DeviceDirectory + @"\MbTCP.json";
-                    jsonString = JsonSerializer.Serialize(DeviceTCP);
-                    File.WriteAllText(fileName, jsonString);
-                    fileName = _DeviceDirectory + @"\MbRTU.json";
-                    jsonString = JsonSerializer.Serialize(DeviceRTU);
-                    File.WriteAllText(fileName, jsonString);
+                   SaveVariables.SaveCoils(Coils,_DeviceDirectory);
+                   SaveVariables.SaveDI(Inputs,_DeviceDirectory);
+                   SaveVariables.SaveIR(InputRegisters, _DeviceDirectory);
+                   SaveVariables.SaveHR(HoldingRegisters,_DeviceDirectory);
+                   SaveVariables.SaveTCPparams(DeviceTCP, _DeviceDirectory);
+                   SaveVariables.SaveRTUparams(DeviceRTU, _DeviceDirectory);
                     
                 }
                 catch (Exception ex)
@@ -1644,31 +1635,12 @@ namespace ModbusDiagnoster.ViewModels
         {
             try
             {
-                string fileName = _DeviceDirectory + @"\HoldingRegisters.json";
-                string jsonString = File.ReadAllText(fileName);
-                HoldingRegisters= JsonSerializer.Deserialize<ObservableCollection<HoldingRegistersVariable>>(jsonString);
-
-
-                fileName = _DeviceDirectory + @"\InputRegisters.json";
-                jsonString = File.ReadAllText(fileName);
-                InputRegisters = JsonSerializer.Deserialize<ObservableCollection<InputRegistersVariable>>(jsonString);
-
-                fileName = _DeviceDirectory + @"\DiscreteInputs.json";
-                jsonString = File.ReadAllText(fileName);
-                Inputs = JsonSerializer.Deserialize<ObservableCollection<DiscreteInputsVariable>>(jsonString);
-
-                fileName = _DeviceDirectory + @"\Coils.json";
-                jsonString = File.ReadAllText(fileName);
-                Coils = JsonSerializer.Deserialize<ObservableCollection<CoilsVariable>>(jsonString);
-
-                fileName = _DeviceDirectory + @"\MbTCP.json";
-                jsonString = File.ReadAllText(fileName);
-                DeviceTCP= JsonSerializer.Deserialize<ModbusTCP>(jsonString);
-
-                fileName = _DeviceDirectory + @"\MbRTU.json";
-                jsonString = File.ReadAllText(fileName);
-                DeviceRTU = JsonSerializer.Deserialize<ModbusRTU>(jsonString);
-
+                HoldingRegisters =LoadVariables.LoadHR(_DeviceDirectory);
+                InputRegisters=LoadVariables.LoadIR(_DeviceDirectory);
+                Inputs=LoadVariables.LoadDI(_DeviceDirectory);
+                Coils=LoadVariables.LoadCoils(_DeviceDirectory);
+                DeviceTCP=LoadVariables.LoadMbTCP(_DeviceDirectory);
+                DeviceRTU=LoadVariables.LoadMbRTU(_DeviceDirectory);
             }
             catch (Exception ex)
             {
@@ -1682,7 +1654,10 @@ namespace ModbusDiagnoster.ViewModels
             //MessageBox.Show("Wywołano zmianę" + propertyName);
         }
 
-
+        private void OnSaveAsCSV(object obj)
+        {
+            ExportAs.SaveAsCSV(HoldingRegisters);
+        }
 
 
 

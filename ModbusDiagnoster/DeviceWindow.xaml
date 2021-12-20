@@ -193,10 +193,27 @@
                     ToolTip="{StaticResource PropertiesToolTip}"
                     Command="{Binding SaveAll}"
                     HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                    Margin="5"
+                    Margin="20,5,5,5"
                     >
                     <materialDesign:PackIcon
                             Kind="ContentSaveAll"
+                            Height="15"
+                            Width="15" 
+                            />
+                </Button>
+                <Button
+                    x:Name="saveCSVBtn"
+                    Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                    Width="30"
+                    Height="30"
+                    Grid.Row="0"
+                    ToolTip="{StaticResource PropertiesToolTip}"
+                    Command="{Binding SaveAsCSV}"
+                    HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                    Margin="5,5,5,5"
+                    >
+                    <materialDesign:PackIcon
+                            Kind="FileExport"
                             Height="15"
                             Width="15" 
                             />
