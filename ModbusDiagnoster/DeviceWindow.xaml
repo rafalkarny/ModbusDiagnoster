@@ -49,6 +49,7 @@
                 <TabItem
                     Header="Modbus TCP"
                     >
+                    <ScrollViewer VerticalScrollBarVisibility="Visible">
                     <StackPanel>
                         <RadioButton x:Name="tcpRadBtn" Content="Modbus TCP"
                                      IsChecked="{Binding ModbusTCPSelected}"
@@ -82,10 +83,33 @@
                         <RadioButton x:Name="rtuRadBtn" Content="Modbus RTU"
                                      IsChecked="{Binding ModbusRTUSelected}"></RadioButton>
                         <GroupBox
-                        Margin="5">
+                        Margin="5"  >
+
+                            <StackPanel>
+                                <Label Content="{StaticResource SerialPortLbl}"></Label>
+                                <ComboBox x:Name="PortCmbox" Margin="2"></ComboBox>
+                                <Label Content="{StaticResource BitrateLbl}"></Label>
+                                <ComboBox x:Name="BitRateCmbox" Margin="2"></ComboBox>
+                                <Label Content="{StaticResource ParityLbl}"></Label>
+                                <ComboBox x:Name="ParityCmbox"></ComboBox>
+                                <Label Content="{StaticResource StopBitsLbl}"></Label>
+                                <ComboBox x:Name="StopBitsCmbox" Margin="2"></ComboBox>
+                                <Label Content="{StaticResource DTRLbl}"></Label>
+                                <StackPanel x:Name="dtrCmbox" Orientation="Horizontal">
+                                    <RadioButton x:Name="dtrOnRadioBtn" Content="{StaticResource OnLbl}"></RadioButton>
+                                    <RadioButton x:Name="dtrOffRadioBtn" Content="{StaticResource OffLbl}"></RadioButton>
+                                </StackPanel>
+                                <Label Content="{StaticResource RTSLbl}"></Label>
+                                <StackPanel x:Name="rtsCmbox" Orientation="Horizontal">
+                                    <RadioButton x:Name="rtsOnRadioBtn" Content="{StaticResource OnLbl}"></RadioButton>
+                                    <RadioButton x:Name="rtsOffRadioBtn" Content="{StaticResource OffLbl}"></RadioButton>
+                                    <RadioButton x:Name="rtsOnTxRadioBtn" Content="{StaticResource OnTxLbl}"></RadioButton>
+                                </StackPanel>
+                            </StackPanel>
 
                         </GroupBox>
                     </StackPanel>
+                    </ScrollViewer>
                 </TabItem>
                 <TabItem
                     Visibility="Hidden"

@@ -42,6 +42,15 @@
     <system:String x:Key="ConnectToolTip">Connect/Disconnect TCP Session</system:String>
     <system:String x:Key="ChangeConTCPpropertiesToolTip">Apply changes (reconnect device)</system:String>
     
+    <!-- Labels -->
+    <system:String x:Key="SerialPortLbl">Port:</system:String>
+    <system:String x:Key="BitrateLbl">Bitrate:</system:String>
+    <system:String x:Key="ParityLbl">Parity:</system:String>
+    <system:String x:Key="StopBitsLbl">Stop bits:</system:String>
+    <system:String x:Key="DTRLbl">DTR:</system:String>
+    <system:String x:Key="OnLbl">On:</system:String>
+    <system:String x:Key="OffLbl">Off:</system:String>
+    <system:String x:Key="OnTxLbl">On TX:</system:String>
+    <system:String x:Key="RTSLbl">RTS:</system:String>
     
-
 </ResourceDictionary>
