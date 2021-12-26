@@ -10,13 +10,27 @@
         mc:Ignorable="d"
         Title="{StaticResource DeviceWindowName}" Height="600" Width="800"
         x:Name="deviceWindow" WindowStartupLocation="CenterScreen"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:io="clr-namespace:System.IO.Ports;assembly=System"
         >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
             </ResourceDictionary.MergedDictionaries>
+        
+        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="ParityValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="io:Parity" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="StopBitsOptions">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="io:StopBits" />
+        </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
         </ResourceDictionary>
+
     </Window.Resources>
 
     <Grid>
@@ -87,25 +101,61 @@
 
                             <StackPanel>
                                 <Label Content="{StaticResource SerialPortLbl}"></Label>
-                                <ComboBox x:Name="PortCmbox" Margin="2"></ComboBox>
+                                <ComboBox x:Name="PortCmbox" Margin="2"
+                                          ItemsSource="{Binding AvaibleSerialPorts}"
+                                          SelectedItem="{Binding DeviceRTU.Port}"
+                                          ></ComboBox>
                                 <Label Content="{StaticResource BitrateLbl}"></Label>
-                                <ComboBox x:Name="BitRateCmbox" Margin="2"></ComboBox>
+                                <ComboBox x:Name="BitRateCmbox" Margin="2"
+                                          ItemsSource="{Binding AvaibleBaudRates}"
+                                          SelectedItem="{Binding DeviceRTU.Baudrate}"
+                                          ></ComboBox>
                                 <Label Content="{StaticResource ParityLbl}"></Label>
-                                <ComboBox x:Name="ParityCmbox"></ComboBox>
+                                <ComboBox x:Name="ParityCmbox"
+                                          ItemsSource="{Binding Source={StaticResource ParityValues}}"
+                                          SelectedItem="{Binding DeviceRTU.PortParity}"
+                                          ></ComboBox>
                                 <Label Content="{StaticResource StopBitsLbl}"></Label>
-                                <ComboBox x:Name="StopBitsCmbox" Margin="2"></ComboBox>
+                                <ComboBox x:Name="StopBitsCmbox" Margin="2"
+                                          ItemsSource="{Binding Source={StaticResource StopBitsOptions}}"
+                                          SelectedItem="{Binding DeviceRTU.PortStopBits}"
+                                          ></ComboBox>
                                 <Label Content="{StaticResource DTRLbl}"></Label>
                                 <StackPanel x:Name="dtrCmbox" Orientation="Horizontal">
-                                    <RadioButton x:Name="dtrOnRadioBtn" Content="{StaticResource OnLbl}"></RadioButton>
-                                    <RadioButton x:Name="dtrOffRadioBtn" Content="{StaticResource OffLbl}"></RadioButton>
+                                    <RadioButton x:Name="dtrOnRadioBtn" 
+                                                 IsChecked="{Binding DeviceRTU.DTRon}"
+                                                 Content="{StaticResource OnLbl}"
+                                                 Margin="0,0,5,0"
+                                                 ></RadioButton>
+                                   <RadioButton x:Name="dtrOffRadioBtn" 
+                                                IsChecked="{Binding DeviceRTU.DTRoff}"
+                                                Content="{StaticResource OffLbl}"></RadioButton>
+                               
                                 </StackPanel>
                                 <Label Content="{StaticResource RTSLbl}"></Label>
                                 <StackPanel x:Name="rtsCmbox" Orientation="Horizontal">
-                                    <RadioButton x:Name="rtsOnRadioBtn" Content="{StaticResource OnLbl}"></RadioButton>
-                                    <RadioButton x:Name="rtsOffRadioBtn" Content="{StaticResource OffLbl}"></RadioButton>
-                                    <RadioButton x:Name="rtsOnTxRadioBtn" Content="{StaticResource OnTxLbl}"></RadioButton>
+                                    <RadioButton x:Name="rtsOnRadioBtn" 
+                                                 IsChecked="{Binding DeviceRTU.RTSon}"
+                                                 Content="{StaticResource OnLbl}"
+                                                 Margin="0,0,5,0">
+                                        
+                                    </RadioButton>
+                                 <RadioButton x:Name="rtsOffRadioBtn"
+                                              Margin="0,0,5,0"
+                                              IsChecked="{Binding DeviceRTU.RTSoff}"
+                                              Content="{StaticResource OffLbl}"></RadioButton>
+                                  
+                                    <RadioButton x:Name="rtsOnTxRadioBtn" Visibility="Hidden"
+                                                 IsChecked="{Binding DeviceRTU.RTSonTX}"
+                                                 Content="{StaticResource OnTxLbl}"
+                                                 
+                                                 ></RadioButton>
                                 </StackPanel>
-                            </StackPanel>
+                                <Label Content="Slave ID:"></Label>
+                                <TextBox x:Name="slaveIdRTUTxtBox" Text="{Binding DeviceRTU.SlaveId}"
+                                         
+                                ></TextBox>
+                                </StackPanel>
 
                         </GroupBox>
                     </StackPanel>
@@ -244,8 +294,9 @@
                 </Button>
             </StackPanel>
 
-            <!-- COILS-->
+            
             <TabControl Grid.Row="1" >
+                <!-- COILS-->
                 <TabItem Name="CoilsCard" Header="Coils" 
                      Background="{DynamicResource MaterialDesignPaper}"
                      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -407,8 +458,6 @@
                         </DataGrid>
                     </Grid>
                 </TabItem>
-
-
 
                 <!-- INPUT REGISTERS -->
                 <TabItem Name="InputRegistersCard" Header="Input Registers"
@@ -664,8 +713,6 @@
                 
                 
             </TabControl>
-
-
 
             <Grid Grid.Row="3">
                 <TabControl>

@@ -30,6 +30,11 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO;
 using ModbusDiagnoster.FileOperations;
+using System.IO.Ports;
+using System.Threading;
+using Modbus.Data;
+using Modbus.Utility;
+using NModbus.Serial;
 
 namespace ModbusDiagnoster.ViewModels
 {
@@ -157,6 +162,8 @@ namespace ModbusDiagnoster.ViewModels
             set
             {
                 _DeviceRTU = value;
+                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Properties changed, disconnecting...");
+               // DisconnectSerial();
                 OnPropertyChanged();
             }
         }
@@ -202,6 +209,8 @@ namespace ModbusDiagnoster.ViewModels
             }
         }
         private TcpClient tcpClient { get; set; }
+        private SerialPort serialPortAdapter { get; set; }
+
         private Brush _TimerStatus;
         public Brush TimerStatus
         {
@@ -270,6 +279,11 @@ namespace ModbusDiagnoster.ViewModels
                 //MessageBox.Show("Wybrano modbusa RTU");
             }
         }
+        public System.Timers.Timer timer { get; set; }
+        public bool timerStop { get; set; }
+        private string _Name { get; set; }
+        private string _DeviceDirectory { get; set; }
+        public string[] AvaibleSerialPorts { get; set; }
         private ICaptureDevice _SelectedInterface { get; set; }
         public ICaptureDevice SelectedInterface
         {
@@ -289,11 +303,8 @@ namespace ModbusDiagnoster.ViewModels
         "BigEndianFloat",
         "LittleEndianFloat" };
 
+        public int[] AvaibleBaudRates { get; set; }
 
-        public Timer timer { get; set; }
-        public bool timerStop { get; set; }
-        private string _Name { get; set; }
-        private string _DeviceDirectory { get; set; }
 
         public DeviceViewModel(string name = "Nazwa urządzenia", string dirPath = "", int id = 0)
         {
@@ -312,7 +323,13 @@ namespace ModbusDiagnoster.ViewModels
             _Name = name;
             _DeviceDirectory = dirPath;
 
-            if(Directory.Exists(dirPath))
+            //Filling comboboxes with avaible ports etc..
+            AvaibleSerialPorts = SerialPort.GetPortNames();
+            AvaibleBaudRates = new int[] { 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200 };
+
+
+            //Loading stored device data 
+            if (Directory.Exists(dirPath))
             {
                 LoadData();
             }
@@ -335,7 +352,7 @@ namespace ModbusDiagnoster.ViewModels
             //ConnectTCP();
 
             StartPooling = new AsyncRelayCommand(StartModbusPooling, (ex) => StatusMessage = ex.Message);
-            ConnectToDevice = new RelayCommand(ConnectTCP);
+            ConnectToDevice = new RelayCommand(Connect);
             StopPooling = new RelayCommand(StopPoolingMethod);
             ClearLogs = new RelayCommand(OnClearLogs);
             ClearMon = new RelayCommand(OnClearMon);
@@ -352,9 +369,9 @@ namespace ModbusDiagnoster.ViewModels
             AddMultipleCoilVar = new RelayCommand(OnAddMultipleCoilVars);
             DeleteMultipleHoldingVar = new RelayCommand(OnDeleteMultipleHoldingVar);
             SaveAll = new RelayCommand(OnSaveData);
-            SaveAsCSV=new RelayCommand(OnSaveAsCSV);
+            SaveAsCSV = new RelayCommand(OnSaveAsCSV);
 
-            timer = new Timer();
+            timer = new System.Timers.Timer();
             // timer.Elapsed += new ElapsedEventHandler(GetVariableValues);
             timer.Elapsed += new ElapsedEventHandler(GetGroupedVariableValues);
             timer.Interval = 1000;
@@ -367,7 +384,19 @@ namespace ModbusDiagnoster.ViewModels
             // _HoldingRegisters.CollectionChanged += ContentCollectionChanged;
         }
 
-        private void ConnectTCP(object obj)
+
+        private void Connect(object obj)
+        {
+            if (ModbusTCPSelected)
+            {
+                ConnectTCP();   //Prepare tcp session
+            }
+            if (ModbusRTUSelected)
+            {
+                ConnectSerial();    //Prepare adapter
+            }
+        }
+        private void ConnectTCP()
         {
             try
             {
@@ -414,6 +443,58 @@ namespace ModbusDiagnoster.ViewModels
 
         }
 
+        private void ConnectSerial()
+        {
+            try
+            {
+                if(serialPortAdapter != null)
+                {
+                    DisconnectSerial();
+                }
+                else
+                {
+                    if (DeviceRTU.Port != "")
+                    {
+                        using (SerialPort port = new SerialPort(DeviceRTU.Port))
+                        {
+                            // configure serial port
+                            port.BaudRate = DeviceRTU.Baudrate;
+                            port.DataBits = DeviceRTU.DataBits;
+                            port.Parity = DeviceRTU.PortParity;
+                            port.StopBits = DeviceRTU.PortStopBits;
+                            port.RtsEnable = DeviceRTU.RTSon;
+                            port.DtrEnable = DeviceRTU.DTRon;
+                            //port.Open();
+
+
+                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + "COM port is assigned now, creating adapter...");
+                            serialPortAdapter = port;
+
+                            //serialPortAdapter.Close();
+                            //serialPortAdapter.Dispose();
+                            
+
+
+
+                            serialPortAdapter.Open();
+                            //serialPortAdapter = new SerialPortAdapter(port);
+                        }
+
+
+                    }
+                }
+
+               
+
+            }
+            catch (Exception exc)
+            {
+                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Cant prepare COM port, please check serial COM port properties" + exc.Message);
+            }
+
+
+        }
+
         private bool DisconnectTCP()
         {
             try
@@ -423,6 +504,7 @@ namespace ModbusDiagnoster.ViewModels
                 {
                     tcpClient.Close();
                     tcpClient.Dispose();
+
                 }
 
             }
@@ -431,6 +513,25 @@ namespace ModbusDiagnoster.ViewModels
                 ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Disconnection error" + exc.Message);
             }
 
+            return false;
+        }
+
+        private bool DisconnectSerial()
+        {
+            try
+            {
+                if (serialPortAdapter != null)
+                {
+                    serialPortAdapter.Close();
+                    serialPortAdapter.Dispose();
+                    serialPortAdapter = null;
+                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "COM port is disconnected now." );
+                }
+            }
+            catch (Exception exc)
+            {
+                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Disconnection error" + exc.Message);
+            }
             return false;
         }
 
@@ -451,28 +552,30 @@ namespace ModbusDiagnoster.ViewModels
         {
             try
             {
-                if (tcpClient != null)
-                {
-                    //ModbusIpMaster master = ModbusIpMaster.CreateIp(DeviceTCP.TCPclient);
+                // if (tcpClient != null || serialPortAdapter!=null)
+                // {
+                //ModbusIpMaster master = ModbusIpMaster.CreateIp(DeviceTCP.TCPclient);
 
-                    timer.Start();
-                    DispatchService.Invoke(() =>
-                    {
-
-                        //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
-                        ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Starting pooling");
-                        OnTimerStart();
-                    });
-                }
-                else
+                timer.Start();
+                DispatchService.Invoke(() =>
                 {
-                    DispatchService.Invoke(() =>
-                    {
-                        //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
-                        ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Communication problem, tcp session is not enstablished");
-                        //tcpClient = new TcpClient(_DeviceTCP.IPAddr, _DeviceTCP.Port);
-                    });
-                }
+
+                    //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
+                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Starting pooling");
+                    OnTimerStart();
+                });
+                /* }
+                 else
+                 {
+                     DispatchService.Invoke(() =>
+                     {
+                         //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
+                         ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Start... but Communication problem, tcp session is not enstablished");
+                         //tcpClient = new TcpClient(_DeviceTCP.IPAddr, _DeviceTCP.Port);
+                     });
+                 }
+ */
+
             }
             catch (Exception exc)
             {
@@ -608,25 +711,53 @@ namespace ModbusDiagnoster.ViewModels
 
                 /* using (TcpClient client = DeviceTCP.TCPclient)
                  {*/
-                if (tcpClient != null)
+                if (tcpClient != null || serialPortAdapter != null)
                 {
-                    if (tcpClient.Connected)
-                    {
-                        ModbusIpMaster master = ModbusIpMaster.CreateIp(tcpClient);
 
-                        //MAIN Requesting 
-                        await GetHoldingRegisters(master);
-                        await GetInputRegisters(master);
-                        await GetDiscreteInputs(master);
-                        await GetCoils(master);
+                    if (ModbusTCPSelected)
+                    {
+                        if(tcpClient != null)
+                        {
+                            if (tcpClient.Connected)
+                            {
+                                /*                            DispatchService.Invoke(() =>
+                                                        {
+                                                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + "ModbusTCP selected");
+                                                        });*/
+
+                                ModbusIpMaster master = ModbusIpMaster.CreateIp(tcpClient);
+
+                                //MAIN Requesting 
+                                await GetHoldingRegisters(master, null);
+                                await GetInputRegisters(master);
+                                await GetDiscreteInputs(master);
+                                await GetCoils(master);
+                            }
+                            else
+                            {
+                                DispatchService.Invoke(() =>
+                                {
+                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Client is disconnected, try to connect first.");
+                                });
+                            }
+                        }
+                       
                     }
                     else
                     {
-                        DispatchService.Invoke(() =>
+                        if(serialPortAdapter != null)
                         {
-                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Client is disconnected, try to connect first");
-                        });
+                            IModbusSerialMaster master = ModbusSerialMaster.CreateRtu(serialPortAdapter);
+                            //serialPortAdapter.Open();
+                            await GetHoldingRegisters(null, master);
+                            // await GetInputRegisters(master);
+                            // await GetDiscreteInputs(master);
+                            // await GetCoils(master);
+                        }
+
+
                     }
+
                 }
                 else
                 {
@@ -670,7 +801,7 @@ namespace ModbusDiagnoster.ViewModels
             }
         }
 
-        private async Task GetHoldingRegisters(ModbusIpMaster master)
+        private async Task GetHoldingRegisters(ModbusIpMaster master, IModbusSerialMaster serialMaster)
         {
 
             try
@@ -689,65 +820,90 @@ namespace ModbusDiagnoster.ViewModels
                         {
 
                             ushort numOfRegs = (UInt16)(group.Count * 2);
-                            if (tcpClient != null)
+                           
+                            if (tcpClient != null || serialPortAdapter != null)
                             {
+                                ushort[] result;
 
+                                //result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
 
-                                if (tcpClient.Connected)
+                                if (ModbusTCPSelected)
                                 {
-                                    AddMonMessage("Sending request: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
-                                    var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                    AddMonMessage("Sending request TCP: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
+                                    var res=await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                    result = res;
+                                }
+                                else if (ModbusRTUSelected)
+                                {
+                                    AddMonMessage("Sending request RTU: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
 
-                                    if (result.Length > 0)
+                                    if (serialPortAdapter.IsOpen)
                                     {
-                                        AddMonMessage("Response received: Len: " + result.Length.ToString());
-                                        int currResultIndex = 0;
-                                        foreach (HoldingRegistersVariable hr in group)
-                                        {
-                                            int hrIndex = HoldingRegisters.IndexOf(hr);
-                                            if (result.Length > currResultIndex)   //checking if result is long enough
-                                            {
-                                                if (hr.VariableTypeFormat == "BigEndianFloat")
-                                                {
-                                                    HoldingRegisters[hrIndex].Value = VariableType.convertToFloatBE(result[currResultIndex], result[currResultIndex + 1]);
-                                                    HoldingRegisters[hrIndex].ConvertedValue = getCalculatedValue(HoldingRegisters[hrIndex].ConversionFunction, HoldingRegisters[hrIndex].Value);
-                                                }
-                                                else
-                                                {
-                                                    HoldingRegisters[hrIndex].Value = VariableType.convertToFloatLE(result[currResultIndex], result[currResultIndex + 1]);
-                                                    HoldingRegisters[hrIndex].ConvertedValue = getCalculatedValue(HoldingRegisters[hrIndex].ConversionFunction, HoldingRegisters[hrIndex].Value);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                DispatchService.Invoke(() =>
-                                                {
-                                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + Convert.ToString(result));
-                                                });
-                                            }
-
-                                            HoldingRegisters[hrIndex].Timestamp = DateTime.Now.ToString();
-
-                                            currResultIndex += 2;
-                                        }
-
-                                        /*DispatchService.Invoke(() =>
-                                        {
-                                            //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
-                                        });*/
-
+                                        var res = await serialMaster.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                        result= res;
                                     }
                                     else
                                     {
-                                        DispatchService.Invoke(() =>
-                                        {
-                                            //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
-                                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Result was null ");
-                                        });
+                                        serialPortAdapter.Open();
+                                        var res = await serialMaster.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                        result = res;
                                     }
                                 }
+                                else
+                                {
+                                    result = new ushort[0];
+                                }
+
+                                if (result.Length > 0)
+                                {
+                                    AddMonMessage("Response received: Len: " + result.Length.ToString());
+                                    int currResultIndex = 0;
+                                    foreach (HoldingRegistersVariable hr in group)
+                                    {
+                                        int hrIndex = HoldingRegisters.IndexOf(hr);
+                                        if (result.Length > currResultIndex)   //checking if result is long enough
+                                        {
+                                            if (hr.VariableTypeFormat == "BigEndianFloat")
+                                            {
+                                                HoldingRegisters[hrIndex].Value = VariableType.convertToFloatBE(result[currResultIndex], result[currResultIndex + 1]);
+                                                HoldingRegisters[hrIndex].ConvertedValue = getCalculatedValue(HoldingRegisters[hrIndex].ConversionFunction, HoldingRegisters[hrIndex].Value);
+                                            }
+                                            else
+                                            {
+                                                HoldingRegisters[hrIndex].Value = VariableType.convertToFloatLE(result[currResultIndex], result[currResultIndex + 1]);
+                                                HoldingRegisters[hrIndex].ConvertedValue = getCalculatedValue(HoldingRegisters[hrIndex].ConversionFunction, HoldingRegisters[hrIndex].Value);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            DispatchService.Invoke(() =>
+                                            {
+                                                //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + Convert.ToString(result));
+                                            });
+                                        }
+
+                                        HoldingRegisters[hrIndex].Timestamp = DateTime.Now.ToString();
+
+                                        currResultIndex += 2;
+                                    }
+
+                                    /*DispatchService.Invoke(() =>
+                                    {
+                                        //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                        ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
+                                    });*/
+
+                                }
+                                else
+                                {
+                                    DispatchService.Invoke(() =>
+                                    {
+                                        //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
+                                        ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Result was null ");
+                                    });
+                                }
+                                /*}
                                 else
                                 {
                                     DispatchService.Invoke(() =>
@@ -755,7 +911,7 @@ namespace ModbusDiagnoster.ViewModels
                                         //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
                                         ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Client is disconnected");
                                     });
-                                }
+                                }*/
 
                             }
                             else
@@ -772,74 +928,92 @@ namespace ModbusDiagnoster.ViewModels
                         {
                             ushort numOfRegs = (UInt16)(group.Count);
 
-                            if (tcpClient != null)
+                            if (tcpClient != null || serialPortAdapter != null)
                             {
-                                if (tcpClient.Connected)
+
+                               
+                                //var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+
+                                ushort[] result;
+
+                                if (ModbusTCPSelected)
                                 {
-                                    AddMonMessage("Sending request: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
-                                    var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
-
-
-                                    if (result.Length > 0)
+                                    AddMonMessage("Sending request TCP: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
+                                    var res = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                    result = res;
+                                }
+                                else if (ModbusRTUSelected)
+                                {
+                                    AddMonMessage("Sending request RTU: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
+                                    if (serialPortAdapter.IsOpen)
                                     {
-                                        AddMonMessage("Response received: Len: " + result.Length.ToString());
-                                        int currResultIndex = 0;
-                                        foreach (HoldingRegistersVariable hr in group)
+                                        var res = await serialMaster.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                        result = res;
+                                    }
+                                    else
+                                    {
+                                        serialPortAdapter.Open();
+                                        var res = await serialMaster.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                        result = res;
+                                    }
+                                }
+                                else
+                                {
+                                    result = new ushort[0];
+                                }
+
+                                if (result.Length > 0)
+                                {
+                                    AddMonMessage("Response received: Len: " + result.Length.ToString());
+                                    int currResultIndex = 0;
+                                    foreach (HoldingRegistersVariable hr in group)
+                                    {
+                                        int hrIndex = HoldingRegisters.IndexOf(hr);
+                                        if (result.Length > currResultIndex)   //checking if result is long enough
                                         {
-                                            int hrIndex = HoldingRegisters.IndexOf(hr);
-                                            if (result.Length > currResultIndex)   //checking if result is long enough
+                                            switch (HoldingRegisters[hrIndex].VariableTypeFormat)
                                             {
-                                                switch (HoldingRegisters[hrIndex].VariableTypeFormat)
-                                                {
-                                                    case "Decimal":
-                                                        HoldingRegisters[hrIndex].Value = VariableType.convertToDec(result[currResultIndex]);
-                                                        HoldingRegisters[hrIndex].ConvertedValue = getCalculatedValue(HoldingRegisters[hrIndex].ConversionFunction, HoldingRegisters[hrIndex].Value);
-                                                        break;
-                                                    case "Integer":
-                                                        HoldingRegisters[hrIndex].Value = VariableType.convertToInt16(result[currResultIndex]);
-                                                        HoldingRegisters[hrIndex].ConvertedValue = getCalculatedValue(HoldingRegisters[hrIndex].ConversionFunction, HoldingRegisters[hrIndex].Value);
-                                                        break;
-                                                    case "Hexadecimal":
-                                                        HoldingRegisters[hrIndex].Value = VariableType.convertToHex(result[currResultIndex]);
-                                                        break;
-                                                    case "Binary":
-                                                        HoldingRegisters[hrIndex].Value = VariableType.convertToBin(result[currResultIndex]);
-                                                        break;
-                                                    default:
-                                                        HoldingRegisters[hrIndex].Value = result[0].ToString();
-                                                        break;
-                                                }
+                                                case "Decimal":
+                                                    HoldingRegisters[hrIndex].Value = VariableType.convertToDec(result[currResultIndex]);
+                                                    HoldingRegisters[hrIndex].ConvertedValue = getCalculatedValue(HoldingRegisters[hrIndex].ConversionFunction, HoldingRegisters[hrIndex].Value);
+                                                    break;
+                                                case "Integer":
+                                                    HoldingRegisters[hrIndex].Value = VariableType.convertToInt16(result[currResultIndex]);
+                                                    HoldingRegisters[hrIndex].ConvertedValue = getCalculatedValue(HoldingRegisters[hrIndex].ConversionFunction, HoldingRegisters[hrIndex].Value);
+                                                    break;
+                                                case "Hexadecimal":
+                                                    HoldingRegisters[hrIndex].Value = VariableType.convertToHex(result[currResultIndex]);
+                                                    break;
+                                                case "Binary":
+                                                    HoldingRegisters[hrIndex].Value = VariableType.convertToBin(result[currResultIndex]);
+                                                    break;
+                                                default:
+                                                    HoldingRegisters[hrIndex].Value = result[0].ToString();
+                                                    break;
                                             }
-                                            else
+                                        }
+                                        else
+                                        {
+                                            DispatchService.Invoke(() =>
                                             {
-                                                DispatchService.Invoke(() =>
-                                                {
                                                     //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
                                                     ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
-                                                });
-                                            }
-
-                                            HoldingRegisters[hrIndex].Timestamp = DateTime.Now.ToString();
-                                            currResultIndex += 1;
+                                            });
                                         }
 
-                                        DispatchService.Invoke(() =>
-                                        {
+                                        HoldingRegisters[hrIndex].Timestamp = DateTime.Now.ToString();
+                                        currResultIndex += 1;
+                                    }
+
+                                    DispatchService.Invoke(() =>
+                                    {
                                             //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
 
                                             //TODO:: Add feature to user can enable advanced diagnostics
                                             //ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
                                         });
-                                    }
                                 }
-                                else
-                                {
-                                    DispatchService.Invoke(() =>
-                                    {
-                                        //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                        ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Client is disconnected");
-                                    });
-                                }
+
 
                             }
                             else
@@ -1613,19 +1787,19 @@ namespace ModbusDiagnoster.ViewModels
             {
                 try
                 {
-                   SaveVariables.SaveCoils(Coils,_DeviceDirectory);
-                   SaveVariables.SaveDI(Inputs,_DeviceDirectory);
-                   SaveVariables.SaveIR(InputRegisters, _DeviceDirectory);
-                   SaveVariables.SaveHR(HoldingRegisters,_DeviceDirectory);
-                   SaveVariables.SaveTCPparams(DeviceTCP, _DeviceDirectory);
-                   SaveVariables.SaveRTUparams(DeviceRTU, _DeviceDirectory);
-                    
+                    SaveVariables.SaveCoils(Coils, _DeviceDirectory);
+                    SaveVariables.SaveDI(Inputs, _DeviceDirectory);
+                    SaveVariables.SaveIR(InputRegisters, _DeviceDirectory);
+                    SaveVariables.SaveHR(HoldingRegisters, _DeviceDirectory);
+                    SaveVariables.SaveTCPparams(DeviceTCP, _DeviceDirectory);
+                    SaveVariables.SaveRTUparams(DeviceRTU, _DeviceDirectory);
+
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                 }
-                
+
 
             }
 
@@ -1635,12 +1809,12 @@ namespace ModbusDiagnoster.ViewModels
         {
             try
             {
-                HoldingRegisters =LoadVariables.LoadHR(_DeviceDirectory);
-                InputRegisters=LoadVariables.LoadIR(_DeviceDirectory);
-                Inputs=LoadVariables.LoadDI(_DeviceDirectory);
-                Coils=LoadVariables.LoadCoils(_DeviceDirectory);
-                DeviceTCP=LoadVariables.LoadMbTCP(_DeviceDirectory);
-                DeviceRTU=LoadVariables.LoadMbRTU(_DeviceDirectory);
+                HoldingRegisters = LoadVariables.LoadHR(_DeviceDirectory);
+                InputRegisters = LoadVariables.LoadIR(_DeviceDirectory);
+                Inputs = LoadVariables.LoadDI(_DeviceDirectory);
+                Coils = LoadVariables.LoadCoils(_DeviceDirectory);
+                DeviceTCP = LoadVariables.LoadMbTCP(_DeviceDirectory);
+                DeviceRTU = LoadVariables.LoadMbRTU(_DeviceDirectory);
             }
             catch (Exception ex)
             {

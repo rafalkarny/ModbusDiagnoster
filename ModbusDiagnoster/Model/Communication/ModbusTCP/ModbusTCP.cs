@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace ModbusDiagnoster.Model.Communication.ModbusTCP
 {
-    public class ModbusTCP:Device
+    public class ModbusTCP:Device, INotifyPropertyChanged
     {
         
         private string _IPAddr { get; set; }
@@ -60,7 +60,7 @@ namespace ModbusDiagnoster.Model.Communication.ModbusTCP
         {
            
             Id = 1;
-            Name = "Nazwa urządzenia";
+            Name = "name";
             IPAddr = "127.0.0.1";
             Port = 502;
             Type = ModbusType.TCP;
