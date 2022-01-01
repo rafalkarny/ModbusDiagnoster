@@ -163,7 +163,7 @@ namespace ModbusDiagnoster.ViewModels
             {
                 _DeviceRTU = value;
                 ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Properties changed, disconnecting...");
-               // DisconnectSerial();
+                // DisconnectSerial();
                 OnPropertyChanged();
             }
         }
@@ -243,7 +243,7 @@ namespace ModbusDiagnoster.ViewModels
                 MessageBox.Show(_statusMessage);
             }
         }
-        public int _SamplePeriod { get; set; }
+        private int _SamplePeriod { get; set; }
         public int SamplePeriod
         {
             get { return this._SamplePeriod; }
@@ -447,7 +447,7 @@ namespace ModbusDiagnoster.ViewModels
         {
             try
             {
-                if(serialPortAdapter != null)
+                if (serialPortAdapter != null)
                 {
                     DisconnectSerial();
                 }
@@ -472,7 +472,7 @@ namespace ModbusDiagnoster.ViewModels
 
                             //serialPortAdapter.Close();
                             //serialPortAdapter.Dispose();
-                            
+
 
 
 
@@ -484,7 +484,7 @@ namespace ModbusDiagnoster.ViewModels
                     }
                 }
 
-               
+
 
             }
             catch (Exception exc)
@@ -499,6 +499,7 @@ namespace ModbusDiagnoster.ViewModels
         {
             try
             {
+                timerStop = true;
                 //_DeviceTCP.TCPclient = new TcpClient("127.0.0.1", 502);
                 if (tcpClient != null)
                 {
@@ -520,12 +521,13 @@ namespace ModbusDiagnoster.ViewModels
         {
             try
             {
+                timerStop = true;
                 if (serialPortAdapter != null)
                 {
                     serialPortAdapter.Close();
                     serialPortAdapter.Dispose();
                     serialPortAdapter = null;
-                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "COM port is disconnected now." );
+                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "COM port is disconnected now.");
                 }
             }
             catch (Exception exc)
@@ -716,7 +718,7 @@ namespace ModbusDiagnoster.ViewModels
 
                     if (ModbusTCPSelected)
                     {
-                        if(tcpClient != null)
+                        if (tcpClient != null)
                         {
                             if (tcpClient.Connected)
                             {
@@ -729,9 +731,9 @@ namespace ModbusDiagnoster.ViewModels
 
                                 //MAIN Requesting 
                                 await GetHoldingRegisters(master, null);
-                                await GetInputRegisters(master);
-                                await GetDiscreteInputs(master);
-                                await GetCoils(master);
+                                await GetInputRegisters(master, null);
+                                await GetDiscreteInputs(master,null);
+                                await GetCoils(master,null);
                             }
                             else
                             {
@@ -741,18 +743,18 @@ namespace ModbusDiagnoster.ViewModels
                                 });
                             }
                         }
-                       
+
                     }
                     else
                     {
-                        if(serialPortAdapter != null)
+                        if (serialPortAdapter != null)
                         {
                             IModbusSerialMaster master = ModbusSerialMaster.CreateRtu(serialPortAdapter);
                             //serialPortAdapter.Open();
                             await GetHoldingRegisters(null, master);
-                            // await GetInputRegisters(master);
-                            // await GetDiscreteInputs(master);
-                            // await GetCoils(master);
+                            await GetInputRegisters(null, master);
+                            await GetDiscreteInputs(null,master);
+                            await GetCoils(null,master);
                         }
 
 
@@ -820,7 +822,7 @@ namespace ModbusDiagnoster.ViewModels
                         {
 
                             ushort numOfRegs = (UInt16)(group.Count * 2);
-                           
+
                             if (tcpClient != null || serialPortAdapter != null)
                             {
                                 ushort[] result;
@@ -830,7 +832,7 @@ namespace ModbusDiagnoster.ViewModels
                                 if (ModbusTCPSelected)
                                 {
                                     AddMonMessage("Sending request TCP: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
-                                    var res=await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                    var res = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
                                     result = res;
                                 }
                                 else if (ModbusRTUSelected)
@@ -840,7 +842,7 @@ namespace ModbusDiagnoster.ViewModels
                                     if (serialPortAdapter.IsOpen)
                                     {
                                         var res = await serialMaster.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
-                                        result= res;
+                                        result = res;
                                     }
                                     else
                                     {
@@ -931,7 +933,7 @@ namespace ModbusDiagnoster.ViewModels
                             if (tcpClient != null || serialPortAdapter != null)
                             {
 
-                               
+
                                 //var result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
 
                                 ushort[] result;
@@ -996,8 +998,8 @@ namespace ModbusDiagnoster.ViewModels
                                         {
                                             DispatchService.Invoke(() =>
                                             {
-                                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
+                                                //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
                                             });
                                         }
 
@@ -1007,11 +1009,11 @@ namespace ModbusDiagnoster.ViewModels
 
                                     DispatchService.Invoke(() =>
                                     {
-                                            //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                        //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
 
-                                            //TODO:: Add feature to user can enable advanced diagnostics
-                                            //ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
-                                        });
+                                        //TODO:: Add feature to user can enable advanced diagnostics
+                                        //ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
+                                    });
                                 }
 
 
@@ -1044,17 +1046,17 @@ namespace ModbusDiagnoster.ViewModels
 
         }
 
-        private async Task GetInputRegisters(ModbusIpMaster master)
+        private async Task GetInputRegisters(ModbusIpMaster master, IModbusSerialMaster serialMaster)
         {
 
             try
             {
 
+                //ModbusIpMaster master = ModbusIpMaster.CreateIp(tcpClient);
 
+                List<List<InputRegistersVariable>> groupedHR = GroupVariables.GroupInputRegisters(InputRegisters);
 
-                List<List<InputRegistersVariable>> groupedIR = GroupVariables.GroupInputRegisters(InputRegisters);
-
-                foreach (List<InputRegistersVariable> group in groupedIR)
+                foreach (List<InputRegistersVariable> group in groupedHR)
                 {
                     if (group.Count > 0)
                     {
@@ -1063,65 +1065,90 @@ namespace ModbusDiagnoster.ViewModels
                         {
 
                             ushort numOfRegs = (UInt16)(group.Count * 2);
-                            if (tcpClient != null)
+
+                            if (tcpClient != null || serialPortAdapter != null)
                             {
+                                ushort[] result;
 
+                                //result = await master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
 
-                                if (tcpClient.Connected)
+                                if (ModbusTCPSelected)
                                 {
-                                    AddMonMessage("Sending request: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
-                                    var result = await master.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                    AddMonMessage("Sending request TCP: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
+                                    var res = await master.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                    result = res;
+                                }
+                                else if (ModbusRTUSelected)
+                                {
+                                    AddMonMessage("Sending request RTU: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
 
-                                    if (result.Length > 0)
+                                    if (serialPortAdapter.IsOpen)
                                     {
-                                        AddMonMessage("Response received: Len: " + result.Length.ToString());
-                                        int currResultIndex = 0;
-                                        foreach (InputRegistersVariable ir in group)
-                                        {
-                                            int irIndex = InputRegisters.IndexOf(ir);
-                                            if (result.Length > currResultIndex)   //checking if result is long enough
-                                            {
-                                                if (ir.VariableTypeFormat == "BigEndianFloat")
-                                                {
-                                                    InputRegisters[irIndex].Value = VariableType.convertToFloatBE(result[currResultIndex], result[currResultIndex + 1]);
-                                                    InputRegisters[irIndex].ConvertedValue = getCalculatedValue(InputRegisters[irIndex].ConversionFunction, InputRegisters[irIndex].Value);
-                                                }
-                                                else
-                                                {
-                                                    InputRegisters[irIndex].Value = VariableType.convertToFloatLE(result[currResultIndex], result[currResultIndex + 1]);
-                                                    InputRegisters[irIndex].ConvertedValue = getCalculatedValue(InputRegisters[irIndex].ConversionFunction, InputRegisters[irIndex].Value);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                DispatchService.Invoke(() =>
-                                                {
-                                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
-                                                });
-                                            }
-
-                                            InputRegisters[irIndex].Timestamp = DateTime.Now.ToString();
-
-                                            currResultIndex += 2;
-                                        }
-
-                                        /*DispatchService.Invoke(() =>
-                                        {
-                                            //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
-                                        });*/
-
+                                        var res = await serialMaster.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                        result = res;
                                     }
                                     else
                                     {
-                                        DispatchService.Invoke(() =>
-                                        {
-                                            //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
-                                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + "IR Result was null ");
-                                        });
+                                        serialPortAdapter.Open();
+                                        var res = await serialMaster.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                        result = res;
                                     }
                                 }
+                                else
+                                {
+                                    result = new ushort[0];
+                                }
+
+                                if (result.Length > 0)
+                                {
+                                    AddMonMessage("Response received: Len: " + result.Length.ToString());
+                                    int currResultIndex = 0;
+                                    foreach (InputRegistersVariable ir in group)
+                                    {
+                                        int irIndex = InputRegisters.IndexOf(ir);
+                                        if (result.Length > currResultIndex)   //checking if result is long enough
+                                        {
+                                            if (ir.VariableTypeFormat == "BigEndianFloat")
+                                            {
+                                                InputRegisters[irIndex].Value = VariableType.convertToFloatBE(result[currResultIndex], result[currResultIndex + 1]);
+                                                InputRegisters[irIndex].ConvertedValue = getCalculatedValue(InputRegisters[irIndex].ConversionFunction, InputRegisters[irIndex].Value);
+                                            }
+                                            else
+                                            {
+                                                InputRegisters[irIndex].Value = VariableType.convertToFloatLE(result[currResultIndex], result[currResultIndex + 1]);
+                                                InputRegisters[irIndex].ConvertedValue = getCalculatedValue(InputRegisters[irIndex].ConversionFunction, InputRegisters[irIndex].Value);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            DispatchService.Invoke(() =>
+                                            {
+                                                //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + Convert.ToString(result));
+                                            });
+                                        }
+
+                                        InputRegisters[irIndex].Timestamp = DateTime.Now.ToString();
+
+                                        currResultIndex += 2;
+                                    }
+
+                                    /*DispatchService.Invoke(() =>
+                                    {
+                                        //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                        ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
+                                    });*/
+
+                                }
+                                else
+                                {
+                                    DispatchService.Invoke(() =>
+                                    {
+                                        //ExceptionMessages.Add(DateTime.Now.ToString() + " Result was null ");
+                                        ExceptionMessages.Insert(0, DateTime.Now.ToString() + " Result was null ");
+                                    });
+                                }
+                                /*}
                                 else
                                 {
                                     DispatchService.Invoke(() =>
@@ -1129,7 +1156,7 @@ namespace ModbusDiagnoster.ViewModels
                                         //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
                                         ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Client is disconnected");
                                     });
-                                }
+                                }*/
 
                             }
                             else
@@ -1146,74 +1173,89 @@ namespace ModbusDiagnoster.ViewModels
                         {
                             ushort numOfRegs = (UInt16)(group.Count);
 
-                            if (tcpClient != null)
+                            if (tcpClient != null || serialPortAdapter != null)
                             {
-                                if (tcpClient.Connected)
+
+                                ushort[] result;
+
+                                if (ModbusTCPSelected)
                                 {
-                                    AddMonMessage("Sending request: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
-                                    var result = await master.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
-
-
-                                    if (result.Length > 0)
+                                    AddMonMessage("Sending request TCP: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
+                                    var res = await master.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                    result = res;
+                                }
+                                else if (ModbusRTUSelected)
+                                {
+                                    AddMonMessage("Sending request RTU: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
+                                    if (serialPortAdapter.IsOpen)
                                     {
-                                        AddMonMessage("Response received: Len: " + result.Length.ToString());
-                                        int currResultIndex = 0;
-                                        foreach (InputRegistersVariable ir in group)
-                                        {
-                                            int irIndex = InputRegisters.IndexOf(ir);
-                                            if (result.Length > currResultIndex)   //checking if result is long enough
-                                            {
-                                                switch (InputRegisters[irIndex].VariableTypeFormat)
-                                                {
-                                                    case "Decimal":
-                                                        InputRegisters[irIndex].Value = VariableType.convertToDec(result[currResultIndex]);
-                                                        InputRegisters[irIndex].ConvertedValue = getCalculatedValue(InputRegisters[irIndex].ConversionFunction, InputRegisters[irIndex].Value);
-                                                        break;
-                                                    case "Integer":
-                                                        InputRegisters[irIndex].Value = VariableType.convertToInt16(result[currResultIndex]);
-                                                        InputRegisters[irIndex].ConvertedValue = getCalculatedValue(InputRegisters[irIndex].ConversionFunction, InputRegisters[irIndex].Value);
-                                                        break;
-                                                    case "Hexadecimal":
-                                                        InputRegisters[irIndex].Value = VariableType.convertToHex(result[currResultIndex]);
-                                                        break;
-                                                    case "Binary":
-                                                        InputRegisters[irIndex].Value = VariableType.convertToBin(result[currResultIndex]);
-                                                        break;
-                                                    default:
-                                                        InputRegisters[irIndex].Value = result[0].ToString();
-                                                        break;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                DispatchService.Invoke(() =>
-                                                {
-                                                    //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
-                                                });
-                                            }
-
-                                            InputRegisters[irIndex].Timestamp = DateTime.Now.ToString();
-                                            currResultIndex += 1;
-                                        }
-
-                                        DispatchService.Invoke(() =>
-                                        {
-                                            //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-
-                                            //TODO:: Add feature to user can enable advanced diagnostics
-                                            //ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
-                                        });
+                                        var res = await serialMaster.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                        result = res;
+                                    }
+                                    else
+                                    {
+                                        serialPortAdapter.Open();
+                                        var res = await serialMaster.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                        result = res;
                                     }
                                 }
                                 else
                                 {
+                                    result = new ushort[0];
+                                }
+
+                                if (result.Length > 0)
+                                {
+                                    AddMonMessage("Response received: Len: " + result.Length.ToString());
+                                    int currResultIndex = 0;
+                                    foreach (InputRegistersVariable ir in group)
+                                    {
+                                        int irIndex = InputRegisters.IndexOf(ir);
+                                        if (result.Length > currResultIndex)   //checking if result is long enough
+                                        {
+                                            switch (InputRegisters[irIndex].VariableTypeFormat)
+                                            {
+                                                case "Decimal":
+                                                    InputRegisters[irIndex].Value = VariableType.convertToDec(result[currResultIndex]);
+                                                    InputRegisters[irIndex].ConvertedValue = getCalculatedValue(InputRegisters[irIndex].ConversionFunction, InputRegisters[irIndex].Value);
+                                                    break;
+                                                case "Integer":
+                                                    InputRegisters[irIndex].Value = VariableType.convertToInt16(result[currResultIndex]);
+                                                    InputRegisters[irIndex].ConvertedValue = getCalculatedValue(InputRegisters[irIndex].ConversionFunction, InputRegisters[irIndex].Value);
+                                                    break;
+                                                case "Hexadecimal":
+                                                    InputRegisters[irIndex].Value = VariableType.convertToHex(result[currResultIndex]);
+                                                    break;
+                                                case "Binary":
+                                                    InputRegisters[irIndex].Value = VariableType.convertToBin(result[currResultIndex]);
+                                                    break;
+                                                default:
+                                                    InputRegisters[irIndex].Value = result[0].ToString();
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            DispatchService.Invoke(() =>
+                                            {
+                                                //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
+                                            });
+                                        }
+
+                                        InputRegisters[irIndex].Timestamp = DateTime.Now.ToString();
+                                        currResultIndex += 1;
+                                    }
+
                                     DispatchService.Invoke(() =>
                                     {
                                         //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                        ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Client is disconnected");
+
+                                        //TODO:: Add feature to user can enable advanced diagnostics
+                                        //ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
                                     });
                                 }
+
 
                             }
                             else
@@ -1236,7 +1278,7 @@ namespace ModbusDiagnoster.ViewModels
                 //MessageBox.Show(exc.Message);
                 DispatchService.Invoke(() =>
                 {
-                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + ": Input registers error : " + exc.Message);
+                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + ": Holding registers error : " + exc.Message);
                 });
 
 
@@ -1244,7 +1286,7 @@ namespace ModbusDiagnoster.ViewModels
 
         }
 
-        private async Task GetDiscreteInputs(ModbusIpMaster master)
+        private async Task GetDiscreteInputs(ModbusIpMaster master, IModbusMaster serialMaster)
         {
 
             try
@@ -1257,89 +1299,93 @@ namespace ModbusDiagnoster.ViewModels
                     {
                         ushort numOfRegs = (UInt16)(group.Count);
 
-                        if (tcpClient != null)
+                        if (tcpClient != null || serialPortAdapter != null)
                         {
-                            if (tcpClient.Connected)
+                            //SENDING REQUEST
+
+                            bool[] result;
+
+                            if (ModbusTCPSelected)
                             {
-                                AddMonMessage("Sending request: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() +
-                                    " Number of registers: " + numOfRegs.ToString());
-
-                                var result = await master.ReadInputsAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
-
-
-                                if (result.Length > 0)
+                                AddMonMessage("Sending request TCP: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
+                                var res = await master.ReadInputsAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                result = res;
+                            }
+                            else if (ModbusRTUSelected)
+                            {
+                                AddMonMessage("Sending request RTU: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
+                                if (serialPortAdapter.IsOpen)
                                 {
-                                    AddMonMessage("Response received: Len: " + result.Length.ToString());
-                                    int currResultIndex = 0;
-                                    foreach (DiscreteInputsVariable di in group)
-                                    {
-                                        int irIndex = Inputs.IndexOf(di);
-                                        if (result.Length > currResultIndex)   //checking if result is long enough
-                                        {
-                                            switch (result[currResultIndex])
-                                            {
-                                                case true:
-                                                    Inputs[irIndex].Value = "1";
-                                                    break;
-                                                case false:
-                                                    Inputs[irIndex].Value = "0";
-                                                    break;
-                                                default:
-                                                    Inputs[irIndex].Value = "-1";
-                                                    break;
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            DispatchService.Invoke(() =>
-                                            {
-                                                //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
-                                            });
-                                        }
-
-                                        Inputs[irIndex].Timestamp = DateTime.Now.ToString();
-                                        currResultIndex += 1;
-                                    }
-
-                                    DispatchService.Invoke(() =>
-                                    {
-                                        //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-
-                                        //TODO:: Add feature to user can enable advanced diagnostics
-                                        //ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
-                                    });
+                                    var res = await serialMaster.ReadInputsAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                    result = res;
                                 }
                                 else
                                 {
-                                    AddMonMessage("Result was to short: " + result.Length.ToString());
+                                    serialPortAdapter.Open();
+                                    var res = await serialMaster.ReadInputsAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                    result = res;
                                 }
                             }
                             else
                             {
+                                result = new bool[0];
+                            }
+
+                            //IF Device returned value:
+
+                            if (result.Length > 0)
+                            {
+                                AddMonMessage("Response received: Len: " + result.Length.ToString());
+                                int currResultIndex = 0;
+                                foreach (DiscreteInputsVariable di in group)
+                                {
+                                    int irIndex = Inputs.IndexOf(di);
+                                    if (result.Length > currResultIndex)   //checking if result is long enough
+                                    {
+                                        switch (result[currResultIndex])
+                                        {
+                                            case true:
+                                                Inputs[irIndex].Value = "1";
+                                                break;
+                                            case false:
+                                                Inputs[irIndex].Value = "0";
+                                                break;
+                                            default:
+                                                Inputs[irIndex].Value = "-1";
+                                                break;
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        DispatchService.Invoke(() =>
+                                        {
+                                            //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
+                                        });
+                                    }
+
+                                    Inputs[irIndex].Timestamp = DateTime.Now.ToString();
+                                    currResultIndex += 1;
+                                }
+
                                 DispatchService.Invoke(() =>
                                 {
                                     //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Client is disconnected");
+
+                                    //TODO:: Add feature to user can enable advanced diagnostics
+                                    //ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
                                 });
                             }
-
-                        }
-                        else
-                        {
-                            DispatchService.Invoke(() =>
+                            else
                             {
-                                //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Client is disconnected");
-                            });
+                                AddMonMessage("Result was to short: " + result.Length.ToString());
+                            }
                         }
-
 
 
                     }
                 }
-
 
             }
             catch (Exception exc)
@@ -1354,7 +1400,7 @@ namespace ModbusDiagnoster.ViewModels
             }
 
         }
-        private async Task GetCoils(ModbusIpMaster master)
+        private async Task GetCoils(ModbusIpMaster master,IModbusMaster serialMaster)
         {
 
             try
@@ -1367,90 +1413,93 @@ namespace ModbusDiagnoster.ViewModels
                     {
                         ushort numOfRegs = (UInt16)(group.Count);
 
-                        if (tcpClient != null)
+                        if (tcpClient != null || serialPortAdapter != null)
                         {
-                            if (tcpClient.Connected)
+                            //SENDING REQUEST
+
+                            bool[] result;
+
+                            if (ModbusTCPSelected)
                             {
-                                AddMonMessage("Coils Sending request: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() +
-                                    " Number of registers: " + numOfRegs.ToString());
-
-                                var result = await master.ReadCoilsAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
-
-
-                                if (result.Length > 0)
+                                AddMonMessage("Sending request TCP: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
+                                var res = await master.ReadCoilsAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                result = res;
+                            }
+                            else if (ModbusRTUSelected)
+                            {
+                                AddMonMessage("Sending request RTU: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
+                                if (serialPortAdapter.IsOpen)
                                 {
-                                    AddMonMessage("Coils Response received: Len: " + result.Length.ToString());
-                                    int currResultIndex = 0;
-                                    foreach (CoilsVariable coil in group)
-                                    {
-                                        int coilIndex = Coils.IndexOf(coil);
-                                        if (result.Length > currResultIndex)   //checking if result is long enough
-                                        {
-                                            switch (result[currResultIndex])
-                                            {
-                                                case true:
-                                                    Coils[coilIndex].Value = "1";
-                                                    break;
-                                                case false:
-                                                    Coils[coilIndex].Value = "0";
-                                                    break;
-                                                default:
-                                                    Coils[coilIndex].Value = "-1";
-                                                    break;
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            DispatchService.Invoke(() =>
-                                            {
-                                                //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
-                                            });
-                                        }
-
-                                        Coils[coilIndex].Timestamp = DateTime.Now.ToString();
-                                        currResultIndex += 1;
-                                    }
-
-                                    DispatchService.Invoke(() =>
-                                    {
-                                        //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-
-                                        //TODO:: Add feature to user can enable advanced diagnostics
-                                        //ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
-                                    });
+                                    var res = await serialMaster.ReadCoilsAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                    result = res;
                                 }
                                 else
                                 {
-                                    AddMonMessage("Result was to short: " + result.Length.ToString());
+                                    serialPortAdapter.Open();
+                                    var res = await serialMaster.ReadCoilsAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                    result = res;
                                 }
                             }
                             else
                             {
+                                result = new bool[0];
+                            }
+
+                            //IF Device returned value:
+
+                            if (result.Length > 0)
+                            {
+                                AddMonMessage("Coils Response received: Len: " + result.Length.ToString());
+                                int currResultIndex = 0;
+                                foreach (CoilsVariable coil in group)
+                                {
+                                    int coilIndex = Coils.IndexOf(coil);
+                                    if (result.Length > currResultIndex)   //checking if result is long enough
+                                    {
+                                        switch (result[currResultIndex])
+                                        {
+                                            case true:
+                                                Coils[coilIndex].Value = "1";
+                                                break;
+                                            case false:
+                                                Coils[coilIndex].Value = "0";
+                                                break;
+                                            default:
+                                                Coils[coilIndex].Value = "-1";
+                                                break;
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        DispatchService.Invoke(() =>
+                                        {
+                                            //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
+                                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Response was to short" + result[0].ToString());
+                                        });
+                                    }
+
+                                    Coils[coilIndex].Timestamp = DateTime.Now.ToString();
+                                    currResultIndex += 1;
+                                }
+
                                 DispatchService.Invoke(() =>
                                 {
                                     //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Client is disconnected");
+
+                                    //TODO:: Add feature to user can enable advanced diagnostics
+                                    //ExceptionMessages.Insert(0, DateTime.Now.ToString() + " " + result[0].ToString());
                                 });
+                            }
+                            else
+                            {
+                                AddMonMessage("Result was to short: " + result.Length.ToString());
                             }
 
                         }
-                        else
-                        {
-                            DispatchService.Invoke(() =>
-                            {
-                                //ExceptionMessages.Add(DateTime.Now.ToString() + " " + result[0].ToString());
-                                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Client is disconnected");
-                            });
-                        }
-
-
-
                     }
+
                 }
-
-
             }
             catch (Exception exc)
             {
@@ -1832,57 +1881,6 @@ namespace ModbusDiagnoster.ViewModels
         {
             ExportAs.SaveAsCSV(HoldingRegisters);
         }
-
-
-
-        /*      public void ContentCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-              {
-                  if (e.Action == NotifyCollectionChangedAction.Remove)
-                  {
-                      foreach (INotifyPropertyChanged item in e.OldItems)
-                      {
-                          item.PropertyChanged -= EntityViewModelPropertyChanged;
-                      }
-                  }
-                  else if (e.Action == NotifyCollectionChangedAction.Add)
-                  {
-                      foreach (INotifyPropertyChanged item in e.NewItems)
-                      {
-                        item.PropertyChanged += EntityViewModelPropertyChanged;
-                      }
-                  }
-              }
-
-              public void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-              {
-
-                  OnPropertyChanged();
-                  //This will get called when the property of an object inside the collection changes
-              }*/
-
-        /* private void _innerStuff_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-         {
-             if (e.NewItems != null)
-             {
-                 foreach (Object item in e.NewItems)
-                 {
-                     ((INotifyPropertyChanged)item).PropertyChanged += ItemPropertyChanged;
-                 }
-             }
-             if (e.OldItems != null)
-             {
-                 foreach (Object item in e.OldItems)
-                 {
-                     ((INotifyPropertyChanged)item).PropertyChanged -= ItemPropertyChanged;
-                 }
-             }
-         }
-
-         private void ItemPropertyChanged(object sender, PropertyChangedEventArgs e)
-         {
-             OnPropertyChanged();
-             //This will get called when the property of an object inside the collection changes
-         }*/
 
     }
 }
