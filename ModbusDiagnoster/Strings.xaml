@@ -10,6 +10,7 @@
     <system:String x:Key="TimestampLbl">Timestamp value [ms]:</system:String>
     <system:String x:Key="CleanBtn">Clear</system:String>
     <system:String x:Key="ChangeConTCPproperties">Apply changes</system:String>
+    <system:String x:Key="selectPath">Select directory</system:String>
 
     <!-- Main window elements  -->
     
@@ -52,7 +53,19 @@
     <system:String x:Key="OffLbl">Off:</system:String>
     <system:String x:Key="OnTxLbl">On TX:</system:String>
     <system:String x:Key="RTSLbl">RTS:</system:String>
+    <system:String x:Key="defaultPath">C:\</system:String>
+    <system:String x:Key="nameOf">Name:</system:String>
+    <system:String x:Key="defaltNameOf">_ExportedFromModbusDiagnoster</system:String>
+    <system:String x:Key="selectRegistersToExport">Select registers to export</system:String>
+    <system:String x:Key="exportBtn">Export</system:String>
     
+    
+    
+<!--
+    <system:String x:Key="forHRandIR">For Holding Registers and Input Registers:</system:String>
+    <system:String x:Key="forDIandCoils">For Coils and Discrete Inputs:</system:String>
+    <system:String x:Key="selectOutputAttributes">Select columns:</system:String>
+    -->
     
     
 </ResourceDictionary>

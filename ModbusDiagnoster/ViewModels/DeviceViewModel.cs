@@ -240,7 +240,7 @@ namespace ModbusDiagnoster.ViewModels
                 _statusMessage = value;
                 OnPropertyChanged(nameof(StatusMessage));
                 OnPropertyChanged(nameof(HasStatusMessage));
-                MessageBox.Show(_statusMessage);
+                //MessageBox.Show(_statusMessage);
             }
         }
         private int _SamplePeriod { get; set; }
@@ -1879,7 +1879,11 @@ namespace ModbusDiagnoster.ViewModels
 
         private void OnSaveAsCSV(object obj)
         {
-            ExportAs.SaveAsCSV(HoldingRegisters);
+            ExportVariablesViewModel exportVariablesViewModel=new ExportVariablesViewModel(_Coils,_Inputs,_HoldingRegisters,_InputRegisters);
+            ExportWindow exportWindow=new ExportWindow(exportVariablesViewModel);
+            exportWindow.Show();
+
+            //ExportAs.SaveAsCSV(HoldingRegisters);
         }
 
     }

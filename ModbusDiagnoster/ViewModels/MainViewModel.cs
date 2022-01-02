@@ -92,7 +92,7 @@ namespace ModbusDiagnoster.ViewModels
         }
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            MessageBox.Show("Wywołano zmianę" + propertyName);
+            
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             
         }

@@ -1,0 +1,58 @@
+﻿<Window x:Class="ModbusDiagnoster.ExportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ModbusDiagnoster" xmlns:viewmodels="clr-namespace:ModbusDiagnoster.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=viewmodels:ExportVariablesViewModel}"
+        Title="Export Variables" Height="350" Width="450"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}" WindowStartupLocation="CenterScreen"
+        >
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <StackPanel Margin="5" Orientation="Horizontal">
+                <Label Margin="5" FontSize="14" Content="{StaticResource nameOf}"></Label>
+                <TextBox Margin="5" MinWidth="200" Text="{Binding Filename}"></TextBox>
+            </StackPanel>
+           
+            <StackPanel Margin="5" Orientation="Horizontal">
+                <Button Margin="5" x:Name="direSelectBtn" 
+                        Command="{Binding Path=SelectDir}"
+                        Content="{StaticResource selectPath}" Cursor="Hand"></Button>
+                <Label Margin="10" FontSize="14" Content="{Binding FilePath}"></Label>
+            </StackPanel>
+            <GroupBox Margin="5" Header="{StaticResource selectRegistersToExport}">
+                <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Content="Coils" IsChecked="{Binding CoilsSelected}"></CheckBox>
+                            <Label Margin="20,0,0,0" Content="{Binding CoilsSaved}"></Label>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Content="Discrete Inputs" IsChecked="{Binding DiSelected}"></CheckBox>
+                            <Label Margin="20,0,0,0" Content="{Binding DiSaved}"></Label>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Content="Holding Registers" IsChecked="{Binding HrSelected}"></CheckBox>
+                            <Label Margin="20,0,0,0" Content="{Binding HrSaved}"></Label>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Content="Input Registers" IsChecked="{Binding IrSelected}"></CheckBox>
+                            <Label Margin="20,0,0,0" Content="{Binding IrSaved}"></Label>
+                        </StackPanel>
+                        
+            </StackPanel>
+            </GroupBox>
+
+                <Button Content="{StaticResource exportBtn}" 
+                        Margin="5"
+                        Command="{Binding Path=ExportCommand}" Cursor="Hand"
+                        ></Button>
+
+        </StackPanel>
+
+        </ScrollViewer>
+    </Grid>
+</Window>

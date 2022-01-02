@@ -119,6 +119,19 @@ namespace ModbusDiagnoster.Model.Variables
                 OnPropertyChanged();
             }
         }
+        private string _Note { get; set; }
+        public string Note
+        {
+            get
+            {
+                return _Note;
+            }
+            set
+            {
+                _Note = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         public CoilsVariable()
@@ -132,6 +145,7 @@ namespace ModbusDiagnoster.Model.Variables
             Value = "-"; 
             //Format = "%8.8f";
             Timestamp = "0:00";
+            Note = "";
             
 
         }
@@ -147,6 +161,7 @@ namespace ModbusDiagnoster.Model.Variables
             Value = "-";
             //Format = "%8.8f";
             Timestamp = "0:00";
+            Note = "";
 
         }
 

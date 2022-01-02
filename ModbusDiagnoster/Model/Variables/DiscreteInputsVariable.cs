@@ -120,6 +120,20 @@ namespace ModbusDiagnoster.Model.Variables
             }
         }
 
+        private string _Note { get; set; }
+        public string Note
+        {
+            get
+            {
+                return _Note;
+            }
+            set
+            {
+                _Note = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public DiscreteInputsVariable()
         {
@@ -132,7 +146,7 @@ namespace ModbusDiagnoster.Model.Variables
             Value = "-";
             //Format = "%8.8f";
             Timestamp = "0:00";
-
+            Note = "";
 
         }
 
@@ -147,7 +161,7 @@ namespace ModbusDiagnoster.Model.Variables
             Value = "-";
             //Format = "%8.8f";
             Timestamp = "0:00";
-
+            Note = "";
         }
 
 
