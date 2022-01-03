@@ -279,7 +279,26 @@ namespace ModbusDiagnoster.ViewModels
                 //MessageBox.Show("Wybrano modbusa RTU");
             }
         }
-        public System.Timers.Timer timer { get; set; }
+        public System.Timers.Timer _timer { get; set; }
+        public System.Timers.Timer timer
+        {
+            get { return this._timer; }
+            set
+            {
+                _timer = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool _timerStopped { get; set; }
+        public bool timerStopped
+        {
+            get { return this._timerStopped; }
+            set
+            {
+                _timerStopped = value;
+                OnPropertyChanged();
+            }
+        }
         public bool timerStop { get; set; }
         private string _Name { get; set; }
         private string _DeviceDirectory { get; set; }
@@ -306,7 +325,7 @@ namespace ModbusDiagnoster.ViewModels
         public int[] AvaibleBaudRates { get; set; }
 
 
-        public DeviceViewModel(string name = "Nazwa urządzenia", string dirPath = "", int id = 0)
+        public DeviceViewModel(string name = "Nazwa urządzenia", string dirPath = "", int id = 0,bool isNewDevice=false)
         {
             _DeviceRTU = new ModbusRTU();
             _DeviceTCP = new ModbusTCP();
@@ -331,11 +350,19 @@ namespace ModbusDiagnoster.ViewModels
             //Loading stored device data 
             if (Directory.Exists(dirPath))
             {
-                LoadData();
+                if(isNewDevice)
+                {
+                    OnSaveData(this);
+                }
+                else
+                {
+                    LoadData();
+                }
+                
             }
 
-
-
+            
+            //Adding method relays
             StartPooling = new AsyncRelayCommand(StartModbusPooling, (ex) => StatusMessage = ex.Message);
             ConnectToDevice = new RelayCommand(Connect);
             StopPooling = new RelayCommand(StopPoolingMethod);
@@ -356,13 +383,14 @@ namespace ModbusDiagnoster.ViewModels
             SaveAll = new RelayCommand(OnSaveData);
             SaveAsCSV = new RelayCommand(OnSaveAsCSV);
 
-            timer = new System.Timers.Timer();
-            // timer.Elapsed += new ElapsedEventHandler(GetVariableValues);
-            timer.Elapsed += new ElapsedEventHandler(GetGroupedVariableValues);
-            timer.Interval = 1000;
-            timer.Enabled = true;
-            timer.Stop();
+            _timer = new System.Timers.Timer();
+            // _timer.Elapsed += new ElapsedEventHandler(GetVariableValues);
+            _timer.Elapsed += new ElapsedEventHandler(GetGroupedVariableValues);
+            _timer.Interval = 1000;
+            _timer.Enabled = true;
+            _timer.Stop();
             timerStop = false;
+            _timerStopped = true;
 
 
 
@@ -535,7 +563,7 @@ namespace ModbusDiagnoster.ViewModels
             TimerStatus = new SolidColorBrush(Color.FromArgb(255, (byte)241, (byte)196, (byte)15)); //rgba(241, 196, 15,1.0)
         }
 
-        public async Task StartModbusPooling()  //This method only runs timer start
+        public async Task StartModbusPooling()  //This method only runs _timer start
         {
             try
             {
@@ -543,7 +571,7 @@ namespace ModbusDiagnoster.ViewModels
                 // {
                 //ModbusIpMaster master = ModbusIpMaster.CreateIp(DeviceTCP.TCPclient);
 
-                timer.Start();
+                _timer.Start();
                 DispatchService.Invoke(() =>
                 {
 
@@ -581,7 +609,7 @@ namespace ModbusDiagnoster.ViewModels
         {
             try
             {
-                timer.Stop();
+                _timer.Stop();
                 /* using (TcpClient client = DeviceTCP.TCPclient)
                  {*/
                 ModbusIpMaster master = ModbusIpMaster.CreateIp(DeviceTCP.TCPclient);
@@ -671,7 +699,7 @@ namespace ModbusDiagnoster.ViewModels
 
                 }
 
-                timer.Start();
+                _timer.Start();
                 // }
             }
             catch (Exception exc)
@@ -690,9 +718,10 @@ namespace ModbusDiagnoster.ViewModels
         {
             try
             {
-                timer.Stop();
+                _timer.Stop();
                 DispatchService.Invoke(() =>
                 {
+                    timerStopped = false;
                     OnTimerWaiting();
                 });
 
@@ -707,10 +736,6 @@ namespace ModbusDiagnoster.ViewModels
                         {
                             if (tcpClient.Connected)
                             {
-                                /*                            DispatchService.Invoke(() =>
-                                                        {
-                                                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + "ModbusTCP selected");
-                                                        });*/
 
                                 ModbusIpMaster master = ModbusIpMaster.CreateIp(tcpClient);
 
@@ -758,7 +783,7 @@ namespace ModbusDiagnoster.ViewModels
 
                 if (!timerStop)
                 {
-                    timer.Start();
+                    _timer.Start();
                     DispatchService.Invoke(() =>
                     {
                         OnTimerStart();
@@ -767,8 +792,10 @@ namespace ModbusDiagnoster.ViewModels
                 }
                 else
                 {
+
                     DispatchService.Invoke(() =>
                     {
+                        timerStopped = true;
                         OnTimerStop();
                     });
                     timerStop = false;
@@ -1503,7 +1530,7 @@ namespace ModbusDiagnoster.ViewModels
         private void StopPoolingMethod(object obj)
         {
             timerStop = true;
-            //timer.Stop();
+            //_timer.Stop();
 
             DispatchService.Invoke(() =>
             {
@@ -1844,6 +1871,7 @@ namespace ModbusDiagnoster.ViewModels
         {
             try
             {
+                
                 HoldingRegisters = LoadVariables.LoadHR(_DeviceDirectory);
                 InputRegisters = LoadVariables.LoadIR(_DeviceDirectory);
                 Inputs = LoadVariables.LoadDI(_DeviceDirectory);

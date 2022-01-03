@@ -33,7 +33,6 @@ namespace ModbusDiagnoster.ViewModels
             }
         }
         private int _ID { get; set; }
-
         public int ID
         {
             get { return this._ID; }
@@ -85,12 +84,6 @@ namespace ModbusDiagnoster.ViewModels
             }
         }
 
-       /* public DeviceCard(string text, int id)
-        {
-            
-            this.deviceName.Text = text;
-            this.ID = id;
-        }*/
 
     }
 }

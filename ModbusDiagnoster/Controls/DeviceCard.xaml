@@ -18,12 +18,12 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
-            <TextBox x:Name="deviceName" Text="{Binding DeviceName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" FontSize="20" 
+            <Label x:Name="deviceName" Content="{Binding DeviceName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" FontSize="20" 
                      FontWeight="Bold" HorizontalAlignment="Center" 
                      VerticalAlignment="Center"
                      Grid.Row="0"
                      Margin="5"
-                     ></TextBox>
+                     ></Label>
 
                 <Button
                     x:Name="openDeviceWindowBtn"

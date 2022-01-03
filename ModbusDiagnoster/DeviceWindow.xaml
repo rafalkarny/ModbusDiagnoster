@@ -67,6 +67,7 @@
                     <StackPanel>
                         <RadioButton x:Name="tcpRadBtn" Content="Modbus TCP"
                                      IsChecked="{Binding ModbusTCPSelected}"
+                                     IsEnabled="{Binding timerStopped}"
                                      ></RadioButton>
                         <GroupBox 
                         Margin="5"
@@ -95,7 +96,9 @@
                             </StackPanel>
                         </GroupBox>
                         <RadioButton x:Name="rtuRadBtn" Content="Modbus RTU"
-                                     IsChecked="{Binding ModbusRTUSelected}"></RadioButton>
+                                     IsChecked="{Binding ModbusRTUSelected}"
+                                     IsEnabled="{Binding timerStopped}"
+                                     ></RadioButton>
                         <GroupBox
                         Margin="5"  >
 

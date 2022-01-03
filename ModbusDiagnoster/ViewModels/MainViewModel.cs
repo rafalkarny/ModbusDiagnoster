@@ -79,7 +79,7 @@ namespace ModbusDiagnoster.ViewModels
                 newDev.Delete += DeleteDevice;
                 //newDev.DeleteButtonClick += DeleteDevice;
                 DevicesList.Add(newDev);
-               
+                newDev.OpenDeviceWindowCommand.Execute(newDev);
 
             }
 
