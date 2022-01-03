@@ -335,21 +335,6 @@ namespace ModbusDiagnoster.ViewModels
             }
 
 
-            //LoadDevices();  //Sniffer interfaces
-
-            /// TODO when saving and loading will be avaible!!!
-            /*try
-            {
-                 //_DeviceTCP.TCPclient = new TcpClient("127.0.0.1", 502);
-                 //tcpClient= new TcpClient(_DeviceTCP.IPAddr,_DeviceTCP.Port);
-
-            }
-            catch (Exception exc)
-            {
-                ExceptionMessages.Insert(0, DateTime.Now.ToString() + exc.Message);
-            }*/
-
-            //ConnectTCP();
 
             StartPooling = new AsyncRelayCommand(StartModbusPooling, (ex) => StatusMessage = ex.Message);
             ConnectToDevice = new RelayCommand(Connect);
@@ -811,6 +796,7 @@ namespace ModbusDiagnoster.ViewModels
 
                 //ModbusIpMaster master = ModbusIpMaster.CreateIp(tcpClient);
 
+               // List<List<HoldingRegistersVariable>> groupedHR = GroupVariables.GroupHoldingRegisters(HoldingRegisters);
                 List<List<HoldingRegistersVariable>> groupedHR = GroupVariables.GroupHoldingRegisters(HoldingRegisters);
 
                 foreach (List<HoldingRegistersVariable> group in groupedHR)

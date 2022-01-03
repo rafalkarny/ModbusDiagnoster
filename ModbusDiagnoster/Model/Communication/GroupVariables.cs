@@ -179,9 +179,9 @@ namespace ModbusDiagnoster.Model.Communication
                     }
 
                     //For Variables Containing 1 word 
-                    else
+                    else if ((ir.VariableTypeFormat != "BigEndianFloat" && ir.VariableTypeFormat != "LittleEndianFloat"))
                     {
-                        if (previousVar.StartAddress + 1 == ir.StartAddress)
+                        if ((previousVar.StartAddress + 1 == ir.StartAddress) && (previousVar.VariableTypeFormat != "BigEndianFloat" && previousVar.VariableTypeFormat != "LittleEndianFloat"))
                         {
                             if (Groups[PreviousVariableListIndex].Count() < 125)   //because max requested register is 125 
                             {
@@ -204,6 +204,15 @@ namespace ModbusDiagnoster.Model.Communication
                             PreviousVariableListIndex = Groups.IndexOf(tmp);
                         }
                     }
+                    //Situation when we have for example: Decimal,Decimal,BigEndianFloat,Decimal,Integer etc... (previous is diffrent type and should make new list)
+                    else
+                    {
+                        List<InputRegistersVariable> tmp = new List<InputRegistersVariable>();
+                        tmp.Add(ir);
+                        Groups.Add(tmp);
+                        PreviousVariableListIndex = Groups.IndexOf(tmp);
+
+                    }
 
                 }
                 else
@@ -211,7 +220,7 @@ namespace ModbusDiagnoster.Model.Communication
                     List<InputRegistersVariable> tmp = new List<InputRegistersVariable>();
                     tmp.Add(ir);
                     Groups.Add(tmp);
-                    PreviousVariableListIndex = 0;
+                    PreviousVariableListIndex = Groups.IndexOf(tmp);
                 }
                 previousVar = ir;
 
@@ -236,8 +245,11 @@ namespace ModbusDiagnoster.Model.Communication
             //Sorting
             IEnumerable<HoldingRegistersVariable> sortedInput = inputCollection.OrderBy(hr => hr.StartAddress);  //Example from docs: IEnumerable<Pet> query = pets.OrderBy(pet => pet.Age);
 
-            HoldingRegistersVariable previousVar = new HoldingRegistersVariable("", 65535);   //6535 register propably will be never used
+            HoldingRegistersVariable previousVar = new HoldingRegistersVariable("", 65535);   //6535 register propably will be never used because registers starts from 0
             int PreviousVariableListIndex = -1;
+
+
+
 
             foreach (HoldingRegistersVariable hr in sortedInput)
             {
@@ -250,6 +262,8 @@ namespace ModbusDiagnoster.Model.Communication
                         {
                             if (Groups[PreviousVariableListIndex].Count() < 62)   //because max requested register is 125 
                             {
+
+
                                 Groups[PreviousVariableListIndex].Add(hr);  //Add variable to previous list 
                             }
                             else
@@ -271,9 +285,9 @@ namespace ModbusDiagnoster.Model.Communication
                     }
 
                     //For Variables Containing 1 word 
-                    else
+                    else if ((hr.VariableTypeFormat != "BigEndianFloat" && hr.VariableTypeFormat != "LittleEndianFloat"))
                     {
-                        if (previousVar.StartAddress + 1 == hr.StartAddress)
+                        if ((previousVar.StartAddress + 1 == hr.StartAddress) && (previousVar.VariableTypeFormat != "BigEndianFloat" && previousVar.VariableTypeFormat != "LittleEndianFloat"))
                         {
                             if (Groups[PreviousVariableListIndex].Count() < 125)   //because max requested register is 256 
                             {
@@ -296,6 +310,15 @@ namespace ModbusDiagnoster.Model.Communication
                             PreviousVariableListIndex = Groups.IndexOf(tmp);
                         }
                     }
+                    //Situation when we have for example: Decimal,Decimal,BigEndianFloat,Decimal,Integer etc... (previous is diffrent type and should make new list)
+                    else
+                    {
+                        List<HoldingRegistersVariable> tmp = new List<HoldingRegistersVariable>();
+                        tmp.Add(hr);
+                        Groups.Add(tmp);
+                        PreviousVariableListIndex = Groups.IndexOf(tmp);
+
+                    }
 
                 }
                 else
@@ -303,7 +326,7 @@ namespace ModbusDiagnoster.Model.Communication
                     List<HoldingRegistersVariable> tmp = new List<HoldingRegistersVariable>();
                     tmp.Add(hr);
                     Groups.Add(tmp);
-                    PreviousVariableListIndex = 0;
+                    PreviousVariableListIndex = Groups.IndexOf(tmp);
                 }
                 previousVar = hr;
 
@@ -316,6 +339,111 @@ namespace ModbusDiagnoster.Model.Communication
 
 
         }
+
+   /*     //16bit/Word registers
+        public static List<List<HoldingRegistersVariable>> GroupWordRegisters(ObservableCollection<HoldingRegistersVariable> inputCollection)
+        {
+
+            List<List<HoldingRegistersVariable>> Groups = new List<List<HoldingRegistersVariable>>();
+
+            //Sorting
+            IEnumerable<HoldingRegistersVariable> sortedInput = inputCollection.OrderBy(hr => hr.StartAddress);  //Example from docs: IEnumerable<Pet> query = pets.OrderBy(pet => pet.Age);
+
+            HoldingRegistersVariable previousVar = new HoldingRegistersVariable("", 65535);   //6535 register propably will be never used because registers starts from 0
+            int PreviousVariableListIndex = -1;
+
+
+
+
+            foreach (HoldingRegistersVariable hr in sortedInput)
+            {
+                if (PreviousVariableListIndex != -1)
+                {
+                    //For Variables containing 2 words
+                    if ((hr.VariableTypeFormat == "BigEndianFloat" || hr.VariableTypeFormat == "LittleEndianFloat") && (previousVar.VariableTypeFormat == "BigEndianFloat" || previousVar.VariableTypeFormat == "LittleEndianFloat"))
+                    {
+                        if (previousVar.StartAddress + 2 == hr.StartAddress)
+                        {
+                            if (Groups[PreviousVariableListIndex].Count() < 62)   //because max requested register is 125 
+                            {
+                             
+                                
+                                Groups[PreviousVariableListIndex].Add(hr);  //Add variable to previous list 
+                            }
+                            else
+                            {
+                                List<HoldingRegistersVariable> tmp = new List<HoldingRegistersVariable>();  //Add new List (new group) and add variable
+                                tmp.Add(hr);
+                                Groups.Add(tmp);
+                                PreviousVariableListIndex = Groups.IndexOf(tmp);
+                            }
+
+                        }
+                        else
+                        {
+                            List<HoldingRegistersVariable> tmp = new List<HoldingRegistersVariable>();  //Add new List (new group) and add variable
+                            tmp.Add(hr);
+                            Groups.Add(tmp);
+                            PreviousVariableListIndex = Groups.IndexOf(tmp);
+                        }
+                    }
+
+                    //For Variables Containing 1 word 
+                    else if ((hr.VariableTypeFormat != "BigEndianFloat" && hr.VariableTypeFormat != "LittleEndianFloat"))
+                    {
+                        if ((previousVar.StartAddress + 1 == hr.StartAddress) && (previousVar.VariableTypeFormat != "BigEndianFloat" && previousVar.VariableTypeFormat != "LittleEndianFloat"))
+                        {
+                            if (Groups[PreviousVariableListIndex].Count() < 125)   //because max requested register is 256 
+                            {
+                                Groups[PreviousVariableListIndex].Add(hr);  //Add variable to previous list 
+                            }
+                            else
+                            {
+                                List<HoldingRegistersVariable> tmp = new List<HoldingRegistersVariable>();  //Add new List (new group) and add variable
+                                tmp.Add(hr);
+                                Groups.Add(tmp);
+                                PreviousVariableListIndex = Groups.IndexOf(tmp);
+                            }
+
+                        }
+                        else
+                        {
+                            List<HoldingRegistersVariable> tmp = new List<HoldingRegistersVariable>();  //Add new List (new group) and add variable
+                            tmp.Add(hr);
+                            Groups.Add(tmp);
+                            PreviousVariableListIndex = Groups.IndexOf(tmp);
+                        }
+                    }
+                    //Situation when we have for example: Decimal,Decimal,BigEndianFloat,Decimal,Integer etc... (previous is diffrent type and should make new list)
+                    else 
+                    {
+                        List<HoldingRegistersVariable> tmp = new List<HoldingRegistersVariable>();
+                        tmp.Add(hr);
+                        Groups.Add(tmp);
+                        PreviousVariableListIndex = Groups.IndexOf(tmp);
+
+                    }
+
+                }
+                else
+                {
+                    List<HoldingRegistersVariable> tmp = new List<HoldingRegistersVariable>();
+                    tmp.Add(hr);
+                    Groups.Add(tmp);
+                    PreviousVariableListIndex = Groups.IndexOf(tmp);
+                }
+                previousVar = hr;
+
+            }
+
+
+
+
+            return Groups;
+
+
+        }*/
+
 
     }
 }
