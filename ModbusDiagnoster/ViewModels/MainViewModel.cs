@@ -1,6 +1,7 @@
 ﻿using MaterialDesignThemes.Wpf;
 using ModbusDiagnoster.Commands;
 using ModbusDiagnoster.Controls;
+using ModbusDiagnoster.FileOperations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -77,7 +78,21 @@ namespace ModbusDiagnoster.ViewModels
                 string devicesDir = MainWorkingDirectory + @"\Devices\" + msg.Answer;
                 DeviceCardViewModel newDev = new DeviceCardViewModel(msg.Answer,devicesDir,GetFreeId());
                 newDev.Delete += DeleteDevice;
-                //newDev.DeleteButtonClick += DeleteDevice;
+                try
+                {
+                    SaveVariables.SaveCoils(new ObservableCollection<Model.Variables.CoilsVariable>(), devicesDir);
+                    SaveVariables.SaveDI(new ObservableCollection<Model.Variables.DiscreteInputsVariable>(), devicesDir);
+                    SaveVariables.SaveIR(new ObservableCollection<Model.Variables.InputRegistersVariable>(), devicesDir);
+                    SaveVariables.SaveHR(new ObservableCollection<Model.Variables.HoldingRegistersVariable>(), devicesDir);
+                    SaveVariables.SaveTCPparams(new Model.Communication.ModbusTCP.ModbusTCP(), devicesDir);
+                    SaveVariables.SaveRTUparams(new Model.Communication.ModbusRTU.ModbusRTU(), devicesDir);
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+
                 DevicesList.Add(newDev);
                 newDev.OpenDeviceWindowCommand.Execute(newDev);
 
