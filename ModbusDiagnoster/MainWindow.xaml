@@ -20,7 +20,7 @@
 
     <Grid>
         <Grid Height="40" VerticalAlignment="Top">
-            <Label Content="Lista Urządzeń:" Margin="5,5,5,5" FontSize="16" />
+            <Label Content="{StaticResource DevicesList}" Margin="5,5,5,5" FontSize="16" />
         </Grid>
         
     <Grid Margin="0,40,0,0">
@@ -50,7 +50,7 @@
             Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
             Width="50"
             Height="50"
-            
+            ToolTip="{StaticResource AddNewDevice}"
             Command="{Binding Path=AddDeviceCommand}"
             HorizontalAlignment="Right" VerticalAlignment="Bottom"
             Margin="0,0,30,20"

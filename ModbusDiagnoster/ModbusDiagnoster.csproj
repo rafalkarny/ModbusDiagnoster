@@ -279,9 +279,6 @@
     <Compile Include="AddMultipleHRwindow.xaml.cs">
       <DependentUpon>AddMultipleHRwindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AddVariableWindow.xaml.cs">
-      <DependentUpon>AddVariableWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Commands\AsyncCommandBase.cs" />
     <Compile Include="Commands\AsyncRelayCommand.cs" />
     <Compile Include="Commands\DispatchService.cs" />
@@ -295,12 +292,11 @@
     <Compile Include="ExportWindow.xaml.cs">
       <DependentUpon>ExportWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileOperations\LoadVariables.cs" />
-    <Compile Include="FileOperations\SaveVariables.cs" />
+    <Compile Include="Model\FileOperations\LoadVariables.cs" />
+    <Compile Include="Model\FileOperations\SaveVariables.cs" />
     <Compile Include="Model\Communication\GroupVariables.cs" />
     <Compile Include="Model\Converters\VariableType.cs" />
     <Compile Include="Model\Sniffers\MyPacket.cs" />
-    <Compile Include="Model\Variables\CalcFunctions.cs" />
     <Compile Include="Model\Communication\Device.cs" />
     <Compile Include="Model\Communication\ModbusRTU\ModbusRTU.cs" />
     <Compile Include="Model\Communication\ModbusTCP\ModbusTCP.cs" />
@@ -314,7 +310,6 @@
     </Compile>
     <Compile Include="ViewModels\AddMultipleDiscreteCoilsViewModel.cs" />
     <Compile Include="ViewModels\AddMultipleHRDialogViewModel.cs" />
-    <Compile Include="ViewModels\AddVariableViewModel.cs" />
     <Compile Include="ViewModels\DeviceCardViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModel.cs" />
     <Compile Include="ViewModels\ExportVariablesViewModel.cs" />
@@ -324,10 +319,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AddMultipleHRwindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="AddVariableWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

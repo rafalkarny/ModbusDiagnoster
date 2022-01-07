@@ -1,11 +1,6 @@
-﻿using ModbusDiagnoster.Model.Communication;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ModbusDiagnoster.Model.Communication.ModbusRTU
 {

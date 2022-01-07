@@ -28,7 +28,7 @@
                 <Button
                     x:Name="openDeviceWindowBtn"
                     Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
-                    ToolTip="Otwórz okno urządzenia"
+                    ToolTip="{StaticResource OpenDevice}"
                     Grid.Row="1"
                     Command="{Binding OpenDeviceWindowCommand}"
                     Margin="5"
@@ -45,13 +45,13 @@
                 <Button
                     x:Name="deleteDevice"
                     Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
-                    ToolTip="Usuń urządzenie"
+                    ToolTip="{StaticResource DeleteDevice}"
                     Grid.Row="1"
                     Command="{Binding Path=DeleteThisDevice}"
                     Margin="5"
                     Height="40"
                     Width="40"
-                    HorizontalAlignment="Left"
+                    HorizontalAlignment="Left" Cursor="Hand"
                     >
                     <materialDesign1:PackIcon
                             Kind="Close"

@@ -5,16 +5,12 @@ using ModbusDiagnoster.Model.Communication.ModbusTCP;
 using ModbusDiagnoster.Model.Converters;
 using ModbusDiagnoster.Model.Sniffers;
 using ModbusDiagnoster.Model.Variables;
-using PacketDotNet;
 using SharpPcap;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
-using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -22,19 +18,12 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
-using MaterialDesignThemes.Wpf;
 using ModbusDiagnoster.Model.Communication;
 using System.Windows.Media;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.IO;
 using ModbusDiagnoster.FileOperations;
 using System.IO.Ports;
-using System.Threading;
-using Modbus.Data;
-using Modbus.Utility;
-using NModbus.Serial;
+
 
 namespace ModbusDiagnoster.ViewModels
 {

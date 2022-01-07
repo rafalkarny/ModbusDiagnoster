@@ -12,12 +12,19 @@
     <system:String x:Key="ChangeConTCPproperties">Apply changes</system:String>
     <system:String x:Key="selectPath">Select directory</system:String>
 
-    <!-- Main window elements  -->
+ 
     
     <!-- Windows  -->
     
+    <!-- Main window elements  -->
+    <system:String x:Key="DevicesList">Devices list:</system:String>
     <system:String x:Key="DeviceWindowName">Modbus Device</system:String>
-
+    
+    <!-- TOOLTIPS-->
+    <system:String x:Key="AddNewDevice">Add new device for connect with</system:String>
+    <system:String x:Key="OpenDevice">Open device window</system:String>
+    <system:String x:Key="DeleteDevice">Delete device</system:String>
+    
     <!-- Table headers  -->
     <system:String x:Key="CheckedHeader">Select</system:String>
     <system:String x:Key="DisabledHeader">Disabled</system:String>
@@ -42,6 +49,8 @@
     <system:String x:Key="StopPoolingToolTip">Stop requesting modbus</system:String>
     <system:String x:Key="ConnectToolTip">Connect/Disconnect TCP Session</system:String>
     <system:String x:Key="ChangeConTCPpropertiesToolTip">Apply changes (reconnect device)</system:String>
+    <system:String x:Key="SaveChangesToolTip">Save changes</system:String>
+    <system:String x:Key="ExportToolTip">Export variables to CSV file</system:String>
     
     <!-- Labels -->
     <system:String x:Key="SerialPortLbl">Port:</system:String>

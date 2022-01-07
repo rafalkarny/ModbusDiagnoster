@@ -267,7 +267,7 @@
                     Width="30"
                     Height="30"
                     Grid.Row="0"
-                    ToolTip="{StaticResource PropertiesToolTip}"
+                    ToolTip="{StaticResource SaveChangesToolTip}"
                     Command="{Binding SaveAll}"
                     HorizontalAlignment="Right" VerticalAlignment="Bottom"
                     Margin="20,5,5,5"
@@ -284,10 +284,10 @@
                     Width="30"
                     Height="30"
                     Grid.Row="0"
-                    ToolTip="{StaticResource PropertiesToolTip}"
+                    ToolTip="{StaticResource ExportToolTip}"
                     Command="{Binding SaveAsCSV}"
                     HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                    Margin="5,5,5,5"
+                    Margin="5,5,5,5" Cursor="Hand"
                     >
                     <materialDesign:PackIcon
                             Kind="FileExport"
