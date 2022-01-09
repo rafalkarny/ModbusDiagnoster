@@ -1,0 +1,269 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ModbusDiagnoster.AddMultipleDiscreteCoils" BaseTypeListCollapsed="true">
+    <Position X="9" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAEAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>AddMultipleDiscreteCoils.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.AddMultipleHRwindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAEAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>AddMultipleHRwindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.App" Collapsed="true">
+    <Position X="18.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModbusDiagnoster.DeviceWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>DeviceWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.ExportWindow" BaseTypeListCollapsed="true">
+    <Position X="9" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ExportWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.MainWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.MsgBox" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAEAAAkAgAAAAA=</HashCode>
+      <FileName>MsgBox.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.Commands.AsyncCommandBase" Collapsed="true">
+    <Position X="6.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAADgAQAAEAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Commands\AsyncCommandBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ModbusDiagnoster.Commands.AsyncRelayCommand" Collapsed="true">
+    <Position X="6.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAEA=</HashCode>
+      <FileName>Commands\AsyncRelayCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModbusDiagnoster.Commands.DispatchService" Collapsed="true">
+    <Position X="20" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Commands\DispatchService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModbusDiagnoster.Commands.RelayCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEACAAQAAECAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Commands\RelayCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.Controls.DeviceCard" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controls\DeviceCard.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.Model.Communication.Device" Collapsed="true">
+    <Position X="7.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAEAAAAAAAAAIAAAIAQAgABAAAAAAQAAAAAEBAA=</HashCode>
+      <FileName>Model\Communication\Device.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ModbusDiagnoster.Model.Communication.GroupVariables" Collapsed="true">
+    <Position X="14.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAACAAAAAAAAAABAABAAAAAA=</HashCode>
+      <FileName>Model\Communication\GroupVariables.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModbusDiagnoster.Model.Communication.ModbusRTU.ModbusRTU" Collapsed="true">
+    <Position X="6.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAgAQADgCAAAADQAggCCIAAACAACEAAAAAACIU=</HashCode>
+      <FileName>Model\Communication\ModbusRTU\ModbusRTU.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ModbusDiagnoster.Model.Communication.ModbusTCP.ModbusTCP" Collapsed="true">
+    <Position X="8.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAAAAAAACAAAACAAAABCAAAACAA=</HashCode>
+      <FileName>Model\Communication\ModbusTCP\ModbusTCP.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ModbusDiagnoster.Model.Converters.VariableType" Collapsed="true">
+    <Position X="16.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAAAAAAAAIAAABAAAAAAAAQAAEAAA=</HashCode>
+      <FileName>Model\Converters\VariableType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModbusDiagnoster.FileOperations.LoadVariables">
+    <Position X="18.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAgAAAAAAACAAAAAABAAAAAEAAAAAA=</HashCode>
+      <FileName>Model\FileOperations\LoadVariables.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModbusDiagnoster.FileOperations.SaveVariables" Collapsed="true">
+    <Position X="11.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAgAgAAAAAAAAACAAAAQAAAAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>Model\FileOperations\SaveVariables.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModbusDiagnoster.Model.Sniffers.MyPacket" Collapsed="true">
+    <Position X="16.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAQAAAQAAAAAAAAAAQAAAAAAQA=</HashCode>
+      <FileName>Model\Sniffers\MyPacket.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModbusDiagnoster.Model.Variables.CoilsVariable" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgABCAMACSIAQQgAACAACEAQAgAAEABEA=</HashCode>
+      <FileName>Model\Variables\CoilsVariable.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.Model.Variables.DiscreteInputsVariable" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgABCAMACSIAQQgAACAACEAQAgAAEABEA=</HashCode>
+      <FileName>Model\Variables\DiscreteInputsVariable.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.Model.Variables.HoldingRegistersVariable" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAQABAQBgIBCEsCCSIAQQgAACAAKEAQAgAAUABkA=</HashCode>
+      <FileName>Model\Variables\HoldingRegistersVariable.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.Model.Variables.InputRegistersVariable" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAQABAQBgIBCEsCCSIAQQgAACAAKEAQAgAAUABkA=</HashCode>
+      <FileName>Model\Variables\InputRegistersVariable.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.Properties.Resources" Collapsed="true">
+    <Position X="20" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModbusDiagnoster.Properties.Settings" Collapsed="true">
+    <Position X="13" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModbusDiagnoster.ViewModels.AddMultipleDiscreteCoilsViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAEAAAABAAAAAJAAAACwCgAAAABAAICIAAAAAAAA=</HashCode>
+      <FileName>ViewModels\AddMultipleDiscreteCoilsViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.ViewModels.AddMultipleHRDialogViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAEAAAABAAAAAJCAAQCwCgAAAABAAICIAAQAAAAA=</HashCode>
+      <FileName>ViewModels\AddMultipleHRDialogViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.ViewModels.DeviceCardViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAgwAAIIBAAAAAAgAEAIAAAAAAIAAAUAAA=</HashCode>
+      <FileName>ViewModels\DeviceCardViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.ViewModels.DeviceViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>wccJQpNgKAa/EhxJIIggL/0o8hWCkALVkIJAAZZS5J4=</HashCode>
+      <FileName>ViewModels\DeviceViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.ViewModels.ExportVariablesViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAWAAABAAFERgAAIAAoCAEQhQAAAAQAgABIAsCAAAg=</HashCode>
+      <FileName>ViewModels\ExportVariablesViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ModbusDiagnoster.ViewModels.MainViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAEAAQEAIAAAAAAAgAAAAABCAAAAAAyAAAA=</HashCode>
+      <FileName>ViewModels\MainViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Enum Name="ModbusDiagnoster.Model.Communication.ModbusType">
+    <Position X="13" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAIAAAAAAAAAAAAAAAAAAAAAAgAAEAA=</HashCode>
+      <FileName>Model\Communication\Device.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ModbusDiagnoster.Model.Converters.VarType">
+    <Position X="14.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAEAAAAAAgIAAAAAAAAAAgAAAAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Converters\VariableType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ModbusDiagnoster.Model.Variables.ModbusFuncType">
+    <Position X="11.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAgAAAAAAAAAAAhAAAAACAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Variables\Variable.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

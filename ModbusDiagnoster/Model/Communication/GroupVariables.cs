@@ -17,7 +17,7 @@ namespace ModbusDiagnoster.Model.Communication
 
 
         //COILS
-        public static List<List<CoilsVariable>> GroupCoils(ObservableCollection<CoilsVariable> inputCollection)
+        public static List<List<CoilsVariable>> GroupCoils(ObservableCollection<CoilsVariable> inputCollection, bool diffrentSizeSelected,int size)
         {
 
             List<List<CoilsVariable>> Groups = new List<List<CoilsVariable>>();
@@ -28,6 +28,12 @@ namespace ModbusDiagnoster.Model.Communication
             CoilsVariable previousVar = new CoilsVariable("", 65535);   //6535 register propably will be never used
             int PreviousVariableListIndex = -1;
 
+            int maxcount = 2000;
+            if(diffrentSizeSelected)
+            {
+                maxcount = size;
+            }
+
             foreach (CoilsVariable di in sortedInput)
             {
                 if (PreviousVariableListIndex != -1)
@@ -37,7 +43,7 @@ namespace ModbusDiagnoster.Model.Communication
 
                     if (previousVar.StartAddress + 1 == di.StartAddress)
                     {
-                        if (Groups[PreviousVariableListIndex].Count() < 2000)   //because max requested registers are 251x8 is 2008
+                        if (Groups[PreviousVariableListIndex].Count() < maxcount)   //because max requested registers are 251x8 is 2008
                         {
                             Groups[PreviousVariableListIndex].Add(di);  //Add variable to previous list 
                         }
@@ -76,7 +82,7 @@ namespace ModbusDiagnoster.Model.Communication
         }
 
         // Discrete inputs
-        public static List<List<DiscreteInputsVariable>> GroupDiscreteInputs(ObservableCollection<DiscreteInputsVariable> inputCollection)
+        public static List<List<DiscreteInputsVariable>> GroupDiscreteInputs(ObservableCollection<DiscreteInputsVariable> inputCollection, bool diffrentSizeSelected, int size)
         {
 
             List<List<DiscreteInputsVariable>> Groups = new List<List<DiscreteInputsVariable>>();
@@ -87,6 +93,12 @@ namespace ModbusDiagnoster.Model.Communication
             DiscreteInputsVariable previousVar = new DiscreteInputsVariable("", 65535);   //6535 register propably will be never used
             int PreviousVariableListIndex = -1;
 
+            int maxcount = 2000;
+            if (diffrentSizeSelected)
+            {
+                maxcount = size;
+            }
+
             foreach (DiscreteInputsVariable di in sortedInput)
             {
                 if (PreviousVariableListIndex != -1)
@@ -96,7 +108,7 @@ namespace ModbusDiagnoster.Model.Communication
 
                     if (previousVar.StartAddress + 1 == di.StartAddress)
                     {
-                        if (Groups[PreviousVariableListIndex].Count() < 2000)   //because max requested register is 125 
+                        if (Groups[PreviousVariableListIndex].Count() < maxcount)   //because max requested register is 125 
                         {
                             Groups[PreviousVariableListIndex].Add(di);  //Add variable to previous list 
                         }
@@ -136,7 +148,7 @@ namespace ModbusDiagnoster.Model.Communication
 
 
         //INPUT REGISTERS
-        public static List<List<InputRegistersVariable>> GroupInputRegisters(ObservableCollection<InputRegistersVariable> inputCollection)
+        public static List<List<InputRegistersVariable>> GroupInputRegisters(ObservableCollection<InputRegistersVariable> inputCollection, bool diffrentSizeSelected, int size)
         {
 
             List<List<InputRegistersVariable>> Groups = new List<List<InputRegistersVariable>>();
@@ -147,6 +159,12 @@ namespace ModbusDiagnoster.Model.Communication
             InputRegistersVariable previousVar = new InputRegistersVariable("", 65535);   //6535 register propably will be never used
             int PreviousVariableListIndex = -1;
 
+            int maxcount = 125;
+            if (diffrentSizeSelected)
+            {
+                maxcount = size;
+            }
+
             foreach (InputRegistersVariable ir in sortedInput)
             {
                 if (PreviousVariableListIndex != -1)
@@ -156,7 +174,7 @@ namespace ModbusDiagnoster.Model.Communication
                     {
                         if (previousVar.StartAddress + 2 == ir.StartAddress)
                         {
-                            if (Groups[PreviousVariableListIndex].Count() < 62)   //because max requested register is 125 
+                            if (Groups[PreviousVariableListIndex].Count() < (maxcount/2))   //because max requested register is 125 
                             {
                                 Groups[PreviousVariableListIndex].Add(ir);  //Add variable to previous list 
                             }
@@ -183,7 +201,7 @@ namespace ModbusDiagnoster.Model.Communication
                     {
                         if ((previousVar.StartAddress + 1 == ir.StartAddress) && (previousVar.VariableTypeFormat != "BigEndianFloat" && previousVar.VariableTypeFormat != "LittleEndianFloat"))
                         {
-                            if (Groups[PreviousVariableListIndex].Count() < 125)   //because max requested register is 125 
+                            if (Groups[PreviousVariableListIndex].Count() < maxcount)   //because max requested register is 125 
                             {
                                 Groups[PreviousVariableListIndex].Add(ir);  //Add variable to previous list 
                             }
@@ -237,7 +255,7 @@ namespace ModbusDiagnoster.Model.Communication
 
 
         //HOLDING REGISTERS
-        public static List<List<HoldingRegistersVariable>> GroupHoldingRegisters(ObservableCollection<HoldingRegistersVariable> inputCollection)
+        public static List<List<HoldingRegistersVariable>> GroupHoldingRegisters(ObservableCollection<HoldingRegistersVariable> inputCollection, bool diffrentSizeSelected, int size)
         {
 
             List<List<HoldingRegistersVariable>> Groups = new List<List<HoldingRegistersVariable>>();
@@ -248,8 +266,12 @@ namespace ModbusDiagnoster.Model.Communication
             HoldingRegistersVariable previousVar = new HoldingRegistersVariable("", 65535);   //6535 register propably will be never used because registers starts from 0
             int PreviousVariableListIndex = -1;
 
-
-
+            int maxcount = 125;
+            if (diffrentSizeSelected)
+            {
+                maxcount = size;
+            }
+            
 
             foreach (HoldingRegistersVariable hr in sortedInput)
             {
@@ -260,9 +282,9 @@ namespace ModbusDiagnoster.Model.Communication
                     {
                         if (previousVar.StartAddress + 2 == hr.StartAddress)
                         {
-                            if (Groups[PreviousVariableListIndex].Count() < 62)   //because max requested register is 125 
+                            if (Groups[PreviousVariableListIndex].Count() < (maxcount/2))   //because max requested register is 125 
                             {
-
+                                
 
                                 Groups[PreviousVariableListIndex].Add(hr);  //Add variable to previous list 
                             }
@@ -289,7 +311,7 @@ namespace ModbusDiagnoster.Model.Communication
                     {
                         if ((previousVar.StartAddress + 1 == hr.StartAddress) && (previousVar.VariableTypeFormat != "BigEndianFloat" && previousVar.VariableTypeFormat != "LittleEndianFloat"))
                         {
-                            if (Groups[PreviousVariableListIndex].Count() < 125)   //because max requested register is 256 
+                            if (Groups[PreviousVariableListIndex].Count() <maxcount)   //because max requested register is 256 
                             {
                                 Groups[PreviousVariableListIndex].Add(hr);  //Add variable to previous list 
                             }

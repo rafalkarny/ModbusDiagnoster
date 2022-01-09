@@ -8,7 +8,7 @@
         xmlns:viewmodels="clr-namespace:ModbusDiagnoster.ViewModels" 
         d:DataContext="{d:DesignInstance Type=viewmodels:DeviceViewModel}"
         mc:Ignorable="d"
-        Title="{StaticResource DeviceWindowName}" Height="600" Width="800"
+        Title="{StaticResource DeviceWindowName}" Height="600" Width="1000"
         x:Name="deviceWindow" WindowStartupLocation="CenterScreen"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:io="clr-namespace:System.IO.Ports;assembly=System"
@@ -161,7 +161,35 @@
                                 </StackPanel>
 
                         </GroupBox>
-                    </StackPanel>
+                            <GroupBox
+                        Margin="5"  >
+
+                                <StackPanel>
+                                    <CheckBox Content="{StaticResource additionalDelayBetwenRequests}" Margin="5"
+                                              IsChecked="{Binding AdditionalDelaySelected}"
+                                              ></CheckBox>
+                                    <TextBox x:Name="additionalDelayTxtBox"
+                                             Text="{Binding AdditionalDelayBetwenRequests}"
+                                             ></TextBox>
+
+                                    <CheckBox Name="additional2label" Margin="5"
+                                              IsChecked="{Binding MaxBinarySelected}"
+                                           Content="{StaticResource maxNumberOfdiAndcoils}"
+                                           ></CheckBox>
+                                    <TextBox x:Name="maxNumOfBinaryTxtBox"
+                                             Text="{Binding MaxNumOfBinary}"
+                                             ></TextBox>
+                                    <CheckBox Name="additional3label" Margin="5"
+                                           IsChecked="{Binding MaxRegistersSelected}"
+                                           Content="{StaticResource maxNumberOfhrAndirRegisters}"
+                                           ></CheckBox>
+                                    <TextBox x:Name="maxNumOfRegsTxtBox"
+                                             Text="{Binding MaxNumOfRegs}" Cursor="IBeam"
+                                             ></TextBox>
+                                </StackPanel>
+
+                            </GroupBox>
+                        </StackPanel>
                     </ScrollViewer>
                 </TabItem>
                 <TabItem
@@ -254,7 +282,8 @@
                 <Label Margin="10,10,10,5" Content="{StaticResource TimestampLbl}"></Label>
                 <TextBox x:Name="timestampTxtBox" 
                          Margin="10,10,10,5"
-                         Text="{Binding timer.Interval}"></TextBox>
+                         Text="{Binding timer.Interval}" Cursor="IBeam"></TextBox>
+                
                 <Button
                     x:Name="TimerStatus"
                     Width="15"
@@ -295,6 +324,10 @@
                             Width="15" 
                             />
                 </Button>
+                <Label Margin="10,10,10,5" Content="{StaticResource TimeoutLbl}"></Label>
+                <TextBox x:Name="timeoutTxtBox" 
+                         Margin="10,10,10,5"
+                         Text="{Binding RequestTimeout}" Cursor="IBeam"></TextBox>
             </StackPanel>
 
             

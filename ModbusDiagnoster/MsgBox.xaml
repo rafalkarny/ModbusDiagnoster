@@ -15,8 +15,8 @@
                  Width="200" TextWrapping="Wrap" MaxWidth="300" FontSize="16"
                  ></TextBox>
         </StackPanel>
-        <Button x:Name="noBtn" Margin="40,20,40,20" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Anuluj" Click="noBtn_Click"></Button>
-        <Button x:Name="yesBtn" Margin="5,5,40,20" Width="100" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Tak" Click="yesBtn_Click"></Button>
+        <Button x:Name="noBtn" Margin="40,20,40,20" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="{StaticResource cancelBtn}" Click="noBtn_Click" Cursor="Hand"></Button>
+        <Button x:Name="yesBtn" Margin="5,5,40,20" Width="100" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="{StaticResource yesBtn}" Click="yesBtn_Click"></Button>
     
     </Grid>
 </Window>

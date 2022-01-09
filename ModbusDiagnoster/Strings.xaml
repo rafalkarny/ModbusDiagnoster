@@ -8,12 +8,15 @@
     <system:String x:Key="AddVarBtn">Add new variable</system:String>
     <system:String x:Key="AddMultipleVarBtn">Add multiple variables</system:String>
     <system:String x:Key="TimestampLbl">Timestamp value [ms]:</system:String>
+    <system:String x:Key="TimeoutLbl">Timeout value [ms]:</system:String>
     <system:String x:Key="CleanBtn">Clear</system:String>
     <system:String x:Key="ChangeConTCPproperties">Apply changes</system:String>
     <system:String x:Key="selectPath">Select directory</system:String>
+    <system:String x:Key="yesBtn">Yes</system:String>
+    <system:String x:Key="cancelBtn">Cancel</system:String>
 
- 
-    
+
+
     <!-- Windows  -->
     
     <!-- Main window elements  -->
@@ -67,10 +70,20 @@
     <system:String x:Key="defaltNameOf">_ExportedFromModbusDiagnoster</system:String>
     <system:String x:Key="selectRegistersToExport">Select registers to export</system:String>
     <system:String x:Key="exportBtn">Export</system:String>
+    <system:String x:Key="additionalDelayBetwenRequests">Additional delay between requests in miliseconds:</system:String>
+    <system:String x:Key="maxNumberOfhrAndirRegisters">Maximum number of registers in single request for HR and IR:</system:String>
+    <system:String x:Key="maxNumberOfdiAndcoils">Maximum number of registers in singl request for DI and Coils:</system:String>
+
+    <!-- Errors -->
+    <system:String x:Key="dirExists">Sorry but this device name already exists, please slect new name </system:String>
+    <system:String x:Key="promptForAcceptTodelete">Are you sure?</system:String>
+    <system:String x:Key="wrongTimestampValue">Wrong Timestamp value, please add correct numeric value</system:String>
+    <system:String x:Key="wrongAdditionalDelayValue">Wrong value, please add correct numeric value</system:String>
+    <system:String x:Key="wrongNumberOfRegistersValue">Wrong value, please add correct numeric value from 1-125 for Holding Registers and Input Registers</system:String>
+    <system:String x:Key="wrongNumberOfBinaryValue">Wrong value, please add correct numeric value from 1-2000 for Discrete Inputs and Coils</system:String>
+    <system:String x:Key="timeoutInfo">No response in scheduled time</system:String>
     
-    
-    
-<!--
+    <!--
     <system:String x:Key="forHRandIR">For Holding Registers and Input Registers:</system:String>
     <system:String x:Key="forDIandCoils">For Coils and Discrete Inputs:</system:String>
     <system:String x:Key="selectOutputAttributes">Select columns:</system:String>

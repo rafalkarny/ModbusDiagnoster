@@ -49,6 +49,7 @@
         <Button
             Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
             Width="50"
+            x:Name="addDeviceBtn"
             Height="50"
             ToolTip="{StaticResource AddNewDevice}"
             Command="{Binding Path=AddDeviceCommand}"

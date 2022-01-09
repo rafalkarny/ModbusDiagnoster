@@ -69,27 +69,36 @@ namespace ModbusDiagnoster.ViewModels
 
             if (result == true && msg.Answer!=null)
             {
-                AddDeviceDirectory(msg.Answer);
-                string devicesDir = MainWorkingDirectory + @"\Devices\" + msg.Answer;
-                DeviceCardViewModel newDev = new DeviceCardViewModel(msg.Answer,devicesDir,GetFreeId());
-                newDev.Delete += DeleteDevice;
-                try
+                
+                if(Directory.Exists(MainWorkingDirectory + @"\Devices\" + msg.Answer))
                 {
-                    SaveVariables.SaveCoils(new ObservableCollection<Model.Variables.CoilsVariable>(), devicesDir);
-                    SaveVariables.SaveDI(new ObservableCollection<Model.Variables.DiscreteInputsVariable>(), devicesDir);
-                    SaveVariables.SaveIR(new ObservableCollection<Model.Variables.InputRegistersVariable>(), devicesDir);
-                    SaveVariables.SaveHR(new ObservableCollection<Model.Variables.HoldingRegistersVariable>(), devicesDir);
-                    SaveVariables.SaveTCPparams(new Model.Communication.ModbusTCP.ModbusTCP(), devicesDir);
-                    SaveVariables.SaveRTUparams(new Model.Communication.ModbusRTU.ModbusRTU(), devicesDir);
-
+                    MessageBox.Show(Application.Current.Resources["dirExists"].ToString());
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show(ex.Message);
-                }
+                    AddDeviceDirectory(msg.Answer);
+                    string devicesDir = MainWorkingDirectory + @"\Devices\" + msg.Answer;
+                    DeviceCardViewModel newDev = new DeviceCardViewModel(msg.Answer, devicesDir, GetFreeId());
+                    newDev.Delete += DeleteDevice;
+                    try
+                    {
+                        SaveVariables.SaveCoils(new ObservableCollection<Model.Variables.CoilsVariable>(), devicesDir);
+                        SaveVariables.SaveDI(new ObservableCollection<Model.Variables.DiscreteInputsVariable>(), devicesDir);
+                        SaveVariables.SaveIR(new ObservableCollection<Model.Variables.InputRegistersVariable>(), devicesDir);
+                        SaveVariables.SaveHR(new ObservableCollection<Model.Variables.HoldingRegistersVariable>(), devicesDir);
+                        SaveVariables.SaveTCPparams(new Model.Communication.ModbusTCP.ModbusTCP(), devicesDir);
+                        SaveVariables.SaveRTUparams(new Model.Communication.ModbusRTU.ModbusRTU(), devicesDir);
 
-                DevicesList.Add(newDev);
-                newDev.OpenDeviceWindowCommand.Execute(newDev);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+
+                    DevicesList.Add(newDev);
+                    newDev.OpenDeviceWindowCommand.Execute(newDev);
+                }
+                
 
             }
 
@@ -111,7 +120,7 @@ namespace ModbusDiagnoster.ViewModels
         {
             //MessageBox.Show(sender.ToString());
 
-            MsgBox msg = new MsgBox("Czy na pewno chcesz usunąć urządzenie?", false);
+            MsgBox msg = new MsgBox(Application.Current.Resources["promptForAcceptTodelete"].ToString(), false);
 
             bool? result = msg.ShowDialog();
 
