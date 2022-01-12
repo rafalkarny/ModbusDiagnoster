@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="AddMultipleDiscreteCoils" 
         WindowStartupLocation="CenterScreen"
-        Height="420" Width="400">
+        Height="420" Width="500">
     <Grid>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -26,22 +26,22 @@
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
 
-            <Label Content="Number of new Variables:" Grid.Row="1" Grid.Column="0"></Label>
+            <Label Content="{StaticResource numberOf}" Grid.Row="1" Grid.Column="0"></Label>
             <TextBox x:Name="nameTxt" Grid.Row="1" Grid.Column="1" Text="{Binding Count}"></TextBox>
-            <Label Content="Prefix:" Grid.Row="2" Grid.Column="0"></Label>
+            <Label Content="{StaticResource preffixLbl}" Grid.Row="2" Grid.Column="0"></Label>
             <TextBox x:Name="prefixTxt" Grid.Row="2" Grid.Column="1" Text="{Binding Prefix}"></TextBox>
-            <Label Content="Suffix:" Grid.Row="3" Grid.Column="0"></Label>
+            <Label Content="{StaticResource suffixLbl}" Grid.Row="3" Grid.Column="0"></Label>
             <TextBox x:Name="suffixTxt" Grid.Row="3" Grid.Column="1" Text="{Binding Suffix}"></TextBox>
-            <Label Content="Start Number:" Grid.Row="4" Grid.Column="0"></Label>
+            <Label Content="{StaticResource startNumLbl}" Grid.Row="4" Grid.Column="0"></Label>
             <TextBox x:Name="startNumTxt" Grid.Row="4" Grid.Column="1" Text="{Binding StartNumber}"></TextBox>
-            <Label Content="Step:" Grid.Row="5" Grid.Column="0"></Label>
+            <Label Content="{StaticResource stepLbl}" Grid.Row="5" Grid.Column="0"></Label>
             <TextBox x:Name="stepTxt" Grid.Row="5" Grid.Column="1" Text="{Binding Step}"></TextBox>
-            <Label Content="Start Register Address:" Grid.Row="6" Grid.Column="0"></Label>
+            <Label Content="{StaticResource startRegLbl}" Grid.Row="6" Grid.Column="0"></Label>
             <TextBox x:Name="startRegAddrTxt" Grid.Row="6" Grid.Column="1" Text="{Binding StartRegNumber}"></TextBox>
-            <Button x:Name="cancelBtn" Grid.Column="0" Grid.Row="8" Content="Cancel" Margin="5"
+            <Button x:Name="cancelBtn" Grid.Column="0" Grid.Row="8" Content="{StaticResource cancelBtn}" Margin="5"
                 Click="cancelBtn_Click"
                 ></Button>
-            <Button x:Name="okBtn" Grid.Column="1" Grid.Row="8" Content="Add" Margin="5"
+            <Button x:Name="okBtn" Grid.Column="1" Grid.Row="8" Content="{StaticResource AddMultipleVarBtn}" Margin="5"
                 Click="okBtn_Click"
                 ></Button>
         </Grid>

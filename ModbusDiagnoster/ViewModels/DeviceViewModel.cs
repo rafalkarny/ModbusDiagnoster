@@ -49,6 +49,7 @@ namespace ModbusDiagnoster.ViewModels
         public ICommand ConnectToDevice { get; set; }
         public ICommand SaveAll { get; set; }
         public ICommand SaveAsCSV { get; set; }
+        public ICommand RefreshCOM { get; set; }
 
         private ObservableCollection<CoilsVariable> _Coils { get; set; }
         public ObservableCollection<CoilsVariable> Coils
@@ -472,6 +473,7 @@ namespace ModbusDiagnoster.ViewModels
             AddMultipleDiscreteVar = new RelayCommand(OnAddMultipleInputDiscreteVars);
             AddMultipleCoilVar = new RelayCommand(OnAddMultipleCoilVars);
             DeleteMultipleHoldingVar = new RelayCommand(OnDeleteMultipleHoldingVar);
+            RefreshCOM = new RelayCommand(OnRefreshCOMports);
             SaveAll = new RelayCommand(OnSaveData);
             SaveAsCSV = new RelayCommand(OnSaveAsCSV);
 
@@ -489,6 +491,17 @@ namespace ModbusDiagnoster.ViewModels
             // _HoldingRegisters.CollectionChanged += ContentCollectionChanged;
         }
 
+        private void OnRefreshCOMports(object obj)
+        {
+            try
+            {
+                AvaibleSerialPorts = SerialPort.GetPortNames();
+            }
+            catch (Exception ex)
+            {
+                AddLog(ex.Message);
+            }
+        }
 
         private void Connect(object obj)
         {
@@ -828,7 +841,7 @@ namespace ModbusDiagnoster.ViewModels
                                 {
                                     AddMonMessage("Sending request TCP: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
                                     var res = master.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
-                                    
+
                                     if (await Task.WhenAny(res, Task.Delay(_RequestTimeout)) == res)
                                     {
                                         result = res.Result;
@@ -846,7 +859,7 @@ namespace ModbusDiagnoster.ViewModels
                                     if (serialPortAdapter.IsOpen)
                                     {
                                         var res = serialMaster.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
-                                        
+
                                         if (await Task.WhenAny(res, Task.Delay(_RequestTimeout)) == res)
                                         {
                                             result = res.Result;
@@ -862,7 +875,7 @@ namespace ModbusDiagnoster.ViewModels
                                     {
                                         serialPortAdapter.Open();
                                         var res = serialMaster.ReadHoldingRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
-                                        
+
                                         if (await Task.WhenAny(res, Task.Delay(_RequestTimeout)) == res)
                                         {
                                             result = res.Result;
@@ -1135,7 +1148,7 @@ namespace ModbusDiagnoster.ViewModels
                                 if (ModbusTCPSelected)
                                 {
                                     AddMonMessage("Sending request TCP: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
-                                    var res =  master.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                    var res = master.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
                                     if (await Task.WhenAny(res, Task.Delay(_RequestTimeout)) == res)
                                     {
                                         result = res.Result;
@@ -1152,7 +1165,7 @@ namespace ModbusDiagnoster.ViewModels
 
                                     if (serialPortAdapter.IsOpen)
                                     {
-                                        var res =  serialMaster.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                        var res = serialMaster.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
                                         if (await Task.WhenAny(res, Task.Delay(_RequestTimeout)) == res)
                                         {
                                             result = res.Result;
@@ -1288,7 +1301,7 @@ namespace ModbusDiagnoster.ViewModels
                                     AddMonMessage("Sending request RTU: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
                                     if (serialPortAdapter.IsOpen)
                                     {
-                                        var res =  serialMaster.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                        var res = serialMaster.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
                                         if (await Task.WhenAny(res, Task.Delay(_RequestTimeout)) == res)
                                         {
                                             result = res.Result;
@@ -1302,7 +1315,7 @@ namespace ModbusDiagnoster.ViewModels
                                     else
                                     {
                                         serialPortAdapter.Open();
-                                        var res =  serialMaster.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                        var res = serialMaster.ReadInputRegistersAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
                                         if (await Task.WhenAny(res, Task.Delay(_RequestTimeout)) == res)
                                         {
                                             result = res.Result;
@@ -1430,7 +1443,7 @@ namespace ModbusDiagnoster.ViewModels
                             if (ModbusTCPSelected)
                             {
                                 AddMonMessage("Sending request TCP: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
-                                var res =  master.ReadInputsAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                var res = master.ReadInputsAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
                                 if (await Task.WhenAny(res, Task.Delay(_RequestTimeout)) == res)
                                 {
                                     result = res.Result;
@@ -1567,7 +1580,7 @@ namespace ModbusDiagnoster.ViewModels
                             if (ModbusTCPSelected)
                             {
                                 AddMonMessage("Sending request TCP: Slave ID: " + DeviceTCP.SlaveId.ToString() + " Reg start addr:" + group[0].StartAddress.ToString() + " Number of registers: " + numOfRegs.ToString());
-                                var res =  master.ReadCoilsAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
+                                var res = master.ReadCoilsAsync(DeviceTCP.SlaveId, group[0].StartAddress, numOfRegs);
                                 if (await Task.WhenAny(res, Task.Delay(_RequestTimeout)) == res)
                                 {
                                     result = res.Result;

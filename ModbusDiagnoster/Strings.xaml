@@ -3,86 +3,98 @@
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:system="clr-namespace:System;assembly=mscorlib">
 
+    <!-- English version  -->  
     <!-- Device window elements  -->
-    
-    <system:String x:Key="AddVarBtn">Add new variable</system:String>
-    <system:String x:Key="AddMultipleVarBtn">Add multiple variables</system:String>
-    <system:String x:Key="TimestampLbl">Timestamp value [ms]:</system:String>
-    <system:String x:Key="TimeoutLbl">Timeout value [ms]:</system:String>
-    <system:String x:Key="CleanBtn">Clear</system:String>
-    <system:String x:Key="ChangeConTCPproperties">Apply changes</system:String>
-    <system:String x:Key="selectPath">Select directory</system:String>
-    <system:String x:Key="yesBtn">Yes</system:String>
-    <system:String x:Key="cancelBtn">Cancel</system:String>
+
+    <!-- Device window elements  -->
+
+    <system:String x:Key="AddVarBtn">Dodaj zmienną</system:String>
+    <system:String x:Key="AddMultipleVarBtn">Dodaj wiele zmiennych</system:String>
+    <system:String x:Key="TimestampLbl">Czas próbkowania [ms]:</system:String>
+    <system:String x:Key="TimeoutLbl">Maksymalny czas oczekiwania na odpowiedź [ms]:</system:String>
+    <system:String x:Key="CleanBtn">Wyczyść</system:String>
+    <system:String x:Key="ChangeConTCPproperties">Zastosuj zmiany</system:String>
+    <system:String x:Key="selectPath">Wybierz folder</system:String>
+    <system:String x:Key="yesBtn">Potwierdź</system:String>
+    <system:String x:Key="cancelBtn">Anuluj</system:String>
 
 
 
     <!-- Windows  -->
-    
+
     <!-- Main window elements  -->
-    <system:String x:Key="DevicesList">Devices list:</system:String>
-    <system:String x:Key="DeviceWindowName">Modbus Device</system:String>
-    
+    <system:String x:Key="DevicesList">Lista urządzeń:</system:String>
+    <system:String x:Key="DeviceWindowName">Urządzenie Modbus</system:String>
+
     <!-- TOOLTIPS-->
-    <system:String x:Key="AddNewDevice">Add new device for connect with</system:String>
-    <system:String x:Key="OpenDevice">Open device window</system:String>
-    <system:String x:Key="DeleteDevice">Delete device</system:String>
-    
+    <system:String x:Key="AddNewDevice">Dodaj nowe urządzenie/projekt</system:String>
+    <system:String x:Key="OpenDevice">Otwórz okno urządzenia/projektu</system:String>
+    <system:String x:Key="DeleteDevice">Usuń urządzenie z zasobów</system:String>
+
     <!-- Table headers  -->
-    <system:String x:Key="CheckedHeader">Select</system:String>
-    <system:String x:Key="DisabledHeader">Disabled</system:String>
-    <system:String x:Key="NameHeader">Name</system:String>
-    <system:String x:Key="AddressHeader">Register address</system:String>
-    <system:String x:Key="VarTypeHeader">Type</system:String>
-    <system:String x:Key="ValueHeader">Raw Value</system:String>
-    <system:String x:Key="ConvFuncHeader">Convertion Function</system:String>
-    <system:String x:Key="ConvertedValueHeader">Converted Value</system:String>
-    <system:String x:Key="UnitHeader">Unit</system:String>
-    <system:String x:Key="DescHeader">Description</system:String>
-    <system:String x:Key="RangeFromHeader">Low Range</system:String>
-    <system:String x:Key="RangeToHeader">High Range</system:String>
-    <system:String x:Key="DisplayRangeFromHeader">Low Display Range</system:String>
-    <system:String x:Key="DisplayRangeToHeader">High Display Range</system:String>
-    <system:String x:Key="TimestampHeader">Last update timestamp</system:String>
-    <system:String x:Key="NoteHeader">Note</system:String>
+    <system:String x:Key="CheckedHeader">Wybierz</system:String>
+    <system:String x:Key="DisabledHeader">Wyłączona</system:String>
+    <system:String x:Key="NameHeader">Nazwa</system:String>
+    <system:String x:Key="AddressHeader">Adres zmiennej</system:String>
+    <system:String x:Key="VarTypeHeader">Typ</system:String>
+    <system:String x:Key="ValueHeader">Odczytana wartość</system:String>
+    <system:String x:Key="ConvFuncHeader">Funkcja przeliczająca</system:String>
+    <system:String x:Key="ConvertedValueHeader">Wyliczona wartość</system:String>
+    <system:String x:Key="UnitHeader">Jednostka</system:String>
+    <system:String x:Key="DescHeader">Opis</system:String>
+    <system:String x:Key="RangeFromHeader">Dolny zakres wartości zmiennej</system:String>
+    <system:String x:Key="RangeToHeader">Górny zakres wartości zmiennej</system:String>
+    <system:String x:Key="DisplayRangeFromHeader">Dolny zakres wyświetlania zmiennej</system:String>
+    <system:String x:Key="DisplayRangeToHeader">Górny zakres wyświetlania zmiennej</system:String>
+    <system:String x:Key="TimestampHeader">Stępel czasu</system:String>
+    <system:String x:Key="NoteHeader">Notatka</system:String>
 
     <!-- ToolTips -->
-    <system:String x:Key="PropertiesToolTip">Communication properties</system:String>
-    <system:String x:Key="StartPoolingToolTip">Start requesting modbus</system:String>
-    <system:String x:Key="StopPoolingToolTip">Stop requesting modbus</system:String>
-    <system:String x:Key="ConnectToolTip">Connect/Disconnect TCP Session</system:String>
-    <system:String x:Key="ChangeConTCPpropertiesToolTip">Apply changes (reconnect device)</system:String>
-    <system:String x:Key="SaveChangesToolTip">Save changes</system:String>
-    <system:String x:Key="ExportToolTip">Export variables to CSV file</system:String>
-    
+    <system:String x:Key="PropertiesToolTip">Parametry komunikacji</system:String>
+    <system:String x:Key="StartPoolingToolTip">Uruchom wysyłanie zapytań</system:String>
+    <system:String x:Key="StopPoolingToolTip">Zatrzymaj wysyłanie zapytań</system:String>
+    <system:String x:Key="ConnectToolTip">Zestaw lub Zakończ sesję TCP/Uruchom lub Zamknij port COM</system:String>
+    <system:String x:Key="ChangeConTCPpropertiesToolTip">Zastosuj zmiany (restaruje połączenie z urządzeniem)</system:String>
+    <system:String x:Key="SaveChangesToolTip">Zapisz zmiany</system:String>
+    <system:String x:Key="ExportToolTip">Eksport zmiennych procesowych do pliku CSV</system:String>
+
     <!-- Labels -->
-    <system:String x:Key="SerialPortLbl">Port:</system:String>
-    <system:String x:Key="BitrateLbl">Bitrate:</system:String>
-    <system:String x:Key="ParityLbl">Parity:</system:String>
-    <system:String x:Key="StopBitsLbl">Stop bits:</system:String>
+    <system:String x:Key="nameOfNewDevice">Nazwa nowego urządzenia</system:String>
+    <system:String x:Key="numberOf">Ilość zmiennych procesowych:</system:String>
+    <system:String x:Key="preffixLbl">Prefiks nazwy zmiennej:</system:String>
+    <system:String x:Key="suffixLbl">Sufiks nazwy zmiennej:</system:String>
+    <system:String x:Key="startNumLbl">Początkowy numer w nazwie zmiennej:</system:String>
+    <system:String x:Key="stepLbl">Krok:</system:String>
+    <system:String x:Key="startRegLbl">Adres Modbus pierwszej zmiennej:</system:String>
+    <system:String x:Key="typeLbl">Typ wartości zmiennej procesowej:</system:String>
+    <system:String x:Key="SerialPortLbl">Port COM:</system:String>
+    <system:String x:Key="BitrateLbl">Prędkość transmisji:</system:String>
+    <system:String x:Key="ParityLbl">Parzystość:</system:String>
+    <system:String x:Key="StopBitsLbl">Ustawienia bitu stopu:</system:String>
     <system:String x:Key="DTRLbl">DTR:</system:String>
-    <system:String x:Key="OnLbl">On:</system:String>
-    <system:String x:Key="OffLbl">Off:</system:String>
-    <system:String x:Key="OnTxLbl">On TX:</system:String>
+    <system:String x:Key="OnLbl">Włączone:</system:String>
+    <system:String x:Key="OffLbl">Wyłączone:</system:String>
+    <system:String x:Key="OnTxLbl">Dla sygnału TX:</system:String>
     <system:String x:Key="RTSLbl">RTS:</system:String>
     <system:String x:Key="defaultPath">C:\</system:String>
-    <system:String x:Key="nameOf">Name:</system:String>
-    <system:String x:Key="defaltNameOf">_ExportedFromModbusDiagnoster</system:String>
-    <system:String x:Key="selectRegistersToExport">Select registers to export</system:String>
-    <system:String x:Key="exportBtn">Export</system:String>
-    <system:String x:Key="additionalDelayBetwenRequests">Additional delay between requests in miliseconds:</system:String>
-    <system:String x:Key="maxNumberOfhrAndirRegisters">Maximum number of registers in single request for HR and IR:</system:String>
-    <system:String x:Key="maxNumberOfdiAndcoils">Maximum number of registers in singl request for DI and Coils:</system:String>
+    <system:String x:Key="nameOf">Nazwa pliku:</system:String>
+    <system:String x:Key="defaltNameOf">_Wyeksportowano_Z_ModbusDiagnoster</system:String>
+    <system:String x:Key="selectRegistersToExport">Wybierz typ zmiennych procesowych do eksportu</system:String>
+    <system:String x:Key="exportBtn">Eksport</system:String>
+    <system:String x:Key="additionalDelayBetwenRequests">Dodatkowe opóźnienie pomiędzy wysyłaniem pojedynczych zapytań:</system:String>
+    <system:String x:Key="maxNumberOfhrAndirRegisters">Maksymalna ilość rejestrów w zapytaniu dla HR oraz IR:</system:String>
+    <system:String x:Key="maxNumberOfdiAndcoils">Maksymalna ilość rejestrów w zapytaniu dla DI oraz Coils:</system:String>
+    <system:String x:Key="refreshBtn">Odśwież listę portów COM</system:String>
+
 
     <!-- Errors -->
-    <system:String x:Key="dirExists">Sorry but this device name already exists, please slect new name </system:String>
-    <system:String x:Key="promptForAcceptTodelete">Are you sure?</system:String>
-    <system:String x:Key="wrongTimestampValue">Wrong Timestamp value, please add correct numeric value</system:String>
-    <system:String x:Key="wrongAdditionalDelayValue">Wrong value, please add correct numeric value</system:String>
-    <system:String x:Key="wrongNumberOfRegistersValue">Wrong value, please add correct numeric value from 1-125 for Holding Registers and Input Registers</system:String>
-    <system:String x:Key="wrongNumberOfBinaryValue">Wrong value, please add correct numeric value from 1-2000 for Discrete Inputs and Coils</system:String>
-    <system:String x:Key="timeoutInfo">No response in scheduled time</system:String>
-    
+    <system:String x:Key="dirExists">Urządzenie/projekt o podanej nazwie już istnieje, wybierz proszę inną nazwę</system:String>
+    <system:String x:Key="promptForAcceptTodelete">Czy jesteś pewien?</system:String>
+    <system:String x:Key="wrongTimestampValue">Błędna wartość czasu między zapytaniami, wprowadź proszę poprawną wartość jako liczbę całkowitą, np. 2000 (2 sekundy)</system:String>
+    <system:String x:Key="wrongAdditionalDelayValue">Błędna wartość czasu w milisekundach, wprowadź proszę poprawną wartość jako liczbę całkowitą, np. 2000 (2 sekundy)</system:String>
+    <system:String x:Key="wrongNumberOfRegistersValue">Błędna wartość, wprowadź proszę poprawną wartość z przedziału 1-125</system:String>
+    <system:String x:Key="wrongNumberOfBinaryValue">Błędna wartość, wprowadź proszę poprawną wartość z przedziału 1-2000</system:String>
+    <system:String x:Key="timeoutInfo">Nie otrzymano odpowiedzi od serwera w oczekiwanym czasie</system:String>
     <!--
     <system:String x:Key="forHRandIR">For Holding Registers and Input Registers:</system:String>
     <system:String x:Key="forDIandCoils">For Coils and Discrete Inputs:</system:String>

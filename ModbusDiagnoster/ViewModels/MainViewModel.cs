@@ -63,7 +63,7 @@ namespace ModbusDiagnoster.ViewModels
         {
            
 
-            MsgBox msg = new MsgBox("New device name: ", true);
+            MsgBox msg = new MsgBox(Application.Current.Resources["nameOfNewDevice"].ToString(), true);
 
             bool? result = msg.ShowDialog();
 

@@ -108,6 +108,13 @@
                                           ItemsSource="{Binding AvaibleSerialPorts}"
                                           SelectedItem="{Binding DeviceRTU.Port}"
                                           ></ComboBox>
+                                    <Button x:Name="refreshComBtn" 
+                                            Content="{StaticResource refreshBtn}"
+                                            Margin="5"
+                                            HorizontalAlignment="Left"
+                                            MaxWidth="200"
+                                            Command="{Binding RefreshCOM}" Cursor="Hand"
+                                            ></Button>
                                 <Label Content="{StaticResource BitrateLbl}"></Label>
                                 <ComboBox x:Name="BitRateCmbox" Margin="2"
                                           ItemsSource="{Binding AvaibleBaudRates}"
