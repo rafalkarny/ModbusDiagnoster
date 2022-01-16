@@ -140,7 +140,7 @@ namespace ModbusDiagnoster.ViewModels
             {
                 _DeviceTCP = value;
                 //ConnectTCP();
-                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Properties changed, disconnecting...");
+                //ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Properties changed, disconnecting...");
                 DisconnectTCP();
                 OnPropertyChanged();
             }
@@ -152,7 +152,7 @@ namespace ModbusDiagnoster.ViewModels
             set
             {
                 _DeviceRTU = value;
-                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Properties changed, disconnecting...");
+                //ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Properties changed, disconnecting...");
                 // DisconnectSerial();
                 OnPropertyChanged();
             }
@@ -388,7 +388,16 @@ namespace ModbusDiagnoster.ViewModels
         public bool timerStop { get; set; }
         private string _Name { get; set; }
         private string _DeviceDirectory { get; set; }
-        public string[] AvaibleSerialPorts { get; set; }
+        private string[] _AvaibleSerialPorts { get; set; }
+        public string[] AvaibleSerialPorts
+        {
+            get { return this._AvaibleSerialPorts; }
+            set
+            {
+                _AvaibleSerialPorts = value;
+                OnPropertyChanged();
+            }
+        }
         private ICaptureDevice _SelectedInterface { get; set; }
         public ICaptureDevice SelectedInterface
         {
@@ -427,12 +436,12 @@ namespace ModbusDiagnoster.ViewModels
             ModbusTCPSelected = true;
             _Name = name;
             _DeviceDirectory = dirPath;
-            _AdditionalDelayBetwenRequests = 1000;
+            _AdditionalDelayBetwenRequests = 20;
             _MaxNumOfBinary = 2000;
             _MaxNumOfRegs = 125;
             _MaxBinarySelected = false;
             _MaxRegistersSelected = false;
-            _AdditionalDelaySelected = false;
+            _AdditionalDelaySelected = true;
             _RequestTimeout = 1000;
 
             //Filling comboboxes with avaible ports etc..
@@ -526,7 +535,8 @@ namespace ModbusDiagnoster.ViewModels
                         tcpClient.Close();
                         tcpClient.Dispose();
                         tcpClient = null;
-                        ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Disconnected device");
+                        //ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Disconnected device");
+                        AddLog(Application.Current.Resources["tcpSuccesDisconnect"].ToString());
                     }
                     else
                     {
@@ -534,7 +544,8 @@ namespace ModbusDiagnoster.ViewModels
 
                         if (tcpClient.Connected)
                         {
-                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Successfully connected to device");
+                            //ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Successfully connected to device");
+                            AddLog(Application.Current.Resources["tcpSucces"].ToString());
                         }
                     }
 
@@ -545,7 +556,8 @@ namespace ModbusDiagnoster.ViewModels
                     tcpClient = new TcpClient(_DeviceTCP.IPAddr, _DeviceTCP.Port);
                     if (tcpClient.Connected)
                     {
-                        ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Successfully connected to device");
+                        //ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Successfully connected to device");
+                        AddLog(Application.Current.Resources["tcpSucces"].ToString());
                     }
                 }
 
@@ -554,8 +566,9 @@ namespace ModbusDiagnoster.ViewModels
             }
             catch (Exception exc)
             {
-                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Can't connect to Server or Slave, \n Destination port is closed or wrong," +
-                    " \n check if device is working and check firewall rules\n: Error desc: \n" + exc.Message);
+                AddLog(Application.Current.Resources["tcpError"].ToString()+ " " + exc.Message);
+                /*ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Can't connect to Server or Slave, \n Destination port is closed or wrong," +
+                    " \n check if device is working and check firewall rules\n: Error desc: \n" + exc.Message);*/
             }
 
 
@@ -584,8 +597,8 @@ namespace ModbusDiagnoster.ViewModels
                             port.DtrEnable = DeviceRTU.DTRon;
                             //port.Open();
 
-
-                            ExceptionMessages.Insert(0, DateTime.Now.ToString() + "COM port is assigned now, creating adapter...");
+                            AddLog(Application.Current.Resources["comSuccess"].ToString());
+                            //ExceptionMessages.Insert(0, DateTime.Now.ToString() + "COM port is assigned now, creating adapter...");
                             serialPortAdapter = port;
 
                             //serialPortAdapter.Close();
@@ -607,7 +620,8 @@ namespace ModbusDiagnoster.ViewModels
             }
             catch (Exception exc)
             {
-                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Cant prepare COM port, please check serial COM port properties" + exc.Message);
+                AddLog(Application.Current.Resources["comError"].ToString() +" " + exc.Message);
+                //ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Cant prepare COM port, please check serial COM port properties" + exc.Message);
             }
 
 
@@ -629,7 +643,8 @@ namespace ModbusDiagnoster.ViewModels
             }
             catch (Exception exc)
             {
-                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Disconnection error" + exc.Message);
+                AddLog(Application.Current.Resources["tcpSuccesDisconnectError"].ToString() + " " +exc.Message);
+                // ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Disconnection error" + exc.Message);
             }
 
             return false;
@@ -645,12 +660,15 @@ namespace ModbusDiagnoster.ViewModels
                     serialPortAdapter.Close();
                     serialPortAdapter.Dispose();
                     serialPortAdapter = null;
-                    ExceptionMessages.Insert(0, DateTime.Now.ToString() + "COM port is disconnected now.");
+                    //ExceptionMessages.Insert(0, DateTime.Now.ToString() + "COM port is disconnected now.");
+                    AddLog(Application.Current.Resources["comSuccessDisconnect"].ToString());
                 }
             }
             catch (Exception exc)
             {
-                ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Disconnection error" + exc.Message);
+                AddLog(Application.Current.Resources["comSuccessDisconnectError"].ToString()+ " "+exc.Message);
+
+                //ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Disconnection error" + exc.Message);
             }
             return false;
         }

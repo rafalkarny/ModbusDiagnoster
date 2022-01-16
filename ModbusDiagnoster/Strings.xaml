@@ -46,7 +46,7 @@
     <system:String x:Key="RangeToHeader">Górny zakres wartości zmiennej</system:String>
     <system:String x:Key="DisplayRangeFromHeader">Dolny zakres wyświetlania zmiennej</system:String>
     <system:String x:Key="DisplayRangeToHeader">Górny zakres wyświetlania zmiennej</system:String>
-    <system:String x:Key="TimestampHeader">Stępel czasu</system:String>
+    <system:String x:Key="TimestampHeader">Stempel czasu</system:String>
     <system:String x:Key="NoteHeader">Notatka</system:String>
 
     <!-- ToolTips -->
@@ -95,6 +95,16 @@
     <system:String x:Key="wrongNumberOfRegistersValue">Błędna wartość, wprowadź proszę poprawną wartość z przedziału 1-125</system:String>
     <system:String x:Key="wrongNumberOfBinaryValue">Błędna wartość, wprowadź proszę poprawną wartość z przedziału 1-2000</system:String>
     <system:String x:Key="timeoutInfo">Nie otrzymano odpowiedzi od serwera w oczekiwanym czasie</system:String>
+    
+    <!-- Logs -->
+    <system:String x:Key="comError">Wystąpił problem z inicjalizacją portu COM</system:String>
+    <system:String x:Key="comSuccess">Pomyślnie zainicjalizowano port COM</system:String>
+    <system:String x:Key="comSuccessDisconnect">Pomyślnie zwolniono port COM</system:String>
+    <system:String x:Key="comSuccessDisconnectError">Wystąpił błąd podczas zwalniania portu COM</system:String>
+    <system:String x:Key="tcpError">Wystąpił problem podczas próby zestawienia sesji TCP</system:String>
+    <system:String x:Key="tcpSucces">Pomyślnie zestawiono sesję TCP</system:String>
+    <system:String x:Key="tcpSuccesDisconnect">Pomyślnie rozłączono sesję TCP</system:String>
+    <system:String x:Key="tcpSuccesDisconnectError">Wystąpił błąd podczas rozłączania sesji: </system:String>
     <!--
     <system:String x:Key="forHRandIR">For Holding Registers and Input Registers:</system:String>
     <system:String x:Key="forDIandCoils">For Coils and Discrete Inputs:</system:String>
