@@ -85,7 +85,7 @@
     <system:String x:Key="maxNumberOfhrAndirRegisters">Maksymalna ilość rejestrów w zapytaniu dla HR oraz IR:</system:String>
     <system:String x:Key="maxNumberOfdiAndcoils">Maksymalna ilość rejestrów w zapytaniu dla DI oraz Coils:</system:String>
     <system:String x:Key="refreshBtn">Odśwież listę portów COM</system:String>
-
+    <system:String x:Key="delSelected">Usuń wybrane</system:String>
 
     <!-- Errors -->
     <system:String x:Key="dirExists">Urządzenie/projekt o podanej nazwie już istnieje, wybierz proszę inną nazwę</system:String>

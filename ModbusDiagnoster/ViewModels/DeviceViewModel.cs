@@ -50,6 +50,7 @@ namespace ModbusDiagnoster.ViewModels
         public ICommand SaveAll { get; set; }
         public ICommand SaveAsCSV { get; set; }
         public ICommand RefreshCOM { get; set; }
+        public ICommand DeleteSelected { get; set; }
 
         private ObservableCollection<CoilsVariable> _Coils { get; set; }
         public ObservableCollection<CoilsVariable> Coils
@@ -485,6 +486,7 @@ namespace ModbusDiagnoster.ViewModels
             RefreshCOM = new RelayCommand(OnRefreshCOMports);
             SaveAll = new RelayCommand(OnSaveData);
             SaveAsCSV = new RelayCommand(OnSaveAsCSV);
+            DeleteSelected = new RelayCommand(OnDeleteSelected);
 
             _timer = new System.Timers.Timer();
             // _timer.Elapsed += new ElapsedEventHandler(GetVariableValues);
@@ -498,6 +500,11 @@ namespace ModbusDiagnoster.ViewModels
 
 
             // _HoldingRegisters.CollectionChanged += ContentCollectionChanged;
+        }
+
+        private void OnDeleteSelected(object obj)
+        {
+            throw new NotImplementedException();
         }
 
         private void OnRefreshCOMports(object obj)
