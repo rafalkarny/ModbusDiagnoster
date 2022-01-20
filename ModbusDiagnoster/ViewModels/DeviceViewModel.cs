@@ -504,7 +504,81 @@ namespace ModbusDiagnoster.ViewModels
 
         private void OnDeleteSelected(object obj)
         {
-            throw new NotImplementedException();
+            int counter = 0;
+            MsgBox msg = new MsgBox(Application.Current.Resources["sureToDelSel"].ToString(), false);
+
+            bool? result = msg.ShowDialog();
+
+            if (result == true )
+            {
+                try
+                {
+                    List<CoilsVariable> coilsToDel = new List<CoilsVariable>();
+                    foreach(CoilsVariable register in Coils)
+                    {
+                        if(register.Checked)
+                        {
+                            coilsToDel.Add(register);
+                            counter++;
+                        }
+                    }
+                    foreach(CoilsVariable coil in coilsToDel)
+                    {
+                        Coils.Remove(coil);
+                    }
+
+
+                    List<DiscreteInputsVariable> discretesToDel = new List<DiscreteInputsVariable>();
+                    foreach (DiscreteInputsVariable register in Inputs)
+                    {
+                        if (register.Checked)
+                        {
+                            discretesToDel.Add(register);
+                            counter++;
+                        }
+                    }
+                    foreach(DiscreteInputsVariable discrete in discretesToDel)
+                    {
+                        Inputs.Remove(discrete);
+                    }
+
+
+                    List<HoldingRegistersVariable> hrTodel = new List<HoldingRegistersVariable>();
+                    foreach (HoldingRegistersVariable register in HoldingRegisters)
+                    {
+                        if (register.Checked)
+                        {
+                            hrTodel.Add(register);
+                            counter++;
+                        }
+                    }
+                    foreach(HoldingRegistersVariable hr in hrTodel)
+                    {
+                        HoldingRegisters.Remove(hr);
+                    }
+
+                    List<InputRegistersVariable> irTodel = new List<InputRegistersVariable>();
+                    foreach (InputRegistersVariable register in InputRegisters)
+                    {
+                        if (register.Checked)
+                        {
+                            irTodel.Add(register);
+                            counter++;
+                        }
+                    }
+                    foreach(InputRegistersVariable ir in irTodel)
+                    {
+                        InputRegisters.Remove(ir);
+                    }
+                    AddLog(Application.Current.Resources["delReport"].ToString() + " " + counter.ToString());
+
+                }
+                catch(Exception exc)
+                {
+                    AddLog(Application.Current.Resources["errorIndel"].ToString()+" "+exc.Message);
+                }
+            }
+
         }
 
         private void OnRefreshCOMports(object obj)
@@ -573,7 +647,7 @@ namespace ModbusDiagnoster.ViewModels
             }
             catch (Exception exc)
             {
-                AddLog(Application.Current.Resources["tcpError"].ToString()+ " " + exc.Message);
+                AddLog(Application.Current.Resources["tcpError"].ToString() + " " + exc.Message);
                 /*ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Can't connect to Server or Slave, \n Destination port is closed or wrong," +
                     " \n check if device is working and check firewall rules\n: Error desc: \n" + exc.Message);*/
             }
@@ -627,7 +701,7 @@ namespace ModbusDiagnoster.ViewModels
             }
             catch (Exception exc)
             {
-                AddLog(Application.Current.Resources["comError"].ToString() +" " + exc.Message);
+                AddLog(Application.Current.Resources["comError"].ToString() + " " + exc.Message);
                 //ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Cant prepare COM port, please check serial COM port properties" + exc.Message);
             }
 
@@ -650,7 +724,7 @@ namespace ModbusDiagnoster.ViewModels
             }
             catch (Exception exc)
             {
-                AddLog(Application.Current.Resources["tcpSuccesDisconnectError"].ToString() + " " +exc.Message);
+                AddLog(Application.Current.Resources["tcpSuccesDisconnectError"].ToString() + " " + exc.Message);
                 // ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Disconnection error" + exc.Message);
             }
 
@@ -673,7 +747,7 @@ namespace ModbusDiagnoster.ViewModels
             }
             catch (Exception exc)
             {
-                AddLog(Application.Current.Resources["comSuccessDisconnectError"].ToString()+ " "+exc.Message);
+                AddLog(Application.Current.Resources["comSuccessDisconnectError"].ToString() + " " + exc.Message);
 
                 //ExceptionMessages.Insert(0, DateTime.Now.ToString() + "Disconnection error" + exc.Message);
             }

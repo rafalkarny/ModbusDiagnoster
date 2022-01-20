@@ -10,7 +10,8 @@
     <Grid>
 
         <StackPanel>
-        <Label Content="{Binding Path=Question}" FontSize="14" FontWeight="Bold" x:Name="questionLbl" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Center"></Label>
+            <TextBlock Text="{Binding Path=Question}" TextWrapping="WrapWithOverflow" FontSize="14" FontWeight="Bold" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Center"></TextBlock>
+      <!--  <Label Content="{Binding Path=Question}" FontSize="14" FontWeight="Bold" x:Name="questionLbl" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Center"></Label>-->
         <TextBox Text="{Binding Answer}" x:Name="answerTxtBox" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Center"
                  Width="200" TextWrapping="Wrap" MaxWidth="300" FontSize="16"
                  ></TextBox>

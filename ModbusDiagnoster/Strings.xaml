@@ -86,7 +86,8 @@
     <system:String x:Key="maxNumberOfdiAndcoils">Maksymalna ilość rejestrów w zapytaniu dla DI oraz Coils:</system:String>
     <system:String x:Key="refreshBtn">Odśwież listę portów COM</system:String>
     <system:String x:Key="delSelected">Usuń wybrane</system:String>
-
+    <system:String x:Key="sureToDelSel">Czy jesteś pewien że chcesz usunąć wszystkie zaznaczone rejestry w wszystkich tablicach Modbus?</system:String>
+    
     <!-- Errors -->
     <system:String x:Key="dirExists">Urządzenie/projekt o podanej nazwie już istnieje, wybierz proszę inną nazwę</system:String>
     <system:String x:Key="promptForAcceptTodelete">Czy jesteś pewien?</system:String>
@@ -95,6 +96,8 @@
     <system:String x:Key="wrongNumberOfRegistersValue">Błędna wartość, wprowadź proszę poprawną wartość z przedziału 1-125</system:String>
     <system:String x:Key="wrongNumberOfBinaryValue">Błędna wartość, wprowadź proszę poprawną wartość z przedziału 1-2000</system:String>
     <system:String x:Key="timeoutInfo">Nie otrzymano odpowiedzi od serwera w oczekiwanym czasie</system:String>
+    <system:String x:Key="errorIndel">Wystąpił błąd podczas usuwania zmiennych procesowych</system:String>
+    
     
     <!-- Logs -->
     <system:String x:Key="comError">Wystąpił problem z inicjalizacją portu COM</system:String>
@@ -105,6 +108,7 @@
     <system:String x:Key="tcpSucces">Pomyślnie zestawiono sesję TCP</system:String>
     <system:String x:Key="tcpSuccesDisconnect">Pomyślnie rozłączono sesję TCP</system:String>
     <system:String x:Key="tcpSuccesDisconnectError">Wystąpił błąd podczas rozłączania sesji: </system:String>
+    <system:String x:Key="delReport">Ilość pomyślnie usuniętych zmiennych procesowych: </system:String>
     <!--
     <system:String x:Key="forHRandIR">For Holding Registers and Input Registers:</system:String>
     <system:String x:Key="forDIandCoils">For Coils and Discrete Inputs:</system:String>
