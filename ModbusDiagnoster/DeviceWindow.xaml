@@ -347,7 +347,7 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
                             <Button x:Name="addCoilReg" Content="{StaticResource AddVarBtn}" Margin="5" Command="{Binding AddCoilVar}"></Button>
@@ -357,12 +357,14 @@
                             <Button Visibility="Hidden" x:Name="deleteMultipleCoilReg" Content="Remove selected" Margin="5" Command="{Binding DeleteMultipleHoldingVar}"></Button>
                         </StackPanel>
 
-                        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+                       <!-- <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"> -->
                         <DataGrid x:Name="CoilsdataGrd"
                               Grid.Row="1"
                               ItemsSource="{Binding Coils,Mode=TwoWay}"
-                              
-                               SelectionMode="Extended"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              Margin="0"
+                                  MaxHeight="1400"
+                              SelectionMode="Extended"
                               CanUserAddRows="False" 
                               CanUserReorderColumns="True" 
                               AutoGenerateColumns="False">
@@ -420,7 +422,7 @@
                         
 
                         </DataGrid>
-                        </ScrollViewer>
+                   <!--     </ScrollViewer> -->
                     </Grid>
 
                 </TabItem>
@@ -433,7 +435,7 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
                             <Button x:Name="addDIReg" Content="{StaticResource AddVarBtn}" Margin="5" Command="{Binding AddDiscreteVar}"></Button>
@@ -442,11 +444,12 @@
 
                             <Button Visibility="Hidden" x:Name="deleteMultipleDIReg" Content="Remove selected" Margin="5" Command="{Binding DeleteMultipleHoldingVar}"></Button>
                         </StackPanel>
-                        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+                   <!--     <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"> -->
                             <DataGrid x:Name="DIdataGrd"
                               Grid.Row="1"
                               ItemsSource="{Binding Inputs,Mode=TwoWay}"
-                              
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              MaxHeight="1400"
                                SelectionMode="Extended"
                               CanUserAddRows="False" 
                               CanUserReorderColumns="True" 
@@ -505,7 +508,7 @@
 
 
                             </DataGrid>
-                        </ScrollViewer>
+                <!--        </ScrollViewer>-->
                     </Grid>
                 </TabItem>
 
@@ -517,7 +520,7 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
                             <Button x:Name="addReg" Content="{StaticResource AddVarBtn}" Margin="5" Command="{Binding AddHoldingVar}"></Button>
@@ -525,11 +528,12 @@
                             <Button x:Name="delRegH" Content="{StaticResource delSelected}" Margin="5" Command="{Binding DeleteSelected}"></Button>
 
                         </StackPanel>
-                        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+                 <!--       <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"> -->
                             <DataGrid x:Name="HRdataGrd"
                               Grid.Row="1"
                               ItemsSource="{Binding HoldingRegisters,Mode=TwoWay}"
-                              
+                               MaxHeight="1400"
+                               ScrollViewer.VerticalScrollBarVisibility="Auto"
                                SelectionMode="Extended"
                               CanUserAddRows="False" 
                               CanUserReorderColumns="True" 
@@ -634,7 +638,7 @@
 
 
                             </DataGrid>
-                        </ScrollViewer>
+                 <!--       </ScrollViewer>-->
                     </Grid>
                 </TabItem>
                 
@@ -646,7 +650,7 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
                             <Button x:Name="addIrReg" Content="{StaticResource AddVarBtn}" Margin="5" Command="{Binding AddInputVar}"></Button>
@@ -655,11 +659,12 @@
 
 
                         </StackPanel>
-                        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+                    <!--    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"> -->
                             <DataGrid x:Name="IRdataGrd"
                               Grid.Row="1"
                               ItemsSource="{Binding InputRegisters,Mode=TwoWay}"
-                              
+                              MaxHeight="1400"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
                                SelectionMode="Extended"
                               CanUserAddRows="False" 
                               CanUserReorderColumns="True" 
@@ -764,7 +769,7 @@
 
 
                             </DataGrid>
-                        </ScrollViewer>
+                   <!--     </ScrollViewer> -->
                     </Grid>
                 </TabItem>
                 
