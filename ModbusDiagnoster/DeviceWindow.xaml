@@ -18,16 +18,16 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
             </ResourceDictionary.MergedDictionaries>
-        
-        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="ParityValues">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="io:Parity" />
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
-        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="StopBitsOptions">
+
+            <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="ParityValues">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="io:Parity" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+            <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="StopBitsOptions">
                 <ObjectDataProvider.MethodParameters>
                     <x:Type TypeName="io:StopBits" />
-        </ObjectDataProvider.MethodParameters>
+                </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
         </ResourceDictionary>
 
@@ -64,26 +64,26 @@
                     Header="Modbus TCP"
                     >
                     <ScrollViewer VerticalScrollBarVisibility="Visible">
-                    <StackPanel>
-                        <RadioButton x:Name="tcpRadBtn" Content="Modbus TCP"
+                        <StackPanel>
+                            <RadioButton x:Name="tcpRadBtn" Content="Modbus TCP"
                                      IsChecked="{Binding ModbusTCPSelected}"
                                      IsEnabled="{Binding timerStopped}"
                                      ></RadioButton>
-                        <GroupBox 
+                            <GroupBox 
                         Margin="5"
                         >
-                            <StackPanel>
-                                <Label Content="IPv4:"></Label>
-                                <TextBox x:Name="ipTxtBox" Margin="2"
+                                <StackPanel>
+                                    <Label Content="IPv4:"></Label>
+                                    <TextBox x:Name="ipTxtBox" Margin="2"
                                      Text="{Binding DeviceTCP.IPAddr,Mode=TwoWay}"></TextBox>
-                                <Label Content="Port:" ></Label>
-                                <TextBox x:Name="portTxtBox"
+                                    <Label Content="Port:" ></Label>
+                                    <TextBox x:Name="portTxtBox"
                                          Text="{Binding DeviceTCP.Port,Mode=TwoWay}" Margin="2"></TextBox>
-                                <Label Content="Slave ID:"></Label>
-                                <TextBox x:Name="slaveIdTxtBox" Text="{Binding DeviceTCP.SlaveId}"
+                                    <Label Content="Slave ID:"></Label>
+                                    <TextBox x:Name="slaveIdTxtBox" Text="{Binding DeviceTCP.SlaveId}"
                                          
                                          ></TextBox>
-                                <Button
+                                    <Button
                                 x:Name="acceptChanges"
                                 Content="{StaticResource ChangeConTCPproperties}"
                                 HorizontalAlignment="Stretch"
@@ -93,18 +93,18 @@
                                 
                                 Margin="5"
                                     />
-                            </StackPanel>
-                        </GroupBox>
-                        <RadioButton x:Name="rtuRadBtn" Content="Modbus RTU"
+                                </StackPanel>
+                            </GroupBox>
+                            <RadioButton x:Name="rtuRadBtn" Content="Modbus RTU"
                                      IsChecked="{Binding ModbusRTUSelected}"
                                      IsEnabled="{Binding timerStopped}"
                                      ></RadioButton>
-                        <GroupBox
+                            <GroupBox
                         Margin="5"  >
 
-                            <StackPanel>
-                                <Label Content="{StaticResource SerialPortLbl}"></Label>
-                                <ComboBox x:Name="PortCmbox" Margin="2"
+                                <StackPanel>
+                                    <Label Content="{StaticResource SerialPortLbl}"></Label>
+                                    <ComboBox x:Name="PortCmbox" Margin="2"
                                           ItemsSource="{Binding AvaibleSerialPorts}"
                                           SelectedItem="{Binding DeviceRTU.Port}"
                                           ></ComboBox>
@@ -115,59 +115,59 @@
                                             MaxWidth="200"
                                             Command="{Binding RefreshCOM}" Cursor="Hand"
                                             ></Button>
-                                <Label Content="{StaticResource BitrateLbl}"></Label>
-                                <ComboBox x:Name="BitRateCmbox" Margin="2"
+                                    <Label Content="{StaticResource BitrateLbl}"></Label>
+                                    <ComboBox x:Name="BitRateCmbox" Margin="2"
                                           ItemsSource="{Binding AvaibleBaudRates}"
                                           SelectedItem="{Binding DeviceRTU.Baudrate}"
                                           ></ComboBox>
-                                <Label Content="{StaticResource ParityLbl}"></Label>
-                                <ComboBox x:Name="ParityCmbox"
+                                    <Label Content="{StaticResource ParityLbl}"></Label>
+                                    <ComboBox x:Name="ParityCmbox"
                                           ItemsSource="{Binding Source={StaticResource ParityValues}}"
                                           SelectedItem="{Binding DeviceRTU.PortParity}"
                                           ></ComboBox>
-                                <Label Content="{StaticResource StopBitsLbl}"></Label>
-                                <ComboBox x:Name="StopBitsCmbox" Margin="2"
+                                    <Label Content="{StaticResource StopBitsLbl}"></Label>
+                                    <ComboBox x:Name="StopBitsCmbox" Margin="2"
                                           ItemsSource="{Binding Source={StaticResource StopBitsOptions}}"
                                           SelectedItem="{Binding DeviceRTU.PortStopBits}"
                                           ></ComboBox>
-                                <Label Content="{StaticResource DTRLbl}"></Label>
-                                <StackPanel x:Name="dtrCmbox" Orientation="Horizontal">
-                                    <RadioButton x:Name="dtrOnRadioBtn" 
+                                    <Label Content="{StaticResource DTRLbl}"></Label>
+                                    <StackPanel x:Name="dtrCmbox" Orientation="Horizontal">
+                                        <RadioButton x:Name="dtrOnRadioBtn" 
                                                  IsChecked="{Binding DeviceRTU.DTRon}"
                                                  Content="{StaticResource OnLbl}"
                                                  Margin="0,0,5,0"
                                                  ></RadioButton>
-                                   <RadioButton x:Name="dtrOffRadioBtn" 
+                                        <RadioButton x:Name="dtrOffRadioBtn" 
                                                 IsChecked="{Binding DeviceRTU.DTRoff}"
                                                 Content="{StaticResource OffLbl}"></RadioButton>
-                               
-                                </StackPanel>
-                                <Label Content="{StaticResource RTSLbl}"></Label>
-                                <StackPanel x:Name="rtsCmbox" Orientation="Horizontal">
-                                    <RadioButton x:Name="rtsOnRadioBtn" 
+
+                                    </StackPanel>
+                                    <Label Content="{StaticResource RTSLbl}"></Label>
+                                    <StackPanel x:Name="rtsCmbox" Orientation="Horizontal">
+                                        <RadioButton x:Name="rtsOnRadioBtn" 
                                                  IsChecked="{Binding DeviceRTU.RTSon}"
                                                  Content="{StaticResource OnLbl}"
                                                  Margin="0,0,5,0">
-                                        
-                                    </RadioButton>
-                                 <RadioButton x:Name="rtsOffRadioBtn"
+
+                                        </RadioButton>
+                                        <RadioButton x:Name="rtsOffRadioBtn"
                                               Margin="0,0,5,0"
                                               IsChecked="{Binding DeviceRTU.RTSoff}"
                                               Content="{StaticResource OffLbl}"></RadioButton>
-                                  
-                                    <RadioButton x:Name="rtsOnTxRadioBtn" Visibility="Hidden"
+
+                                        <RadioButton x:Name="rtsOnTxRadioBtn" Visibility="Hidden"
                                                  IsChecked="{Binding DeviceRTU.RTSonTX}"
                                                  Content="{StaticResource OnTxLbl}"
                                                  
                                                  ></RadioButton>
-                                </StackPanel>
-                                <Label Content="Slave ID:"></Label>
-                                <TextBox x:Name="slaveIdRTUTxtBox" Text="{Binding DeviceRTU.SlaveId}"
+                                    </StackPanel>
+                                    <Label Content="Slave ID:"></Label>
+                                    <TextBox x:Name="slaveIdRTUTxtBox" Text="{Binding DeviceRTU.SlaveId}"
                                          
                                 ></TextBox>
                                 </StackPanel>
 
-                        </GroupBox>
+                            </GroupBox>
                             <GroupBox
                         Margin="5"  >
 
@@ -218,7 +218,7 @@
 
             <!--MENU-->
             <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Button
+                <Button
             x:Name="propertiesBtn"
             Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
             Width="30"
@@ -290,7 +290,7 @@
                 <TextBox x:Name="timestampTxtBox" 
                          Margin="10,10,10,5"
                          Text="{Binding timer.Interval}" Cursor="IBeam"></TextBox>
-                
+
                 <Button
                     x:Name="TimerStatus"
                     Width="15"
@@ -337,7 +337,7 @@
                          Text="{Binding RequestTimeout}" Cursor="IBeam"></TextBox>
             </StackPanel>
 
-            
+
             <TabControl Grid.Row="1" >
                 <!-- COILS-->
                 <TabItem Name="CoilsCard" Header="Coils" 
@@ -357,7 +357,7 @@
                             <Button Visibility="Hidden" x:Name="deleteMultipleCoilReg" Content="Remove selected" Margin="5" Command="{Binding DeleteMultipleHoldingVar}"></Button>
                         </StackPanel>
 
-                       <!-- <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"> -->
+                        <!-- <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"> -->
                         <DataGrid x:Name="CoilsdataGrd"
                               Grid.Row="1"
                               ItemsSource="{Binding Coils,Mode=TwoWay}"
@@ -419,10 +419,10 @@
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
                             </DataGrid.Columns>
-                        
+
 
                         </DataGrid>
-                   <!--     </ScrollViewer> -->
+                        <!--     </ScrollViewer> -->
                     </Grid>
 
                 </TabItem>
@@ -444,8 +444,8 @@
 
                             <Button Visibility="Hidden" x:Name="deleteMultipleDIReg" Content="Remove selected" Margin="5" Command="{Binding DeleteMultipleHoldingVar}"></Button>
                         </StackPanel>
-                   <!--     <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"> -->
-                            <DataGrid x:Name="DIdataGrd"
+                        <!--     <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"> -->
+                        <DataGrid x:Name="DIdataGrd"
                               Grid.Row="1"
                               ItemsSource="{Binding Inputs,Mode=TwoWay}"
                               ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -454,61 +454,61 @@
                               CanUserAddRows="False" 
                               CanUserReorderColumns="True" 
                               AutoGenerateColumns="False">
-                                <DataGrid.Columns>
-                                    <DataGridCheckBoxColumn Header="{StaticResource CheckedHeader}" 
+                            <DataGrid.Columns>
+                                <DataGridCheckBoxColumn Header="{StaticResource CheckedHeader}" 
                                                 Binding="{Binding Checked}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
                                                 ></DataGridCheckBoxColumn>
-                                    <DataGridCheckBoxColumn Header="{StaticResource DisabledHeader}" 
+                                <DataGridCheckBoxColumn Header="{StaticResource DisabledHeader}" 
                                                 Binding="{Binding Disabled}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
                                                 ></DataGridCheckBoxColumn>
-                                    <DataGridTextColumn Header="{StaticResource NameHeader}" 
+                                <DataGridTextColumn Header="{StaticResource NameHeader}" 
                                                 Binding="{Binding Name}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource AddressHeader}" 
+                                <DataGridTextColumn Header="{StaticResource AddressHeader}" 
                                                 Binding="{Binding StartAddress}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 FontWeight="Bold"
                                                 ></DataGridTextColumn>
 
-                                    <DataGridTextColumn Header="{StaticResource ValueHeader}" 
+                                <DataGridTextColumn Header="{StaticResource ValueHeader}" 
                                                 Binding="{Binding Value,Mode=TwoWay}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 FontWeight="Bold"
                                                 ></DataGridTextColumn>
 
-                                    <DataGridTextColumn Header="{StaticResource DescHeader}" 
+                                <DataGridTextColumn Header="{StaticResource DescHeader}" 
                                                 Binding="{Binding Description}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <!--    <DataGridTextColumn Header="Okres próbkowania [ms]" 
+                                <!--    <DataGridTextColumn Header="Okres próbkowania [ms]" 
                                                 Binding="{Binding SamplePeriod}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn> -->
-                                    <DataGridTextColumn Header="{StaticResource TimestampHeader}" 
+                                <DataGridTextColumn Header="{StaticResource TimestampHeader}" 
                                                 Binding="{Binding Timestamp}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource NoteHeader}" 
+                                <DataGridTextColumn Header="{StaticResource NoteHeader}" 
                                                 Binding="{Binding Note}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                </DataGrid.Columns>
+                            </DataGrid.Columns>
 
 
-                            </DataGrid>
-                <!--        </ScrollViewer>-->
+                        </DataGrid>
+                        <!--        </ScrollViewer>-->
                     </Grid>
                 </TabItem>
 
@@ -528,8 +528,8 @@
                             <Button x:Name="delRegH" Content="{StaticResource delSelected}" Margin="5" Command="{Binding DeleteSelected}"></Button>
 
                         </StackPanel>
-                 <!--       <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"> -->
-                            <DataGrid x:Name="HRdataGrd"
+                        <!--       <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"> -->
+                        <DataGrid x:Name="HRdataGrd"
                               Grid.Row="1"
                               ItemsSource="{Binding HoldingRegisters,Mode=TwoWay}"
                                MaxHeight="1400"
@@ -538,110 +538,110 @@
                               CanUserAddRows="False" 
                               CanUserReorderColumns="True" 
                               AutoGenerateColumns="False">
-                                <DataGrid.Columns>
-                                    <DataGridCheckBoxColumn Header="{StaticResource CheckedHeader}" 
+                            <DataGrid.Columns>
+                                <DataGridCheckBoxColumn Header="{StaticResource CheckedHeader}" 
                                                 Binding="{Binding Checked}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
                                                 ></DataGridCheckBoxColumn>
-                                    <DataGridCheckBoxColumn Header="{StaticResource DisabledHeader}" 
+                                <DataGridCheckBoxColumn Header="{StaticResource DisabledHeader}" 
                                                 Binding="{Binding Disabled}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
                                                 ></DataGridCheckBoxColumn>
-                                    <DataGridTextColumn Header="{StaticResource NameHeader}" 
+                                <DataGridTextColumn Header="{StaticResource NameHeader}" 
                                                 Binding="{Binding Name}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource AddressHeader}" 
+                                <DataGridTextColumn Header="{StaticResource AddressHeader}" 
                                                 Binding="{Binding StartAddress}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 FontWeight="Bold"
                                                 ></DataGridTextColumn>
-                                    <materialDesign:DataGridComboBoxColumn Header="{StaticResource VarTypeHeader}" 
+                                <materialDesign:DataGridComboBoxColumn Header="{StaticResource VarTypeHeader}" 
                                                 SelectedValueBinding="{Binding VariableTypeFormat}" 
                                               IsEditable="False"
                                             ItemsSourceBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.VarTypes}"
                                              >
-                                    </materialDesign:DataGridComboBoxColumn>
-                                    <DataGridTextColumn Header="{StaticResource ValueHeader}" 
+                                </materialDesign:DataGridComboBoxColumn>
+                                <DataGridTextColumn Header="{StaticResource ValueHeader}" 
                                                 Binding="{Binding Value,Mode=TwoWay}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 FontWeight="Bold"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource ConvFuncHeader}" 
+                                <DataGridTextColumn Header="{StaticResource ConvFuncHeader}" 
                                                 Binding="{Binding ConversionFunction}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource ConvertedValueHeader}" 
+                                <DataGridTextColumn Header="{StaticResource ConvertedValueHeader}" 
                                                 Binding="{Binding ConvertedValue}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 FontWeight="Bold"
                                                 ></DataGridTextColumn>
-                                    <!--                <DataGridTextColumn Header="Format wyświetlania" 
+                                <!--                <DataGridTextColumn Header="Format wyświetlania" 
                                                 Binding="{Binding Format}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
 -->
-                                    <DataGridTextColumn Header="{StaticResource UnitHeader}" 
+                                <DataGridTextColumn Header="{StaticResource UnitHeader}" 
                                                 Binding="{Binding Unit}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource DescHeader}" 
+                                <DataGridTextColumn Header="{StaticResource DescHeader}" 
                                                 Binding="{Binding Description}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <!--    <DataGridTextColumn Header="Okres próbkowania [ms]" 
+                                <!--    <DataGridTextColumn Header="Okres próbkowania [ms]" 
                                                 Binding="{Binding SamplePeriod}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn> -->
-                                    <DataGridTextColumn Header="{StaticResource RangeFromHeader}" 
+                                <DataGridTextColumn Header="{StaticResource RangeFromHeader}" 
                                                 Binding="{Binding LowRange}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource RangeToHeader}" 
+                                <DataGridTextColumn Header="{StaticResource RangeToHeader}" 
                                                 Binding="{Binding HighRange}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource DisplayRangeFromHeader}" 
+                                <DataGridTextColumn Header="{StaticResource DisplayRangeFromHeader}" 
                                                 Binding="{Binding LowDisplayRange}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource DisplayRangeToHeader}" 
+                                <DataGridTextColumn Header="{StaticResource DisplayRangeToHeader}" 
                                                 Binding="{Binding HighDisplayRange}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource TimestampHeader}" 
+                                <DataGridTextColumn Header="{StaticResource TimestampHeader}" 
                                                 Binding="{Binding Timestamp}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource NoteHeader}" 
+                                <DataGridTextColumn Header="{StaticResource NoteHeader}" 
                                                 Binding="{Binding Note}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                </DataGrid.Columns>
+                            </DataGrid.Columns>
 
 
-                            </DataGrid>
-                 <!--       </ScrollViewer>-->
+                        </DataGrid>
+                        <!--       </ScrollViewer>-->
                     </Grid>
                 </TabItem>
-                
+
                 <!-- INPUT REGISTERS -->
                 <TabItem Name="InputRegistersCard" Header="Input Registers"
                      Background="{DynamicResource MaterialDesignPaper}"
@@ -659,8 +659,8 @@
 
 
                         </StackPanel>
-                    <!--    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"> -->
-                            <DataGrid x:Name="IRdataGrd"
+                        <!--    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"> -->
+                        <DataGrid x:Name="IRdataGrd"
                               Grid.Row="1"
                               ItemsSource="{Binding InputRegisters,Mode=TwoWay}"
                               MaxHeight="1400"
@@ -669,113 +669,135 @@
                               CanUserAddRows="False" 
                               CanUserReorderColumns="True" 
                               AutoGenerateColumns="False">
-                                <DataGrid.Columns>
-                                    <DataGridCheckBoxColumn Header="{StaticResource CheckedHeader}" 
+                            <DataGrid.Columns>
+                                <DataGridCheckBoxColumn Header="{StaticResource CheckedHeader}" 
                                                 Binding="{Binding Checked}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
-                                                ></DataGridCheckBoxColumn>
-                                    <DataGridCheckBoxColumn Header="{StaticResource DisabledHeader}" 
+                                ></DataGridCheckBoxColumn>
+
+             <!--                   <DataGridCheckBoxColumn
+                                    Binding="{Binding Checked,UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
+                                    EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}">
+                                <DataGridCheckBoxColumn.Header>
+                                        <Border Background="Transparent">
+                                            <CheckBox IsChecked="{Binding Path=IsAllIrSelected}" />
+                                        </Border>
+                                    </DataGridCheckBoxColumn.Header>
+                                    <DataGridCheckBoxColumn.HeaderStyle>
+                                    <Style
+                                        TargetType="{x:Type DataGridColumnHeader}"
+                                        BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                        <Setter
+                                            Property="HorizontalContentAlignment"
+                                            Value="Center" />
+                                        </Style>
+                                    </DataGridCheckBoxColumn.HeaderStyle>
+                                </DataGridCheckBoxColumn>
+                    -->
+
+                                <DataGridCheckBoxColumn Header="{StaticResource DisabledHeader}" 
                                                 Binding="{Binding Disabled}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
                                                 ></DataGridCheckBoxColumn>
-                                    <DataGridTextColumn Header="{StaticResource NameHeader}" 
+                                <DataGridTextColumn Header="{StaticResource NameHeader}" 
                                                 Binding="{Binding Name}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource AddressHeader}" 
+                                <DataGridTextColumn Header="{StaticResource AddressHeader}" 
                                                 Binding="{Binding StartAddress}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 FontWeight="Bold"
                                                 ></DataGridTextColumn>
-                                    <materialDesign:DataGridComboBoxColumn Header="{StaticResource VarTypeHeader}" 
+                                <materialDesign:DataGridComboBoxColumn Header="{StaticResource VarTypeHeader}" 
                                                 SelectedValueBinding="{Binding VariableTypeFormat}" 
                                               IsEditable="False"
                                             ItemsSourceBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.VarTypes}"
                                              >
-                                    </materialDesign:DataGridComboBoxColumn>
-                                    <DataGridTextColumn Header="{StaticResource ValueHeader}" 
+                                </materialDesign:DataGridComboBoxColumn>
+                                <DataGridTextColumn Header="{StaticResource ValueHeader}" 
                                                 Binding="{Binding Value,Mode=TwoWay}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 FontWeight="Bold"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource ConvFuncHeader}" 
+                                <DataGridTextColumn Header="{StaticResource ConvFuncHeader}" 
                                                 Binding="{Binding ConversionFunction}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource ConvertedValueHeader}" 
+                                <DataGridTextColumn Header="{StaticResource ConvertedValueHeader}" 
                                                 Binding="{Binding ConvertedValue}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 FontWeight="Bold"
                                                 ></DataGridTextColumn>
-                                    <!--                <DataGridTextColumn Header="Format wyświetlania" 
+                                <!--                <DataGridTextColumn Header="Format wyświetlania" 
                                                 Binding="{Binding Format}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
 -->
-                                    <DataGridTextColumn Header="{StaticResource UnitHeader}" 
+                                <DataGridTextColumn Header="{StaticResource UnitHeader}" 
                                                 Binding="{Binding Unit}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource DescHeader}" 
+                                <DataGridTextColumn Header="{StaticResource DescHeader}" 
                                                 Binding="{Binding Description}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <!--    <DataGridTextColumn Header="Okres próbkowania [ms]" 
+                                <!--    <DataGridTextColumn Header="Okres próbkowania [ms]" 
                                                 Binding="{Binding SamplePeriod}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn> -->
-                                    <DataGridTextColumn Header="{StaticResource RangeFromHeader}" 
+                                <DataGridTextColumn Header="{StaticResource RangeFromHeader}" 
                                                 Binding="{Binding LowRange}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource RangeToHeader}" 
+                                <DataGridTextColumn Header="{StaticResource RangeToHeader}" 
                                                 Binding="{Binding HighRange}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource DisplayRangeFromHeader}" 
+                                <DataGridTextColumn Header="{StaticResource DisplayRangeFromHeader}" 
                                                 Binding="{Binding LowDisplayRange}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource DisplayRangeToHeader}" 
+                                <DataGridTextColumn Header="{StaticResource DisplayRangeToHeader}" 
                                                 Binding="{Binding HighDisplayRange}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource TimestampHeader}" 
+                                <DataGridTextColumn Header="{StaticResource TimestampHeader}" 
                                                 Binding="{Binding Timestamp}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                    <DataGridTextColumn Header="{StaticResource NoteHeader}" 
+                                <DataGridTextColumn Header="{StaticResource NoteHeader}" 
                                                 Binding="{Binding Note}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                                 ></DataGridTextColumn>
-                                </DataGrid.Columns>
+                            </DataGrid.Columns>
 
 
-                            </DataGrid>
-                   <!--     </ScrollViewer> -->
+                        </DataGrid>
+                        <!--     </ScrollViewer> -->
                     </Grid>
                 </TabItem>
-                
 
-                
-                
+
+
+
             </TabControl>
 
             <Grid Grid.Row="3">

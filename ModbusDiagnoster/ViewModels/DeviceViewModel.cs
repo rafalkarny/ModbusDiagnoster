@@ -51,6 +51,7 @@ namespace ModbusDiagnoster.ViewModels
         public ICommand SaveAsCSV { get; set; }
         public ICommand RefreshCOM { get; set; }
         public ICommand DeleteSelected { get; set; }
+       
 
         private ObservableCollection<CoilsVariable> _Coils { get; set; }
         public ObservableCollection<CoilsVariable> Coils
@@ -410,6 +411,28 @@ namespace ModbusDiagnoster.ViewModels
                 //MessageBox.Show("Wybrano modbusa RTU");
             }
         }
+        private bool _IsAllIrSelected { get; set; }
+        public bool IsAllIrSelected
+        {
+            get
+            {
+                //TODO check if are selected
+
+                return _IsAllIrSelected;
+            }
+            set
+            {
+                
+                _IsAllIrSelected = value;
+                OnPropertyChanged();
+                if (value)
+                {
+                    OnSelectAllIR();
+                }
+            }
+        }
+
+
         public IEnumerable<string> VarTypes => new[] {
         "Decimal",
         "Integer",
@@ -444,6 +467,7 @@ namespace ModbusDiagnoster.ViewModels
             _MaxRegistersSelected = false;
             _AdditionalDelaySelected = true;
             _RequestTimeout = 1000;
+            IsAllIrSelected = false;
 
             //Filling comboboxes with avaible ports etc..
             AvaibleSerialPorts = SerialPort.GetPortNames();
@@ -487,6 +511,7 @@ namespace ModbusDiagnoster.ViewModels
             SaveAll = new RelayCommand(OnSaveData);
             SaveAsCSV = new RelayCommand(OnSaveAsCSV);
             DeleteSelected = new RelayCommand(OnDeleteSelected);
+            
 
             _timer = new System.Timers.Timer();
             // _timer.Elapsed += new ElapsedEventHandler(GetVariableValues);
@@ -500,6 +525,14 @@ namespace ModbusDiagnoster.ViewModels
 
 
             // _HoldingRegisters.CollectionChanged += ContentCollectionChanged;
+        }
+
+        private void OnSelectAllIR()
+        {
+            foreach(InputRegistersVariable var in InputRegisters)
+            {
+                var.Checked = true;
+            }
         }
 
         private void OnDeleteSelected(object obj)

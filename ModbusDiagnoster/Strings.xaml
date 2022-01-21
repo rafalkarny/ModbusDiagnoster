@@ -87,6 +87,7 @@
     <system:String x:Key="refreshBtn">Odśwież listę portów COM</system:String>
     <system:String x:Key="delSelected">Usuń wybrane</system:String>
     <system:String x:Key="sureToDelSel">Czy jesteś pewien że chcesz usunąć wszystkie zaznaczone rejestry w wszystkich tablicach Modbus?</system:String>
+    <system:String x:Key="selectAll">Zaznacz wszystkie</system:String>
     
     <!-- Errors -->
     <system:String x:Key="dirExists">Urządzenie/projekt o podanej nazwie już istnieje, wybierz proszę inną nazwę</system:String>
