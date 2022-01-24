@@ -36,16 +36,27 @@ namespace ModbusDiagnoster.Model.Communication
 
             foreach (CoilsVariable di in sortedInput)
             {
-                if (PreviousVariableListIndex != -1)
+                if (!di.Disabled)
                 {
-
-                    //For Variables Containing 1 word 
-
-                    if (previousVar.StartAddress + 1 == di.StartAddress)
+                    if (PreviousVariableListIndex != -1)
                     {
-                        if (Groups[PreviousVariableListIndex].Count() < maxcount)   //because max requested registers are 251x8 is 2008
+
+                        //For Variables Containing 1 word 
+
+                        if (previousVar.StartAddress + 1 == di.StartAddress)
                         {
-                            Groups[PreviousVariableListIndex].Add(di);  //Add variable to previous list 
+                            if (Groups[PreviousVariableListIndex].Count() < maxcount)   //because max requested registers are 251x8 is 2008
+                            {
+                                Groups[PreviousVariableListIndex].Add(di);  //Add variable to previous list 
+                            }
+                            else
+                            {
+                                List<CoilsVariable> tmp = new List<CoilsVariable>();  //Add new List (new group) and add variable
+                                tmp.Add(di);
+                                Groups.Add(tmp);
+                                PreviousVariableListIndex = Groups.IndexOf(tmp);
+                            }
+
                         }
                         else
                         {
@@ -55,25 +66,19 @@ namespace ModbusDiagnoster.Model.Communication
                             PreviousVariableListIndex = Groups.IndexOf(tmp);
                         }
 
+
                     }
                     else
                     {
-                        List<CoilsVariable> tmp = new List<CoilsVariable>();  //Add new List (new group) and add variable
+                        List<CoilsVariable> tmp = new List<CoilsVariable>();
                         tmp.Add(di);
                         Groups.Add(tmp);
-                        PreviousVariableListIndex = Groups.IndexOf(tmp);
+                        PreviousVariableListIndex = 0;
                     }
-
+                    previousVar = di;
 
                 }
-                else
-                {
-                    List<CoilsVariable> tmp = new List<CoilsVariable>();
-                    tmp.Add(di);
-                    Groups.Add(tmp);
-                    PreviousVariableListIndex = 0;
-                }
-                previousVar = di;
+
 
             }
             return Groups;
@@ -101,16 +106,28 @@ namespace ModbusDiagnoster.Model.Communication
 
             foreach (DiscreteInputsVariable di in sortedInput)
             {
-                if (PreviousVariableListIndex != -1)
+
+                if (!di.Disabled)
                 {
-
-                    //For Variables Containing 1 word 
-
-                    if (previousVar.StartAddress + 1 == di.StartAddress)
+                    if (PreviousVariableListIndex != -1)
                     {
-                        if (Groups[PreviousVariableListIndex].Count() < maxcount)   //because max requested register is 125 
+
+                        //For Variables Containing 1 word 
+
+                        if (previousVar.StartAddress + 1 == di.StartAddress)
                         {
-                            Groups[PreviousVariableListIndex].Add(di);  //Add variable to previous list 
+                            if (Groups[PreviousVariableListIndex].Count() < maxcount)   //because max requested register is 125 
+                            {
+                                Groups[PreviousVariableListIndex].Add(di);  //Add variable to previous list 
+                            }
+                            else
+                            {
+                                List<DiscreteInputsVariable> tmp = new List<DiscreteInputsVariable>();  //Add new List (new group) and add variable
+                                tmp.Add(di);
+                                Groups.Add(tmp);
+                                PreviousVariableListIndex = Groups.IndexOf(tmp);
+                            }
+
                         }
                         else
                         {
@@ -120,26 +137,17 @@ namespace ModbusDiagnoster.Model.Communication
                             PreviousVariableListIndex = Groups.IndexOf(tmp);
                         }
 
+
                     }
                     else
                     {
-                        List<DiscreteInputsVariable> tmp = new List<DiscreteInputsVariable>();  //Add new List (new group) and add variable
+                        List<DiscreteInputsVariable> tmp = new List<DiscreteInputsVariable>();
                         tmp.Add(di);
                         Groups.Add(tmp);
-                        PreviousVariableListIndex = Groups.IndexOf(tmp);
+                        PreviousVariableListIndex = 0;
                     }
-
-
+                    previousVar = di;
                 }
-                else
-                {
-                    List<DiscreteInputsVariable> tmp = new List<DiscreteInputsVariable>();
-                    tmp.Add(di);
-                    Groups.Add(tmp);
-                    PreviousVariableListIndex = 0;
-                }
-                previousVar = di;
-
             }
             return Groups;
 
@@ -167,16 +175,28 @@ namespace ModbusDiagnoster.Model.Communication
 
             foreach (InputRegistersVariable ir in sortedInput)
             {
-                if (PreviousVariableListIndex != -1)
+                if (!ir.Disabled)
                 {
-                    //For Variables containing 2 words
-                    if ((ir.VariableTypeFormat == "BigEndianFloat" || ir.VariableTypeFormat == "LittleEndianFloat") && (previousVar.VariableTypeFormat == "BigEndianFloat" || previousVar.VariableTypeFormat == "LittleEndianFloat"))
+
+                    if (PreviousVariableListIndex != -1)
                     {
-                        if (previousVar.StartAddress + 2 == ir.StartAddress)
+                        //For Variables containing 2 words
+                        if ((ir.VariableTypeFormat == "BigEndianFloat" || ir.VariableTypeFormat == "LittleEndianFloat") && (previousVar.VariableTypeFormat == "BigEndianFloat" || previousVar.VariableTypeFormat == "LittleEndianFloat"))
                         {
-                            if (Groups[PreviousVariableListIndex].Count() < (maxcount/2))   //because max requested register is 125 
+                            if (previousVar.StartAddress + 2 == ir.StartAddress)
                             {
-                                Groups[PreviousVariableListIndex].Add(ir);  //Add variable to previous list 
+                                if (Groups[PreviousVariableListIndex].Count() < (maxcount / 2))   //because max requested register is 125 
+                                {
+                                    Groups[PreviousVariableListIndex].Add(ir);  //Add variable to previous list 
+                                }
+                                else
+                                {
+                                    List<InputRegistersVariable> tmp = new List<InputRegistersVariable>();  //Add new List (new group) and add variable
+                                    tmp.Add(ir);
+                                    Groups.Add(tmp);
+                                    PreviousVariableListIndex = Groups.IndexOf(tmp);
+                                }
+
                             }
                             else
                             {
@@ -185,25 +205,25 @@ namespace ModbusDiagnoster.Model.Communication
                                 Groups.Add(tmp);
                                 PreviousVariableListIndex = Groups.IndexOf(tmp);
                             }
-
                         }
-                        else
-                        {
-                            List<InputRegistersVariable> tmp = new List<InputRegistersVariable>();  //Add new List (new group) and add variable
-                            tmp.Add(ir);
-                            Groups.Add(tmp);
-                            PreviousVariableListIndex = Groups.IndexOf(tmp);
-                        }
-                    }
 
-                    //For Variables Containing 1 word 
-                    else if ((ir.VariableTypeFormat != "BigEndianFloat" && ir.VariableTypeFormat != "LittleEndianFloat"))
-                    {
-                        if ((previousVar.StartAddress + 1 == ir.StartAddress) && (previousVar.VariableTypeFormat != "BigEndianFloat" && previousVar.VariableTypeFormat != "LittleEndianFloat"))
+                        //For Variables Containing 1 word 
+                        else if ((ir.VariableTypeFormat != "BigEndianFloat" && ir.VariableTypeFormat != "LittleEndianFloat"))
                         {
-                            if (Groups[PreviousVariableListIndex].Count() < maxcount)   //because max requested register is 125 
+                            if ((previousVar.StartAddress + 1 == ir.StartAddress) && (previousVar.VariableTypeFormat != "BigEndianFloat" && previousVar.VariableTypeFormat != "LittleEndianFloat"))
                             {
-                                Groups[PreviousVariableListIndex].Add(ir);  //Add variable to previous list 
+                                if (Groups[PreviousVariableListIndex].Count() < maxcount)   //because max requested register is 125 
+                                {
+                                    Groups[PreviousVariableListIndex].Add(ir);  //Add variable to previous list 
+                                }
+                                else
+                                {
+                                    List<InputRegistersVariable> tmp = new List<InputRegistersVariable>();  //Add new List (new group) and add variable
+                                    tmp.Add(ir);
+                                    Groups.Add(tmp);
+                                    PreviousVariableListIndex = Groups.IndexOf(tmp);
+                                }
+
                             }
                             else
                             {
@@ -212,36 +232,28 @@ namespace ModbusDiagnoster.Model.Communication
                                 Groups.Add(tmp);
                                 PreviousVariableListIndex = Groups.IndexOf(tmp);
                             }
-
                         }
+                        //Situation when we have for example: Decimal,Decimal,BigEndianFloat,Decimal,Integer etc... (previous is diffrent type and should make new list)
                         else
                         {
-                            List<InputRegistersVariable> tmp = new List<InputRegistersVariable>();  //Add new List (new group) and add variable
+                            List<InputRegistersVariable> tmp = new List<InputRegistersVariable>();
                             tmp.Add(ir);
                             Groups.Add(tmp);
                             PreviousVariableListIndex = Groups.IndexOf(tmp);
+
                         }
+
                     }
-                    //Situation when we have for example: Decimal,Decimal,BigEndianFloat,Decimal,Integer etc... (previous is diffrent type and should make new list)
                     else
                     {
                         List<InputRegistersVariable> tmp = new List<InputRegistersVariable>();
                         tmp.Add(ir);
                         Groups.Add(tmp);
                         PreviousVariableListIndex = Groups.IndexOf(tmp);
-
                     }
+                    previousVar = ir;
 
                 }
-                else
-                {
-                    List<InputRegistersVariable> tmp = new List<InputRegistersVariable>();
-                    tmp.Add(ir);
-                    Groups.Add(tmp);
-                    PreviousVariableListIndex = Groups.IndexOf(tmp);
-                }
-                previousVar = ir;
-
             }
 
 
@@ -275,18 +287,30 @@ namespace ModbusDiagnoster.Model.Communication
 
             foreach (HoldingRegistersVariable hr in sortedInput)
             {
-                if (PreviousVariableListIndex != -1)
+
+                if (!hr.Disabled)
                 {
-                    //For Variables containing 2 words
-                    if ((hr.VariableTypeFormat == "BigEndianFloat" || hr.VariableTypeFormat == "LittleEndianFloat") && (previousVar.VariableTypeFormat == "BigEndianFloat" || previousVar.VariableTypeFormat == "LittleEndianFloat"))
+                    if (PreviousVariableListIndex != -1)
                     {
-                        if (previousVar.StartAddress + 2 == hr.StartAddress)
+                        //For Variables containing 2 words
+                        if ((hr.VariableTypeFormat == "BigEndianFloat" || hr.VariableTypeFormat == "LittleEndianFloat") && (previousVar.VariableTypeFormat == "BigEndianFloat" || previousVar.VariableTypeFormat == "LittleEndianFloat"))
                         {
-                            if (Groups[PreviousVariableListIndex].Count() < (maxcount/2))   //because max requested register is 125 
+                            if (previousVar.StartAddress + 2 == hr.StartAddress)
                             {
-                                
+                                if (Groups[PreviousVariableListIndex].Count() < (maxcount / 2))   //because max requested register is 125 
+                                {
 
-                                Groups[PreviousVariableListIndex].Add(hr);  //Add variable to previous list 
+
+                                    Groups[PreviousVariableListIndex].Add(hr);  //Add variable to previous list 
+                                }
+                                else
+                                {
+                                    List<HoldingRegistersVariable> tmp = new List<HoldingRegistersVariable>();  //Add new List (new group) and add variable
+                                    tmp.Add(hr);
+                                    Groups.Add(tmp);
+                                    PreviousVariableListIndex = Groups.IndexOf(tmp);
+                                }
+
                             }
                             else
                             {
@@ -295,25 +319,25 @@ namespace ModbusDiagnoster.Model.Communication
                                 Groups.Add(tmp);
                                 PreviousVariableListIndex = Groups.IndexOf(tmp);
                             }
-
                         }
-                        else
-                        {
-                            List<HoldingRegistersVariable> tmp = new List<HoldingRegistersVariable>();  //Add new List (new group) and add variable
-                            tmp.Add(hr);
-                            Groups.Add(tmp);
-                            PreviousVariableListIndex = Groups.IndexOf(tmp);
-                        }
-                    }
 
-                    //For Variables Containing 1 word 
-                    else if ((hr.VariableTypeFormat != "BigEndianFloat" && hr.VariableTypeFormat != "LittleEndianFloat"))
-                    {
-                        if ((previousVar.StartAddress + 1 == hr.StartAddress) && (previousVar.VariableTypeFormat != "BigEndianFloat" && previousVar.VariableTypeFormat != "LittleEndianFloat"))
+                        //For Variables Containing 1 word 
+                        else if ((hr.VariableTypeFormat != "BigEndianFloat" && hr.VariableTypeFormat != "LittleEndianFloat"))
                         {
-                            if (Groups[PreviousVariableListIndex].Count() <maxcount)   //because max requested register is 256 
+                            if ((previousVar.StartAddress + 1 == hr.StartAddress) && (previousVar.VariableTypeFormat != "BigEndianFloat" && previousVar.VariableTypeFormat != "LittleEndianFloat"))
                             {
-                                Groups[PreviousVariableListIndex].Add(hr);  //Add variable to previous list 
+                                if (Groups[PreviousVariableListIndex].Count() < maxcount)   //because max requested register is 256 
+                                {
+                                    Groups[PreviousVariableListIndex].Add(hr);  //Add variable to previous list 
+                                }
+                                else
+                                {
+                                    List<HoldingRegistersVariable> tmp = new List<HoldingRegistersVariable>();  //Add new List (new group) and add variable
+                                    tmp.Add(hr);
+                                    Groups.Add(tmp);
+                                    PreviousVariableListIndex = Groups.IndexOf(tmp);
+                                }
+
                             }
                             else
                             {
@@ -322,40 +346,28 @@ namespace ModbusDiagnoster.Model.Communication
                                 Groups.Add(tmp);
                                 PreviousVariableListIndex = Groups.IndexOf(tmp);
                             }
-
                         }
+                        //Situation when we have for example: Decimal,Decimal,BigEndianFloat,Decimal,Integer etc... (previous is diffrent type and should make new list)
                         else
                         {
-                            List<HoldingRegistersVariable> tmp = new List<HoldingRegistersVariable>();  //Add new List (new group) and add variable
+                            List<HoldingRegistersVariable> tmp = new List<HoldingRegistersVariable>();
                             tmp.Add(hr);
                             Groups.Add(tmp);
                             PreviousVariableListIndex = Groups.IndexOf(tmp);
+
                         }
+
                     }
-                    //Situation when we have for example: Decimal,Decimal,BigEndianFloat,Decimal,Integer etc... (previous is diffrent type and should make new list)
                     else
                     {
                         List<HoldingRegistersVariable> tmp = new List<HoldingRegistersVariable>();
                         tmp.Add(hr);
                         Groups.Add(tmp);
                         PreviousVariableListIndex = Groups.IndexOf(tmp);
-
                     }
-
+                    previousVar = hr;
                 }
-                else
-                {
-                    List<HoldingRegistersVariable> tmp = new List<HoldingRegistersVariable>();
-                    tmp.Add(hr);
-                    Groups.Add(tmp);
-                    PreviousVariableListIndex = Groups.IndexOf(tmp);
-                }
-                previousVar = hr;
-
             }
-
-
-
 
             return Groups;
 

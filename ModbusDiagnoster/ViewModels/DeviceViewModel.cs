@@ -411,6 +411,61 @@ namespace ModbusDiagnoster.ViewModels
                 //MessageBox.Show("Wybrano modbusa RTU");
             }
         }
+
+        private bool _IsAllCoilsSelected { get; set; }
+        public bool IsAllCoilsSelected
+        {
+            get
+            {
+                //TODO check if are selected
+
+                return _IsAllCoilsSelected;
+            }
+            set
+            {
+
+                _IsAllCoilsSelected = value;
+                OnPropertyChanged();
+                 OnSelectAllCoils(value);
+                
+            }
+        }
+        private bool _IsAllInputsSelected { get; set; }
+        public bool IsAllInputsSelected
+        {
+            get
+            {
+                //TODO check if are selected
+
+                return _IsAllInputsSelected;
+            }
+            set
+            {
+
+                _IsAllInputsSelected = value;
+                OnPropertyChanged();
+                OnSelectAllInputs(value);
+                
+            }
+        }
+        private bool _IsAllHRSelected { get; set; }
+        public bool IsAllHRSelected
+        {
+            get
+            {
+                //TODO check if are selected
+
+                return _IsAllHRSelected;
+            }
+            set
+            {
+
+                _IsAllHRSelected = value;
+                OnPropertyChanged();
+                OnSelectAllHR(value);
+                
+            }
+        }
         private bool _IsAllIrSelected { get; set; }
         public bool IsAllIrSelected
         {
@@ -425,10 +480,8 @@ namespace ModbusDiagnoster.ViewModels
                 
                 _IsAllIrSelected = value;
                 OnPropertyChanged();
-                if (value)
-                {
-                    OnSelectAllIR();
-                }
+                OnSelectAllIR(value);
+                
             }
         }
 
@@ -527,11 +580,32 @@ namespace ModbusDiagnoster.ViewModels
             // _HoldingRegisters.CollectionChanged += ContentCollectionChanged;
         }
 
-        private void OnSelectAllIR()
+        private void OnSelectAllCoils(bool value)
+        {
+            foreach (CoilsVariable var in Coils)
+            {
+                var.Checked = value;
+            }
+        }
+        private void OnSelectAllInputs(bool value)
+        {
+            foreach (DiscreteInputsVariable var in Inputs)
+            {
+                var.Checked = value;
+            }
+        }
+        private void OnSelectAllHR(bool value)
+        {
+            foreach (HoldingRegistersVariable var in HoldingRegisters)
+            {
+                var.Checked = value;
+            }
+        }
+        private void OnSelectAllIR(bool value)
         {
             foreach(InputRegistersVariable var in InputRegisters)
             {
-                var.Checked = true;
+                var.Checked = value;
             }
         }
 
@@ -955,6 +1029,11 @@ namespace ModbusDiagnoster.ViewModels
 
                 foreach (List<HoldingRegistersVariable> group in groupedHR)
                 {
+                    if(timerStop)
+                    {
+                        break;
+                    }
+
                     if (group.Count > 0)
                     {
                         //For 2 words variables
@@ -1263,6 +1342,11 @@ namespace ModbusDiagnoster.ViewModels
 
                 foreach (List<InputRegistersVariable> group in groupedHR)
                 {
+                    if (timerStop)
+                    {
+                        break;
+                    }
+
                     if (group.Count > 0)
                     {
                         //For 2 words variables
@@ -1562,6 +1646,11 @@ namespace ModbusDiagnoster.ViewModels
 
                 foreach (List<DiscreteInputsVariable> group in groupedDI)
                 {
+                    if (timerStop)
+                    {
+                        break;
+                    }
+
                     if (group.Count > 0)
                     {
                         ushort numOfRegs = (UInt16)(group.Count);
@@ -1699,6 +1788,11 @@ namespace ModbusDiagnoster.ViewModels
 
                 foreach (List<CoilsVariable> group in groupedCoils)
                 {
+                    if (timerStop)
+                    {
+                        break;
+                    }
+
                     if (group.Count > 0)
                     {
                         ushort numOfRegs = (UInt16)(group.Count);

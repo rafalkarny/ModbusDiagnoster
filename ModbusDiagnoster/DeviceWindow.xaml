@@ -358,7 +358,7 @@
                         </StackPanel>
 
                         <!-- <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"> -->
-                        <DataGrid x:Name="CoilsdataGrd"
+ <!--                       <DataGrid x:Name="CoilsdataGrd"
                               Grid.Row="1"
                               ItemsSource="{Binding Coils,Mode=TwoWay}"
                               ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -369,11 +369,52 @@
                               CanUserReorderColumns="True" 
                               AutoGenerateColumns="False">
                             <DataGrid.Columns>
+                                -->
+
+                        <DataGrid
+                        Grid.Row="1"
+                        ItemsSource="{Binding Coils}"
+                        CanUserAddRows="False" AutoGenerateColumns="False"
+                        HeadersVisibility="All"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        MaxHeight="1400"
+                        SelectionMode="Extended"
+                        CanUserReorderColumns="True">
+
+                            <DataGrid.Resources>
+                                <viewmodels:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
+                            </DataGrid.Resources>
+
+
+                            <DataGrid.Columns>
+                                
+                            <DataGridCheckBoxColumn
+                                Binding="{Binding Checked, UpdateSourceTrigger=PropertyChanged}" 
+                                ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
+                                EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}">
+                                    <DataGridCheckBoxColumn.Header>
+                                        <Border Background="Transparent">
+                                            <CheckBox IsChecked="{Binding Data.IsAllCoilsSelected,
+                                                Source={StaticResource DataContextProxy}}"/>
+                                            
+                                        </Border>
+                                    </DataGridCheckBoxColumn.Header>
+
+                                    <DataGridCheckBoxColumn.HeaderStyle>
+                                        <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                        </Style>
+                                    </DataGridCheckBoxColumn.HeaderStyle>
+                                </DataGridCheckBoxColumn>
+
+
+                            <!--
                                 <DataGridCheckBoxColumn Header="{StaticResource CheckedHeader}" 
                                                 Binding="{Binding Checked}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
                                                 ></DataGridCheckBoxColumn>
+                            -->    
                                 <DataGridCheckBoxColumn Header="{StaticResource DisabledHeader}" 
                                                 Binding="{Binding Disabled}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
@@ -454,12 +495,40 @@
                               CanUserAddRows="False" 
                               CanUserReorderColumns="True" 
                               AutoGenerateColumns="False">
+
+                            <DataGrid.Resources>
+                                <viewmodels:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
+                            </DataGrid.Resources>
+
+
                             <DataGrid.Columns>
-                                <DataGridCheckBoxColumn Header="{StaticResource CheckedHeader}" 
+
+                                <DataGridCheckBoxColumn
+                                Binding="{Binding Checked, UpdateSourceTrigger=PropertyChanged}" 
+                                ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
+                                EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}">
+                                    <DataGridCheckBoxColumn.Header>
+                                        <Border Background="Transparent">
+                                            <CheckBox IsChecked="{Binding Data.IsAllInputsSelected,
+                                                Source={StaticResource DataContextProxy}}"/>
+
+                                        </Border>
+                                    </DataGridCheckBoxColumn.Header>
+
+                                    <DataGridCheckBoxColumn.HeaderStyle>
+                                        <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                        </Style>
+                                    </DataGridCheckBoxColumn.HeaderStyle>
+                                </DataGridCheckBoxColumn>
+
+
+                             <!--   <DataGridCheckBoxColumn Header="{StaticResource CheckedHeader}" 
                                                 Binding="{Binding Checked}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
                                                 ></DataGridCheckBoxColumn>
+                                -->
                                 <DataGridCheckBoxColumn Header="{StaticResource DisabledHeader}" 
                                                 Binding="{Binding Disabled}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
@@ -538,12 +607,42 @@
                               CanUserAddRows="False" 
                               CanUserReorderColumns="True" 
                               AutoGenerateColumns="False">
+
+
+                            <DataGrid.Resources>
+                                <viewmodels:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
+                            </DataGrid.Resources>
+
+
                             <DataGrid.Columns>
-                                <DataGridCheckBoxColumn Header="{StaticResource CheckedHeader}" 
+
+                                <DataGridCheckBoxColumn
+                                Binding="{Binding Checked, UpdateSourceTrigger=PropertyChanged}" 
+                                ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
+                                EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}">
+                                    <DataGridCheckBoxColumn.Header>
+                                        <Border Background="Transparent">
+                                            <CheckBox IsChecked="{Binding Data.IsAllHRSelected,
+                                                Source={StaticResource DataContextProxy}}"/>
+
+                                        </Border>
+                                    </DataGridCheckBoxColumn.Header>
+
+                                    <DataGridCheckBoxColumn.HeaderStyle>
+                                        <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                        </Style>
+                                    </DataGridCheckBoxColumn.HeaderStyle>
+                                </DataGridCheckBoxColumn>
+
+
+
+                        <!--        <DataGridCheckBoxColumn Header="{StaticResource CheckedHeader}" 
                                                 Binding="{Binding Checked}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
                                                 ></DataGridCheckBoxColumn>
+                             -->   
                                 <DataGridCheckBoxColumn Header="{StaticResource DisabledHeader}" 
                                                 Binding="{Binding Disabled}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
@@ -669,33 +768,42 @@
                               CanUserAddRows="False" 
                               CanUserReorderColumns="True" 
                               AutoGenerateColumns="False">
+
+                            <DataGrid.Resources>
+                                <viewmodels:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
+                            </DataGrid.Resources>
+
+
                             <DataGrid.Columns>
+
+                                <DataGridCheckBoxColumn
+                                Binding="{Binding Checked, UpdateSourceTrigger=PropertyChanged}" 
+                                ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
+                                EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}">
+                                    <DataGridCheckBoxColumn.Header>
+                                        <Border Background="Transparent">
+                                            <CheckBox IsChecked="{Binding Data.IsAllIrSelected,
+                                                Source={StaticResource DataContextProxy}}"/>
+
+                                        </Border>
+                                    </DataGridCheckBoxColumn.Header>
+
+                                    <DataGridCheckBoxColumn.HeaderStyle>
+                                        <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                        </Style>
+                                    </DataGridCheckBoxColumn.HeaderStyle>
+                                </DataGridCheckBoxColumn>
+
+
+
+                                <!--
                                 <DataGridCheckBoxColumn Header="{StaticResource CheckedHeader}" 
                                                 Binding="{Binding Checked}" 
                                                       ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
                                 ></DataGridCheckBoxColumn>
-
-             <!--                   <DataGridCheckBoxColumn
-                                    Binding="{Binding Checked,UpdateSourceTrigger=PropertyChanged}"
-                                    ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
-                                    EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}">
-                                <DataGridCheckBoxColumn.Header>
-                                        <Border Background="Transparent">
-                                            <CheckBox IsChecked="{Binding Path=IsAllIrSelected}" />
-                                        </Border>
-                                    </DataGridCheckBoxColumn.Header>
-                                    <DataGridCheckBoxColumn.HeaderStyle>
-                                    <Style
-                                        TargetType="{x:Type DataGridColumnHeader}"
-                                        BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
-                                        <Setter
-                                            Property="HorizontalContentAlignment"
-                                            Value="Center" />
-                                        </Style>
-                                    </DataGridCheckBoxColumn.HeaderStyle>
-                                </DataGridCheckBoxColumn>
-                    -->
+                                -->
 
                                 <DataGridCheckBoxColumn Header="{StaticResource DisabledHeader}" 
                                                 Binding="{Binding Disabled}" 

@@ -34,8 +34,9 @@ namespace ModbusDiagnoster.Model.Converters
 
         public static string convertToHex(ushort reg1)
         {
-
-            string res =BitConverter.ToString( BitConverter.GetBytes(reg1));
+            byte[] bytes = BitConverter.GetBytes(reg1);
+            Array.Reverse(bytes);
+            string res =BitConverter.ToString(bytes);
             return res;
         }
 

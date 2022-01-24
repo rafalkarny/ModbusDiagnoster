@@ -310,6 +310,7 @@
     </Compile>
     <Compile Include="ViewModels\AddMultipleDiscreteCoilsViewModel.cs" />
     <Compile Include="ViewModels\AddMultipleHRDialogViewModel.cs" />
+    <Compile Include="ViewModels\BindingProxy.cs" />
     <Compile Include="ViewModels\DeviceCardViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModel.cs" />
     <Compile Include="ViewModels\ExportVariablesViewModel.cs" />
