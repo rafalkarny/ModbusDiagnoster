@@ -18,8 +18,7 @@ namespace ModbusDiagnoster.ViewModels
             set => SetValue(DataProperty, value);
         }
 
-        public static readonly DependencyProperty DataProperty =
-            DependencyProperty.Register("Data", typeof(object), typeof(BindingProxy), new UIPropertyMetadata(null));
+        public static readonly DependencyProperty DataProperty =DependencyProperty.Register("Data", typeof(object), typeof(BindingProxy), new UIPropertyMetadata(null));
 
     }
 }
